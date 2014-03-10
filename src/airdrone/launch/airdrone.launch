@@ -1,0 +1,8 @@
+<launch>
+	<node pkg="rgbd_shrinker" name="rgbd_shrinker_1" type="rgbd_shrinker_node"></node>
+	<node pkg="laserscan_server" name="laserscan_server_1" type="laserscan_server_node">
+		<rosparam file="$(find laserscan_server)/param.yaml" command="load" ns = "/" />
+	</node>
+	<node pkg="airdrone" name="floor_seeker" type="airdrone_com_node"></node>
+	<node pkg="velocity_server" name="velocity_server_1" type="velocity_server_node"></node>
+</launch>
