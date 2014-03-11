@@ -1,0 +1,13 @@
+<launch>
+	<include file="$(find hector_quadrotor_demo)/launch/indoor_custom.launch"/>
+	<node pkg="rgbd_shrinker" name="rgbd_shrinker_1" type="rgbd_shrinker_node"></node>
+	<node pkg="laserscan_server" name="laserscan_server_1" type="laserscan_server_node"></node>
+
+	<!--
+	<node pkg="airdrone" name="ros_pcl_filter" type="airdrone_com_node">
+		<remap from="point_cloud_xyz_in" to="/camera/depth/points" />
+	</node>
+	-->
+
+
+</launch>
