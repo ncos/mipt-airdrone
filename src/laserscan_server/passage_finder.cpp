@@ -1,8 +1,9 @@
 #include "passage_finder.h"
 
 
-
-
+// *****************************************
+// 				Passage finder
+// *****************************************
 Passage_finder::Passage_finder (Line_param &line)
 {
 	const double critical_angle = 11.0;
@@ -56,3 +57,87 @@ void Passage_finder::check_boundary (Line_param &line)
 	}
 */
 };
+
+
+// *****************************************
+// 				Location server
+// *****************************************
+void LocationServer::track_wall(Line_param *wall)
+{
+	if (wall == NULL) return;
+	if(this->ref_wall == NULL)
+	{
+		this->yaw = wall->angle;
+	}
+
+	this->ref_wall = wall;
+	this->stm.angle = wall->angle;
+	this->stm.distance = wall->distance;
+	this->lost_ref_wall = false;
+};
+
+
+void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
+{
+	this->lm.renew(cloud);
+    this->ref_wall = this->lm.get_best_fit(this->stm.angle, this->stm.distance);
+    if(!this->ref_wall->found) this->lost_ref_wall = true;
+    double d_angle = stm.angle - this->ref_wall->angle;
+    stm.angle = this->ref_wall->angle;
+    stm.distance = this->ref_wall->distance;
+
+    this->yaw -= d_angle;
+};
+
+
+bool LocationServer::obstacle_detected ()
+{
+	Line_param *lp_corner = lm.get_closest(stm.angle + 90);
+	if(lp_corner->found) return true;
+	else return true;
+};
+
+
+
+// *****************************************
+// 				Motion server
+// *****************************************
+bool MotionServer::rotate(double angle)
+{
+	if(this->ref_wall == NULL) return false;
+	if(angle + this->ref_wall->angle > 70.0) return false;
+	this->ref_ang += angle;
+	return true;
+};
+
+
+void MotionServer::spin_once()
+{
+	this->base_cmd.angular.x = this->base_cmd.angular.y = this->base_cmd.angular.z = 0;
+	this->base_cmd.linear.x  = this->base_cmd.linear.y  = this->base_cmd.linear.z  = 0;
+	this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
+
+	double vel_k = - this->pid_vel.get_output(ref_dist, this->ref_wall->distance);
+	base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x;
+	base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y;
+};
+
+
+bool MotionServer::move_parallel(double vel)
+{
+	base_cmd.linear.x  -= vel * this->ref_wall->ldir_vec.cmd.x;
+	base_cmd.linear.y  -= vel * this->ref_wall->ldir_vec.cmd.y;
+
+	return true;
+};
+
+
+bool MotionServer::move_perpendicular(double shift)
+{
+	this->ref_dist += shift;
+	return true;
+};
+
+
+
+

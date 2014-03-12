@@ -34,7 +34,7 @@ void Line_map::renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 
 
 
-Line_param Line_map::get_best_fit (double angle, double distance)
+Line_param *Line_map::get_best_fit (double angle, double distance)
 {
 	int id = 0;
 	double error = 10000;
@@ -46,12 +46,12 @@ Line_param Line_map::get_best_fit (double angle, double distance)
 	}
 	if (fabs(lines.at(id).angle    - angle   ) > eps ) lines.at(id).found = false;
 	if (fabs(lines.at(id).distance - distance) > derr) lines.at(id).found = false;
-	return lines.at(id);
+	return &lines.at(id);
 };
 
 
 
-Line_param Line_map::get_closest (double angle)
+Line_param *Line_map::get_closest (double angle)
 {
 	int id = 0;
 	double distance = 10000;
@@ -64,7 +64,7 @@ Line_param Line_map::get_closest (double angle)
 		}
 	}
 	if (fabs(lines.at(id).angle    - angle   ) > eps ) lines.at(id).found = false;
-	return lines.at(id);
+	return &lines.at(id);
 };
 
 

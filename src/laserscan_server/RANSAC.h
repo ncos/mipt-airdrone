@@ -34,7 +34,7 @@ class PID
 	double integral;
 
 public:
-	PID(double _P, double _I, double _D)
+	PID(double _P = 0.0, double _I = 0.0, double _D = 0.0)
 	{
 		P = _P; I = _I; D = _D;
 		not_started = true;
@@ -217,8 +217,8 @@ public:
 	}
 
 	void renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
-	Line_param get_best_fit (double angle, double distance);
-	Line_param get_closest (double angle);
+	Line_param *get_best_fit (double angle, double distance);
+	Line_param *get_closest  (double angle);
 };
 
 

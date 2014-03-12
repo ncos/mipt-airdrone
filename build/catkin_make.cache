@@ -1,2 +1,1 @@
 airdrone:laserscan_server:rgbd_shrinker:velocity_server
--GEclipse CDT4 - Unix Makefiles -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8
