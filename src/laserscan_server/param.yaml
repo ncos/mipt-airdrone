@@ -4,10 +4,10 @@ PID_vel_I: 0.5 #0.5
 PID_vel_D: 0.4 #0.4
 
 # Tu = 2.97, Ku = 0.075
-PID_ang_P: 0.040 #0.040
-PID_ang_I: 0.015 #0.015
-PID_ang_D: 0.015 #0.015
+PID_ang_P: 0.090 #0.040
+PID_ang_I: 0.000 #0.004
+PID_ang_D: 0.000 #0.010
 
-movement_speed: 0.5
+movement_speed: 1.5
 distance_to_wall: 2.0
-angle_to_wall: -45.0
+angle_to_wall: -55.0

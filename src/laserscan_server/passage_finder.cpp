@@ -36,16 +36,24 @@ void Passage_finder::add_passage (int id1, int id2, Line_param &line)
 
 void Passage_finder::check_boundary (Line_param &line)
 {
+	int max_id = line.kin_inliers.size() - 1;
+
 	double left_ref_angle = atan(line.kin_inliers.at(0).x/line.kin_inliers.at(0).y)*180/PI;
-	double rght_ref_angle = atan(line.kin_inliers.at(line.kin_inliers.size() - 1).x/
-								 line.kin_inliers.at(line.kin_inliers.size() - 1).y)*180/PI;
+	double rght_ref_angle = atan(line.kin_inliers.at(max_id).x/
+								 line.kin_inliers.at(max_id).y)*180/PI;
+	double lra_sq_distance = line.kin_inliers.at(0).x*line.kin_inliers.at(0).x +
+			                 line.kin_inliers.at(0).y*line.kin_inliers.at(0).y;
+	double rra_sq_distance = line.kin_inliers.at(max_id).x*line.kin_inliers.at(max_id).x +
+							 line.kin_inliers.at(max_id).y*line.kin_inliers.at(max_id).y;
+
+
 	Passage new_passage;
 	new_passage.width += 1.8;
 
-	if(left_ref_angle > -29)
+	if(lra_sq_distance < 2.5 && left_ref_angle > -25)
 	{
-		new_passage.kin_middle.x = line.kin_inliers.at(0).x - 0.9*line.ldir_vec.kin.x;
-		new_passage.kin_middle.y = line.kin_inliers.at(0).y - 0.9*line.ldir_vec.kin.y;
+		new_passage.kin_middle.x = line.kin_inliers.at(0).x - (new_passage.width / 2.0)*line.ldir_vec.kin.x;
+		new_passage.kin_middle.y = line.kin_inliers.at(0).y - (new_passage.width / 2.0)*line.ldir_vec.kin.y;
 		this->passage.push_back(new_passage);
 	}
 /*
@@ -64,9 +72,12 @@ void Passage_finder::check_boundary (Line_param &line)
 // *****************************************
 void LocationServer::track_wall(Line_param *wall)
 {
-	if (wall == NULL) return;
-	if(this->ref_wall == NULL)
-	{
+	if(wall == NULL) {
+		ROS_ERROR("LocationServer::track_wall argument is NULL");
+		return;
+	}
+
+	if(this->ref_wall == NULL) {
 		this->yaw = wall->angle;
 	}
 
@@ -79,52 +90,96 @@ void LocationServer::track_wall(Line_param *wall)
 
 void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
+    if(this->ref_wall == NULL) {
+    	ROS_WARN("No ref_wall. Using random!");
+    };
+
 	this->lm.renew(cloud);
     this->ref_wall = this->lm.get_best_fit(this->stm.angle, this->stm.distance);
-    if(!this->ref_wall->found) this->lost_ref_wall = true;
-    double d_angle = stm.angle - this->ref_wall->angle;
-    stm.angle = this->ref_wall->angle;
-    stm.distance = this->ref_wall->distance;
+
+
+    if(!this->ref_wall->found) { this->lost_ref_wall = true; ROS_WARN("Lost ref_wall"); }
+    else this->lost_ref_wall = false;
+    double d_angle = this->stm.angle - this->ref_wall->angle;
+    this->stm.angle = this->ref_wall->angle;
+    this->stm.distance = this->ref_wall->distance;
 
     this->yaw -= d_angle;
+
+	this->corner_wall_left = lm.get_closest(this->stm.angle + 90);
+	this->corner_wall_rght = lm.get_closest(this->stm.angle - 90);
 };
 
 
-bool LocationServer::obstacle_detected ()
+
+
+
+bool LocationServer::obstacle_detected_left ()
 {
-	Line_param *lp_corner = lm.get_closest(stm.angle + 90);
-	if(lp_corner->found) return true;
-	else return true;
+	if(this->corner_wall_left == NULL) return false;
+	return true;
 };
 
+
+
+bool LocationServer::obstacle_detected_rght ()
+{
+	if(this->corner_wall_rght == NULL) return false;
+	return true;
+};
 
 
 // *****************************************
 // 				Motion server
 // *****************************************
+void MotionServer::set_ref_wall (Line_param *wall)
+{
+	this->base_cmd.angular.x = this->base_cmd.angular.y = this->base_cmd.angular.z = 0;
+	this->base_cmd.linear.x  = this->base_cmd.linear.y  = this->base_cmd.linear.z  = 0;
+
+	if(wall == NULL) {
+		ROS_ERROR("MotionServer::set_ref_wall argument is NULL");
+		return;
+	}
+
+	this->ref_wall = wall;
+
+	if(!wall->found)
+		this->set_angles_current();
+};
+
+
+void MotionServer::set_angles_current ()
+{
+	if(this->ref_wall == NULL) {
+		ROS_ERROR("MotionServer::set_angles_current ref_wall == NULL");
+		return;
+	}
+
+	this->ref_ang = this->ref_wall->angle;
+	this->ref_dist = this->ref_wall->distance;
+};
+
+
 bool MotionServer::rotate(double angle)
 {
-	if(this->ref_wall == NULL) return false;
-	if(angle + this->ref_wall->angle > 70.0) return false;
+	if(this->ref_wall == NULL) {
+		ROS_ERROR("MotionServer::rotate ref_wall == NULL");
+		return false;
+	}
+
 	this->ref_ang += angle;
 	return true;
 };
 
 
-void MotionServer::spin_once()
-{
-	this->base_cmd.angular.x = this->base_cmd.angular.y = this->base_cmd.angular.z = 0;
-	this->base_cmd.linear.x  = this->base_cmd.linear.y  = this->base_cmd.linear.z  = 0;
-	this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
-
-	double vel_k = - this->pid_vel.get_output(ref_dist, this->ref_wall->distance);
-	base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x;
-	base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y;
-};
-
-
 bool MotionServer::move_parallel(double vel)
 {
+	if(this->ref_wall == NULL) {
+		ROS_ERROR("MotionServer::move_parallel ref_wall == NULL");
+		return false;
+	}
+
 	base_cmd.linear.x  -= vel * this->ref_wall->ldir_vec.cmd.x;
 	base_cmd.linear.y  -= vel * this->ref_wall->ldir_vec.cmd.y;
 
@@ -139,5 +194,24 @@ bool MotionServer::move_perpendicular(double shift)
 };
 
 
+void MotionServer::spin_once()
+{
+	if(this->ref_wall == NULL) {
+		ROS_ERROR("MotionServer::spin_once ref_wall == NULL");
+		return;
+	}
+
+	if(this->ref_dist < 0.6) {
+    	ROS_WARN("Invalid ref_dist (%f)", this->ref_dist);
+		this->ref_dist = 0.6;
+	}
+
+
+	this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
+
+	double vel_k = - this->pid_vel.get_output(ref_dist, this->ref_wall->distance);
+	base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x;
+	base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y;
+};
 
 

@@ -39,34 +39,34 @@ MotionServer   msn_srv;
 // Draw in kinect coordinates
 void draw_point(double x, double y, int id)
 {
-	    visualization_msgs::Marker marker;
+	visualization_msgs::Marker marker;
 
-	    marker.header.frame_id = "/camera_link";
-	    marker.ns = "basic_shapes";
-	    marker.action = visualization_msgs::Marker::ADD;
-	    marker.id = id;
-	    marker.type = visualization_msgs::Marker::SPHERE;
+	marker.header.frame_id = "/camera_link";
+	marker.ns = "basic_shapes";
+	marker.action = visualization_msgs::Marker::ADD;
+	marker.id = id;
+	marker.type = visualization_msgs::Marker::SPHERE;
 
-	    marker.pose.position.x =  y;
-	    marker.pose.position.y = -x;
-	    marker.pose.position.z = 0;
+	marker.pose.position.x =  y;
+	marker.pose.position.y = -x;
+	marker.pose.position.z = 0;
 
-	    // Set the scale of the marker -- 1x1x1 here means 1m on a side
-	    marker.scale.x = 0.1;
-	    marker.scale.y = 0.1;
-	    marker.scale.z = 0.1;
+	// Set the scale of the marker -- 1x1x1 here means 1m on a side
+	marker.scale.x = 0.1;
+	marker.scale.y = 0.1;
+	marker.scale.z = 0.1;
 
-	    // Set the color -- be sure to set alpha to something non-zero!
-	    marker.color.r = 1.0f;
-	    marker.color.g = 0.0f;
-	    marker.color.b = 0.0f;
-	    marker.color.a = 0.6;
+	// Set the color -- be sure to set alpha to something non-zero!
+	marker.color.r = 1.0f;
+	marker.color.g = 0.0f;
+	marker.color.b = 0.0f;
+	marker.color.a = 0.6;
 
-	    marker.lifetime = ros::Duration(0.2);
+	marker.lifetime = ros::Duration(0.2);
 
-	    marker.header.stamp = ros::Time::now();
-	    // Publish the marker
-	    pub_mrk.publish(marker);
+	marker.header.stamp = ros::Time::now();
+	// Publish the marker
+	pub_mrk.publish(marker);
 };
 
 
@@ -89,6 +89,8 @@ void add_e(double x, double y)
 
 void add_l(Line_param *lp)
 {
+	if(lp == NULL) return;
+
 	const int length = 40;
     geometry_msgs::Point p;
     p.y = -lp->fdir_vec.kin.x * lp->distance + lp->ldir_vec.kin.x * length / 2;
@@ -104,38 +106,74 @@ void add_l(Line_param *lp)
 
 
 
+
+bool explore_new_wall()
+{
+	Passage_finder pf(*loc_srv.get_ref_wall());
+	for (int i = 0; i < pf.passage.size(); i++)
+		draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i);
+
+	msn_srv.ref_ang  = target_angl;
+	msn_srv.ref_dist = target_dist;
+	msn_srv.move_parallel(movement_speed);
+
+	return !(pf.passage.size() == 0);
+};
+
+
+
+bool found_passage = false;
 void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
     line_list.header.stamp = ros::Time::now();
     line_list.points.clear();
     loc_srv.spin_once(cloud);
 
-    if(loc_srv.get_ref_wall() == NULL)
-    	loc_srv.track_wall(loc_srv.lm.get_best_fit(0, 2));
+    msn_srv.set_ref_wall(loc_srv.get_ref_wall());
+
+
+
+
+    if(loc_srv.obstacle_detected_left()) {
+    	loc_srv.track_wall(loc_srv.get_crn_wall_left());
+    }
+
+
+    if(fabs(loc_srv.get_ref_wall()->angle - msn_srv.ref_ang) < 5 )
+    {
+    	explore_new_wall();
+    }
+
+/*
+    if(!found_passage && !loc_srv.obstacle_detected_left() && explore_new_wall()) {
+
+    	found_passage = true;
+    	//msn_srv.set_angles_current();
+    	msn_srv.ref_ang  = 45;
+    	//msn_srv.ref_dist = 2.5;
+
+    }
+*/
+
+
+
+    if(loc_srv.obstacle_detected_left()) ROS_INFO("Wall on the left");
+    //if(loc_srv.obstacle_detected_rght()) ROS_INFO("Wall on the rght");
+    //ROS_INFO("msn_srv.ref_ang = %f", msn_srv.ref_ang);
+
+
+
 
 
     add_l(loc_srv.get_ref_wall());
-
-
-	if (!loc_srv.obstacle_detected())
-	{
-
-	}
-	else
-	{
-		/*
-		add_l(lp_corner);
-		Passage_finder pf(lp_corner);
-		for (int i = 0; i < pf.passage.size(); i++)
-			draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i);
-		*/
-	}
-
+    add_l(loc_srv.get_crn_wall_left());
+    add_l(loc_srv.get_crn_wall_rght());
 
 
 	msn_srv.spin_once();
 	pub_vel.publish(msn_srv.base_cmd);
     pub_mrk.publish(line_list);
+
 
 };
 
@@ -184,6 +222,12 @@ int main( int argc, char** argv )
   line_list.lifetime = ros::Duration(0.2);
 
 
+  msn_srv.set_pid_ang(ang_P, ang_I, ang_D);
+  msn_srv.set_pid_vel(vel_P, vel_I, vel_D);
+
+  //ROS_INFO("ROS_INFO");
+  //ROS_WARN("ROS_WARN");
+  //ROS_ERROR("ROS_ERROR");
   ros::spin ();
 
   return 0;

@@ -63,7 +63,7 @@ Line_param *Line_map::get_closest (double angle)
 			if (newdistance < distance) { id = i; distance = newdistance; }
 		}
 	}
-	if (fabs(lines.at(id).angle    - angle   ) > eps ) lines.at(id).found = false;
+	if (fabs(lines.at(id).angle    - angle   ) > eps ) return NULL;
 	return &lines.at(id);
 };
 
