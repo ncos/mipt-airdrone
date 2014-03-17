@@ -19,6 +19,9 @@ struct Passage
 {
 	double width;
 	pcl::PointXY kin_middle;
+	pcl::PointXY kin_left;
+	pcl::PointXY kin_rght;
+	double mid_ang, left_ang, rght_ang;
 
 	Passage ()
 	{

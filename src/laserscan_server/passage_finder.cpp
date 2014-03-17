@@ -26,8 +26,17 @@ void Passage_finder::add_passage (int id1, int id2, Line_param &line)
 	new_passage.width += pow(line.kin_inliers.at(id1).y - line.kin_inliers.at(id2).y, 2.0);
 	new_passage.width =  sqrt(new_passage.width);
 
+	new_passage.kin_left.x = line.kin_inliers.at(id1).x;
+	new_passage.kin_left.y = line.kin_inliers.at(id1).y;
+	new_passage.kin_rght.x = line.kin_inliers.at(id2).x;
+	new_passage.kin_rght.y = line.kin_inliers.at(id2).y;
+
 	new_passage.kin_middle.x = (line.kin_inliers.at(id1).x + line.kin_inliers.at(id2).x)/2;
 	new_passage.kin_middle.y = (line.kin_inliers.at(id1).y + line.kin_inliers.at(id2).y)/2;
+
+	new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/PI;
+	new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/PI;
+	new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/PI;
 
 	if (new_passage.width > 1.7)
 		this->passage.push_back(new_passage);
@@ -46,14 +55,24 @@ void Passage_finder::check_boundary (Line_param &line)
 	double rra_sq_distance = line.kin_inliers.at(max_id).x*line.kin_inliers.at(max_id).x +
 							 line.kin_inliers.at(max_id).y*line.kin_inliers.at(max_id).y;
 
-
+	//ROS_INFO("lra %f, \tlrd %f", left_ref_angle, lra_sq_distance);
 	Passage new_passage;
 	new_passage.width += 1.8;
 
-	if(lra_sq_distance < 2.5 && left_ref_angle > -25)
+	if(lra_sq_distance < 8.0 && left_ref_angle > -25)
 	{
+		new_passage.kin_left.x = line.kin_inliers.at(0).x - (new_passage.width)*line.ldir_vec.kin.x;
+		new_passage.kin_left.y = line.kin_inliers.at(0).y - (new_passage.width)*line.ldir_vec.kin.y;
+		new_passage.kin_rght.x = line.kin_inliers.at(0).x;
+		new_passage.kin_rght.y = line.kin_inliers.at(0).y;
+
 		new_passage.kin_middle.x = line.kin_inliers.at(0).x - (new_passage.width / 2.0)*line.ldir_vec.kin.x;
 		new_passage.kin_middle.y = line.kin_inliers.at(0).y - (new_passage.width / 2.0)*line.ldir_vec.kin.y;
+
+		new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/PI;
+		new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/PI;
+		new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/PI;
+
 		this->passage.push_back(new_passage);
 	}
 /*

@@ -15,7 +15,7 @@ void Line_map::renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 		// Segment the largest planar component from the remaining cloud
 	    seg.setInputCloud (cloud_f);
 	    seg.segment (*inliers, *coefficients);
-	    if (inliers->indices.size () == 0) break;
+	    if (inliers->indices.size () <= MIN_POINTS_IN_LINE) break;
 	    else if (!lines_cleared) {lines.clear(); lines_cleared = true; }
 
 	    Line_param lp;

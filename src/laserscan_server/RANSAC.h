@@ -14,7 +14,7 @@
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/extract_indices.h>
 
-
+#define MIN_POINTS_IN_LINE 300
 #define PI 3.14159265
 
 using std::cout;

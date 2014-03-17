@@ -113,16 +113,26 @@ bool explore_new_wall()
 	for (int i = 0; i < pf.passage.size(); i++)
 		draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i);
 
-	msn_srv.ref_ang  = target_angl;
-	msn_srv.ref_dist = target_dist;
-	msn_srv.move_parallel(movement_speed);
-
 	return !(pf.passage.size() == 0);
 };
 
 
+void move_along(double vel, double angl, double dist)
+{
+	msn_srv.ref_ang  = angl;
+	msn_srv.ref_dist = dist;
+	msn_srv.move_parallel(vel);
+};
 
-bool found_passage = false;
+
+
+
+
+bool unexplored_wall = true;
+bool left_wall_with_door = false;
+bool in_front_of_passage = false;
+bool ready_to_enter = false;
+
 void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
     line_list.header.stamp = ros::Time::now();
@@ -133,35 +143,93 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
 
 
+    if (unexplored_wall) {
+    	msn_srv.set_angles_current();
+    	msn_srv.ref_dist -= 0.3;
 
-    if(loc_srv.obstacle_detected_left()) {
-    	loc_srv.track_wall(loc_srv.get_crn_wall_left());
+    	if (explore_new_wall() == true) {
+    		left_wall_with_door = true;
+        	unexplored_wall = false;
+    	}
+
+    	if (!left_wall_with_door)
+    		msn_srv.ref_ang = target_angl;
+
+        if(fabs(loc_srv.get_ref_wall()->angle - msn_srv.ref_ang) < 10 ) {
+        	unexplored_wall = false;
+        }
+    }
+
+    if (left_wall_with_door && !in_front_of_passage) {
+    	Passage_finder pf(*loc_srv.get_ref_wall());
+    	for (int i = 0; i < pf.passage.size(); i++) {
+    		draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0);
+    		draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1);
+    		draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2);
+
+    	}
+
+    	if (pf.passage.size() == 0) ROS_WARN("No passage here!");
+    	else {
+    		//ROS_INFO("Angles: %f\t%f\t%f", pf.passage.at(0).left_ang, pf.passage.at(0).mid_ang, pf.passage.at(0).rght_ang);
+    		//ROS_INFO("Coordinates: %f\t%f", pf.passage.at(0).kin_middle.x, pf.passage.at(0).kin_middle.y);
+
+    		msn_srv.ref_ang = loc_srv.get_ref_wall()->angle + pf.passage.at(0).rght_ang + 15;
+
+    		double err_shift = loc_srv.get_ref_wall()->ldir_vec.kin.x * pf.passage.at(0).kin_middle.x +
+    						   loc_srv.get_ref_wall()->ldir_vec.kin.y * pf.passage.at(0).kin_middle.y;
+
+    		//ROS_INFO("Err_shift: %f", err_shift);
+    		//ROS_INFO("Points in lines: %lu\t %lu", loc_srv.get_ref_wall()->kin_inliers.size(), loc_srv.get_crn_wall_rght()->kin_inliers.size());
+
+    		msn_srv.move_parallel(-vel_P * 1 * err_shift);
+    		msn_srv.ref_dist = 1.2;
+    		if (fabs(err_shift) < 0.1) {
+    			in_front_of_passage = true;
+    			ready_to_enter = true;
+    		}
+    	}
     }
 
 
-    if(fabs(loc_srv.get_ref_wall()->angle - msn_srv.ref_ang) < 5 )
+    if(in_front_of_passage)
     {
-    	explore_new_wall();
+    	if(!loc_srv.obstacle_detected_rght() && ready_to_enter) ROS_ERROR("CANT SEE WALL ON THE RIGHT");
+    	if( loc_srv.obstacle_detected_rght() && ready_to_enter) {
+    		ROS_INFO("in_front_of_passage");
+    		loc_srv.track_wall(loc_srv.get_crn_wall_rght());
+    	    msn_srv.set_ref_wall(loc_srv.get_ref_wall());
+    		msn_srv.set_angles_current();
+    		msn_srv.ref_ang = target_angl;
+    		ready_to_enter = false;
+    	}
+
+    	move_along(movement_speed, target_angl, msn_srv.ref_dist);
+
+    	if(!loc_srv.obstacle_detected_left()) {
+    		left_wall_with_door = false;
+    		in_front_of_passage = false;
+    	}
     }
 
-/*
-    if(!found_passage && !loc_srv.obstacle_detected_left() && explore_new_wall()) {
 
-    	found_passage = true;
-    	//msn_srv.set_angles_current();
-    	msn_srv.ref_ang  = 45;
-    	//msn_srv.ref_dist = 2.5;
 
+    if (!unexplored_wall && !left_wall_with_door) {
+        if(loc_srv.obstacle_detected_left()) {
+        	loc_srv.track_wall(loc_srv.get_crn_wall_left());
+        	unexplored_wall = true;
+        }
+        msn_srv.ref_ang = target_angl;
+
+        if(fabs(loc_srv.get_ref_wall()->angle - msn_srv.ref_ang) < 10 ) {
+        	move_along(movement_speed, target_angl, target_dist);
+        }
     }
-*/
 
 
 
     if(loc_srv.obstacle_detected_left()) ROS_INFO("Wall on the left");
-    //if(loc_srv.obstacle_detected_rght()) ROS_INFO("Wall on the rght");
-    //ROS_INFO("msn_srv.ref_ang = %f", msn_srv.ref_ang);
-
-
+    if(loc_srv.obstacle_detected_rght()) ROS_INFO("Wall on the right");
 
 
 
