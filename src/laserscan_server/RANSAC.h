@@ -147,14 +147,17 @@ public:
 	    this->B = this->fdir_vec.kin.y;
 	    this->C = -(A*coefficients->values[0] + B*coefficients->values[2]);
 
-	    this->on_left = (coefficients->values[0] < 0) ? true : false;
+	    this->on_left = (this->A ==0) ? true : (-this->C/this->A < 0);
 
-	    if (this->ldir_vec.kin.x == 0)
-	    {
+
+
+	    if (this->ldir_vec.kin.x == 0) {
 	    	if(this->ldir_vec.kin.y < 0) this->angle = -90; // 5 = forward, 3 - to the right
 	    	else this->angle = 90;
 	    }
-	    else this->angle = atan(this->ldir_vec.kin.y / this->ldir_vec.kin.x)*180.0/PI;
+	    else this->angle = atan(this->ldir_vec.kin.y / fabs(this->ldir_vec.kin.x))*180.0/PI;
+	    if(this->angle > 0 && this->ldir_vec.kin.x < 0) this->angle += 90;
+	    if(this->angle < 0 && this->ldir_vec.kin.x < 0) this->angle -= 90;
 
 	    this->distance = fabs( coefficients->values[2]*coefficients->values[3]
 	                         - coefficients->values[0]*coefficients->values[5] );
@@ -171,17 +174,22 @@ public:
 
 	void normalize(pcl::ModelCoefficients::Ptr coefficients)
 	{
-		double x_axis = coefficients->values[3]; // x is to the right
-		double y_axis = coefficients->values[5]; // y is forward !FOR KINECT!
+		// line direction coordinates in kinect frame:
+		double lx = coefficients->values[3]; // x is to the right
+		double ly = coefficients->values[5]; // y is forward !FOR KINECT!
 
-		if (x_axis < 0)
+		// point on the line in kinect frame:
+		double rx = coefficients->values[0]; // x is to the right
+		double ry = coefficients->values[2]; // y is forward !FOR KINECT!
+
+		if (rx*ly - ry*lx > 0)
 		{
-			x_axis = - x_axis;
-			y_axis = - y_axis;
+			lx = - lx;
+			ly = - ly;
 		}
 
-		coefficients->values[3] = x_axis;
-		coefficients->values[5] = y_axis;
+		coefficients->values[3] = lx;
+		coefficients->values[5] = ly;
 	};
 
 

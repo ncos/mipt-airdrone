@@ -125,13 +125,11 @@ void move_along(double vel, double angl, double dist)
 };
 
 
-
-
-
 bool unexplored_wall = true;
 bool left_wall_with_door = false;
 bool in_front_of_passage = false;
 bool ready_to_enter = false;
+
 
 void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
@@ -171,22 +169,17 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
     	if (pf.passage.size() == 0) ROS_WARN("No passage here!");
     	else {
-    		//ROS_INFO("Angles: %f\t%f\t%f", pf.passage.at(0).left_ang, pf.passage.at(0).mid_ang, pf.passage.at(0).rght_ang);
-    		//ROS_INFO("Coordinates: %f\t%f", pf.passage.at(0).kin_middle.x, pf.passage.at(0).kin_middle.y);
-
     		msn_srv.ref_ang = loc_srv.get_ref_wall()->angle + pf.passage.at(0).rght_ang + 15;
 
     		double err_shift = loc_srv.get_ref_wall()->ldir_vec.kin.x * pf.passage.at(0).kin_middle.x +
     						   loc_srv.get_ref_wall()->ldir_vec.kin.y * pf.passage.at(0).kin_middle.y;
 
-    		//ROS_INFO("Err_shift: %f", err_shift);
-    		//ROS_INFO("Points in lines: %lu\t %lu", loc_srv.get_ref_wall()->kin_inliers.size(), loc_srv.get_crn_wall_rght()->kin_inliers.size());
-
-    		msn_srv.move_parallel(-vel_P * 1 * err_shift);
+    		msn_srv.move_parallel(-vel_P * movement_speed * err_shift);
     		msn_srv.ref_dist = 1.2;
     		if (fabs(err_shift) < 0.1) {
     			in_front_of_passage = true;
     			ready_to_enter = true;
+    			msn_srv.ref_ang = 55;
     		}
     	}
     }
@@ -194,21 +187,32 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
     if(in_front_of_passage)
     {
-    	if(!loc_srv.obstacle_detected_rght() && ready_to_enter) ROS_ERROR("CANT SEE WALL ON THE RIGHT");
+        if(fabs(loc_srv.get_ref_wall()->angle - msn_srv.ref_ang) < 5 ) {
+        	if(!loc_srv.obstacle_detected_rght() && ready_to_enter) ROS_ERROR("CANT SEE WALL ON THE RIGHT");
+        }
+
+
     	if( loc_srv.obstacle_detected_rght() && ready_to_enter) {
     		ROS_INFO("in_front_of_passage");
     		loc_srv.track_wall(loc_srv.get_crn_wall_rght());
     	    msn_srv.set_ref_wall(loc_srv.get_ref_wall());
-    		msn_srv.set_angles_current();
-    		msn_srv.ref_ang = target_angl;
+    		msn_srv.ref_dist = loc_srv.get_ref_wall()->distance;
+    		msn_srv.ref_ang = 20;
     		ready_to_enter = false;
     	}
 
-    	move_along(movement_speed, target_angl, msn_srv.ref_dist);
 
-    	if(!loc_srv.obstacle_detected_left()) {
-    		left_wall_with_door = false;
-    		in_front_of_passage = false;
+    	if(!ready_to_enter) {
+			move_along(movement_speed, 20, msn_srv.ref_dist);
+
+
+			if(loc_srv.obstacle_detected_rght()) {
+				ROS_ERROR("ON THE RIGHT");
+
+				left_wall_with_door = false;
+				in_front_of_passage = false;
+				unexplored_wall = false;
+			}
     	}
     }
 
@@ -236,6 +240,7 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     add_l(loc_srv.get_ref_wall());
     add_l(loc_srv.get_crn_wall_left());
     add_l(loc_srv.get_crn_wall_rght());
+
 
 
 	msn_srv.spin_once();

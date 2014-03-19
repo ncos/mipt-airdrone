@@ -104,6 +104,9 @@ void LocationServer::track_wall(Line_param *wall)
 	this->stm.angle = wall->angle;
 	this->stm.distance = wall->distance;
 	this->lost_ref_wall = false;
+
+	this->corner_wall_left = lm.get_closest(this->stm.angle + 90);
+	this->corner_wall_rght = lm.get_closest(this->stm.angle - 90);
 };
 
 
