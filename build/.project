@@ -154,6 +154,11 @@
 			<location>/home/ncos/catkin_ws/src/rgbd_shrinker</location>
 		</link>
 		<link>
+			<name>[Subprojects]/roscopter</name>
+			<type>2</type>
+			<location>/home/ncos/catkin_ws/src/roscopter</location>
+		</link>
+		<link>
 			<name>[Subprojects]/vel_cntrl</name>
 			<type>2</type>
 			<location>/home/ncos/catkin_ws/src/vel_cntrl</location>

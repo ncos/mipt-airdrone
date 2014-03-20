@@ -19,10 +19,26 @@ find_package(catkin REQUIRED COMPONENTS
 				roscpp 
 				sensor_msgs
 				visualization_msgs 
+				actionlib_msgs
 				std_msgs)
 
 find_package(OpenCV REQUIRED)
-catkin_package()
+
+
+
+add_action_files(
+  DIRECTORY action
+  FILES Fibonacci.action
+)
+
+generate_messages(
+  DEPENDENCIES actionlib_msgs std_msgs  # Or other packages containing msgs
+)
+
+
+catkin_package(
+  CATKIN_DEPENDS actionlib_msgs
+)
 
 ###########
 ## Build ##
@@ -43,7 +59,7 @@ set(VTK_LIBS 	libvtkCommon.so
 
 
 
-set(SOURCES main.cpp RANSAC.cpp RANSAC.h passage_finder.cpp passage_finder.h)	  # Установка переменной со списком исходников
+set(SOURCES main.cpp RANSAC.cpp RANSAC.h passage_finder.cpp passage_finder.h)
 
 add_executable(action_server_nd ${SOURCES})
 target_link_libraries(action_server_nd	 	${catkin_LIBRARIES} 
