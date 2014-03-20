@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<package>
+  <name>airdrone_launch</name>
+  <version>0.1.0</version>
+  <description>Launch files for airdrone project</description>
+  <maintainer email="anton.mitrokhin@phystech.edu">ncos</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

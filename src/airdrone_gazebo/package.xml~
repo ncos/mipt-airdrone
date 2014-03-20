@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>airdrone_gazebo</name>
+  <version>0.1.0</version>
+  <description>This node provides some custom maps for croc aerial robotics competition</description>
+
+  <maintainer email="anton.mitrokhin@phystech.edu">ncos</maintainer>
+  <license>MIT</license>
+
+
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>gazebo_ros</run_depend>
+
+
+
+<export>
+    <gazebo_ros gazebo_media_path="${prefix}"/>
+</export>
+
+</package>
