@@ -42,8 +42,8 @@ set(VTK_LIBS 	libvtkCommon.so
 		libvtkGraphics.so	)
 
 
-add_executable(rgbd_shrinker_node main.cpp)
-target_link_libraries(rgbd_shrinker_node 	${catkin_LIBRARIES} 
+add_executable(rgbd_shrinker_nd main.cpp)
+target_link_libraries(rgbd_shrinker_nd  	${catkin_LIBRARIES} 
 						${OpenCV_LIBS} 
 						${PCL_LIBRARIES}
 						${VTK_LIBS})

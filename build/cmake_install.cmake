@@ -85,10 +85,12 @@ ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unsp
 IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   INCLUDE("/home/ncos/catkin_ws/build/gtest/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/airdrone/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/laserscan_server/cmake_install.cmake")
+  INCLUDE("/home/ncos/catkin_ws/build/action_server/cmake_install.cmake")
+  INCLUDE("/home/ncos/catkin_ws/build/airdrone_gazebo/cmake_install.cmake")
+  INCLUDE("/home/ncos/catkin_ws/build/airdrone_launch/cmake_install.cmake")
+  INCLUDE("/home/ncos/catkin_ws/build/altitude_cntrl/cmake_install.cmake")
   INCLUDE("/home/ncos/catkin_ws/build/rgbd_shrinker/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/velocity_server/cmake_install.cmake")
+  INCLUDE("/home/ncos/catkin_ws/build/vel_cntrl/cmake_install.cmake")
 
 ENDIF(NOT CMAKE_INSTALL_LOCAL_ONLY)
 

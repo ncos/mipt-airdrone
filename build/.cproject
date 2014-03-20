@@ -21,7 +21,7 @@
 <storageModule moduleId="org.eclipse.cdt.core.pathentry">
 <pathentry excluding="**/CMakeFiles/" kind="out" path=""/>
 <pathentry kind="mac" name="ROS_BUILD_SHARED_LIBS" path="" value="1"/>
-<pathentry kind="mac" name="ROS_PACKAGE_NAME" path="" value="&quot;airdrone&quot;"/>
+<pathentry kind="mac" name="ROS_PACKAGE_NAME" path="" value="&quot;action_server&quot;"/>
 <pathentry kind="mac" name="ROSCONSOLE_BACKEND_LOG4CXX" path="" value=""/>
 <pathentry kind="mac" name="__STDC__" path="" value="1"/>
 <pathentry kind="mac" name="__STDC_HOSTED__" path="" value="1"/>
@@ -254,9 +254,6 @@
 <pathentry include="/usr/include/ni" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/vtk-5.8" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/qhull" kind="inc" path="" system="true"/>
-<pathentry include="/home/ncos/catkin_ws/src/airdrone/lib/PCV" kind="inc" path="" system="true"/>
-<pathentry include="/home/ncos/catkin_ws/src/airdrone/lib/KinectIN" kind="inc" path="" system="true"/>
-<pathentry include="/home/ncos/catkin_ws/src/airdrone/lib/Pose" kind="inc" path="" system="true"/>
 <pathentry include="/usr/lib/gcc/x86_64-linux-gnu/4.6/include" kind="inc" path="" system="true"/>
 <pathentry include="/usr/local/include" kind="inc" path="" system="true"/>
 <pathentry include="/usr/lib/gcc/x86_64-linux-gnu/4.6/include-fixed" kind="inc" path="" system="true"/>
@@ -463,730 +460,569 @@
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": actionlib_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[exe] action_server_nd" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>action_server_nd</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] action_server_nd/fast" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>action_server_nd/fast</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Build" path="[Targets]/[exe] action_server_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildTarget>action_server_nd</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Clean" path="[Targets]/[exe] action_server_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/cmake</buildCommand>
+<buildArguments>-E chdir "/home/ncos/catkin_ws/build/action_server" "/usr/bin/cmake" -P "CMakeFiles/action_server_nd.dir/cmake_clean.cmake"</buildArguments>
+<buildTarget></buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": actionlib_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>actionlib_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": actionlib_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": actionlib_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>actionlib_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": actionlib_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": actionlib_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>actionlib_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": actionlib_msgs_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": actionlib_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>actionlib_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": actionlib_msgs_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": actionlib_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>actionlib_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": actionlib_msgs_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": actionlib_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>actionlib_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[exe] airdrone_com_node" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>airdrone_com_node</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[exe] airdrone_com_node/fast" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>airdrone_com_node/fast</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Build" path="[Targets]/[exe] airdrone_com_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
-<buildTarget>airdrone_com_node</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Clean" path="[Targets]/[exe] airdrone_com_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/airdrone" "/usr/bin/cmake" -P "CMakeFiles/airdrone_com_node.dir/cmake_clean.cmake"</buildArguments>
-<buildTarget></buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": bond_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": bond_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>bond_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": bond_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": bond_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>bond_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": bond_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": bond_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>bond_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": dynamic_reconfigure_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": dynamic_reconfigure_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>dynamic_reconfigure_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": dynamic_reconfigure_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": dynamic_reconfigure_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>dynamic_reconfigure_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": dynamic_reconfigure_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": dynamic_reconfigure_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>dynamic_reconfigure_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": geometry_msgs_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": geometry_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>geometry_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": geometry_msgs_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": geometry_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>geometry_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": geometry_msgs_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": geometry_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>geometry_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": nodelet_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": nodelet_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>nodelet_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": nodelet_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": nodelet_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>nodelet_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": nodelet_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": nodelet_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>nodelet_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": pcl_msgs_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": pcl_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>pcl_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": pcl_msgs_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": pcl_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>pcl_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": pcl_msgs_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": pcl_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>pcl_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": pcl_ros_gencfg" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": pcl_ros_gencfg" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>pcl_ros_gencfg</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": roscpp_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": roscpp_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>roscpp_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": roscpp_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": roscpp_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>roscpp_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": roscpp_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": roscpp_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>roscpp_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": rosgraph_msgs_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": rosgraph_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>rosgraph_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": rosgraph_msgs_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": rosgraph_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>rosgraph_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": rosgraph_msgs_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": rosgraph_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>rosgraph_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": sensor_msgs_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": sensor_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>sensor_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": sensor_msgs_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": sensor_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>sensor_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": sensor_msgs_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": sensor_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>sensor_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": std_msgs_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": std_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>std_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": std_msgs_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": std_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>std_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": std_msgs_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": std_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>std_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": tf2_msgs_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": tf2_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>tf2_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": tf2_msgs_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": tf2_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>tf2_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": tf2_msgs_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": tf2_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>tf2_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": tf_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": tf_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>tf_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": tf_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": tf_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>tf_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": tf_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": tf_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>tf_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": topic_tools_generate_messages_cpp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": topic_tools_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>topic_tools_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": topic_tools_generate_messages_lisp" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": topic_tools_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>topic_tools_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": topic_tools_generate_messages_py" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": topic_tools_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>topic_tools_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": all" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>all</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": clean" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>clean</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[obj] core/airdrone_com.cpp.o" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>core/airdrone_com.cpp.o</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[pre] core/airdrone_com.cpp.i" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>core/airdrone_com.cpp.i</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[to asm] core/airdrone_com.cpp.s" path="airdrone" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>core/airdrone_com.cpp.s</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[lib] PCV" path="airdrone/lib/PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>PCV</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[lib] PCV/fast" path="airdrone/lib/PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>PCV/fast</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Build" path="[Targets]/[lib] PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
-<buildTarget>PCV</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Clean" path="[Targets]/[lib] PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/airdrone/lib/PCV" "/usr/bin/cmake" -P "CMakeFiles/PCV.dir/cmake_clean.cmake"</buildArguments>
-<buildTarget></buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": all" path="airdrone/lib/PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>all</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": clean" path="airdrone/lib/PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>clean</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[obj] pcv.cpp.o" path="airdrone/lib/PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>pcv.cpp.o</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[pre] pcv.cpp.i" path="airdrone/lib/PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>pcv.cpp.i</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[to asm] pcv.cpp.s" path="airdrone/lib/PCV" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>pcv.cpp.s</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[lib] KinectIN" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>KinectIN</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[lib] KinectIN/fast" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>KinectIN/fast</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Build" path="[Targets]/[lib] KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
-<buildTarget>KinectIN</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Clean" path="[Targets]/[lib] KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/airdrone/lib/KinectIN" "/usr/bin/cmake" -P "CMakeFiles/KinectIN.dir/cmake_clean.cmake"</buildArguments>
-<buildTarget></buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": all" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>all</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": clean" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>clean</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[obj] kin_control.cpp.o" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>kin_control.cpp.o</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[pre] kin_control.cpp.i" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>kin_control.cpp.i</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[to asm] kin_control.cpp.s" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>kin_control.cpp.s</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[obj] kin_process.cpp.o" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>kin_process.cpp.o</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[pre] kin_process.cpp.i" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>kin_process.cpp.i</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[to asm] kin_process.cpp.s" path="airdrone/lib/KinectIN" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>kin_process.cpp.s</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[lib] Pose" path="airdrone/lib/Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>Pose</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[lib] Pose/fast" path="airdrone/lib/Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>Pose/fast</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Build" path="[Targets]/[lib] Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
-<buildTarget>Pose</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Clean" path="[Targets]/[lib] Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/airdrone/lib/Pose" "/usr/bin/cmake" -P "CMakeFiles/Pose.dir/cmake_clean.cmake"</buildArguments>
-<buildTarget></buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": all" path="airdrone/lib/Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>all</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": clean" path="airdrone/lib/Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>clean</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[obj] position.cpp.o" path="airdrone/lib/Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>position.cpp.o</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[pre] position.cpp.i" path="airdrone/lib/Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>position.cpp.i</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[to asm] position.cpp.s" path="airdrone/lib/Pose" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>position.cpp.s</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[exe] laserscan_server_node" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>laserscan_server_node</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="[exe] laserscan_server_node/fast" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-j8</buildArguments>
-<buildTarget>laserscan_server_node/fast</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Build" path="[Targets]/[exe] laserscan_server_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
-<buildTarget>laserscan_server_node</buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name="Clean" path="[Targets]/[exe] laserscan_server_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
-<buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/laserscan_server" "/usr/bin/cmake" -P "CMakeFiles/laserscan_server_node.dir/cmake_clean.cmake"</buildArguments>
-<buildTarget></buildTarget>
-<stopOnError>true</stopOnError>
-<useDefaultCommand>false</useDefaultCommand>
-</target>
-<target name=": visualization_msgs_generate_messages_cpp" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": visualization_msgs_generate_messages_cpp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>visualization_msgs_generate_messages_cpp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": visualization_msgs_generate_messages_lisp" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": visualization_msgs_generate_messages_lisp" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>visualization_msgs_generate_messages_lisp</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": visualization_msgs_generate_messages_py" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": visualization_msgs_generate_messages_py" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>visualization_msgs_generate_messages_py</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": all" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": all" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>all</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": clean" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": clean" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>clean</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[obj] RANSAC.cpp.o" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[obj] RANSAC.cpp.o" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>RANSAC.cpp.o</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[pre] RANSAC.cpp.i" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[pre] RANSAC.cpp.i" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>RANSAC.cpp.i</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[to asm] RANSAC.cpp.s" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[to asm] RANSAC.cpp.s" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>RANSAC.cpp.s</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[obj] main.cpp.o" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[obj] main.cpp.o" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>main.cpp.o</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[pre] main.cpp.i" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[pre] main.cpp.i" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>main.cpp.i</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[to asm] main.cpp.s" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[to asm] main.cpp.s" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>main.cpp.s</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[obj] passage_finder.cpp.o" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[obj] passage_finder.cpp.o" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>passage_finder.cpp.o</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[pre] passage_finder.cpp.i" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[pre] passage_finder.cpp.i" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>passage_finder.cpp.i</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[to asm] passage_finder.cpp.s" path="laserscan_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[to asm] passage_finder.cpp.s" path="action_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>passage_finder.cpp.s</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[exe] rgbd_shrinker_node" path="rgbd_shrinker" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": all" path="airdrone_gazebo" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
-<buildTarget>rgbd_shrinker_node</buildTarget>
+<buildTarget>all</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[exe] rgbd_shrinker_node/fast" path="rgbd_shrinker" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": clean" path="airdrone_gazebo" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
-<buildTarget>rgbd_shrinker_node/fast</buildTarget>
+<buildTarget>clean</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="Build" path="[Targets]/[exe] rgbd_shrinker_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": all" path="airdrone_launch" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": clean" path="airdrone_launch" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] altitude_cntrl_nd" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>altitude_cntrl_nd</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] altitude_cntrl_nd/fast" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>altitude_cntrl_nd/fast</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Build" path="[Targets]/[exe] altitude_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
-<buildTarget>rgbd_shrinker_node</buildTarget>
+<buildTarget>altitude_cntrl_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="Clean" path="[Targets]/[exe] rgbd_shrinker_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="Clean" path="[Targets]/[exe] altitude_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/rgbd_shrinker" "/usr/bin/cmake" -P "CMakeFiles/rgbd_shrinker_node.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/catkin_ws/build/altitude_cntrl" "/usr/bin/cmake" -P "CMakeFiles/altitude_cntrl_nd.dir/cmake_clean.cmake"</buildArguments>
+<buildTarget></buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": all" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": clean" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[obj] main.cpp.o" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>main.cpp.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] main.cpp.i" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>main.cpp.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] main.cpp.s" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>main.cpp.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[obj] ransac.cpp.o" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>ransac.cpp.o</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[pre] ransac.cpp.i" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>ransac.cpp.i</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[to asm] ransac.cpp.s" path="altitude_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>ransac.cpp.s</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] rgbd_shrinker_nd" path="rgbd_shrinker" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>rgbd_shrinker_nd</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="[exe] rgbd_shrinker_nd/fast" path="rgbd_shrinker" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>rgbd_shrinker_nd/fast</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Build" path="[Targets]/[exe] rgbd_shrinker_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildTarget>rgbd_shrinker_nd</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name="Clean" path="[Targets]/[exe] rgbd_shrinker_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/cmake</buildCommand>
+<buildArguments>-E chdir "/home/ncos/catkin_ws/build/rgbd_shrinker" "/usr/bin/cmake" -P "CMakeFiles/rgbd_shrinker_nd.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -1226,63 +1062,63 @@
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[exe] velocity_server_node" path="velocity_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[exe] vel_cntrl_nd" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
-<buildTarget>velocity_server_node</buildTarget>
+<buildTarget>vel_cntrl_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[exe] velocity_server_node/fast" path="velocity_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[exe] vel_cntrl_nd/fast" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
-<buildTarget>velocity_server_node/fast</buildTarget>
+<buildTarget>vel_cntrl_nd/fast</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="Build" path="[Targets]/[exe] velocity_server_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="Build" path="[Targets]/[exe] vel_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
-<buildTarget>velocity_server_node</buildTarget>
+<buildTarget>vel_cntrl_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="Clean" path="[Targets]/[exe] velocity_server_node" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="Clean" path="[Targets]/[exe] vel_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/velocity_server" "/usr/bin/cmake" -P "CMakeFiles/velocity_server_node.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/catkin_ws/build/vel_cntrl" "/usr/bin/cmake" -P "CMakeFiles/vel_cntrl_nd.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": all" path="velocity_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": all" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>all</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name=": clean" path="velocity_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name=": clean" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>clean</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[obj] main.cpp.o" path="velocity_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[obj] main.cpp.o" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>main.cpp.o</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[pre] main.cpp.i" path="velocity_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[pre] main.cpp.i" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>main.cpp.i</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
-<target name="[to asm] main.cpp.s" path="velocity_server" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<target name="[to asm] main.cpp.s" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>
 <buildTarget>main.cpp.s</buildTarget>

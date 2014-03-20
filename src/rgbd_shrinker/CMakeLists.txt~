@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8.3)
 SET(COMPILE_FLAGS "-Wno-deprecated")   #Флаги компилятора
 add_definitions(${COMPILE_FLAGS})
 
-project(laserscan_server)
+project(rgbd_shrinker)
 
 
 
@@ -42,8 +42,8 @@ set(VTK_LIBS 	libvtkCommon.so
 		libvtkGraphics.so	)
 
 
-add_executable(laserscan_server_node main.cpp)
-target_link_libraries(laserscan_server_node 	${catkin_LIBRARIES} 
+add_executable(rgbd_shrinker_node main.cpp)
+target_link_libraries(rgbd_shrinker_node 	${catkin_LIBRARIES} 
 						${OpenCV_LIBS} 
 						${PCL_LIBRARIES}
 						${VTK_LIBS})

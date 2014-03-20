@@ -119,29 +119,29 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Subprojects]/KinectIN</name>
-			<type>2</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/KinectIN</location>
-		</link>
-		<link>
-			<name>[Subprojects]/PCV</name>
-			<type>2</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/PCV</location>
-		</link>
-		<link>
-			<name>[Subprojects]/Pose</name>
-			<type>2</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/Pose</location>
-		</link>
-		<link>
 			<name>[Subprojects]/Project</name>
 			<type>2</type>
 			<location>/home/ncos/catkin_ws/src</location>
 		</link>
 		<link>
-			<name>[Subprojects]/airdrone</name>
+			<name>[Subprojects]/action_server</name>
 			<type>2</type>
-			<location>/home/ncos/catkin_ws/src/airdrone</location>
+			<location>/home/ncos/catkin_ws/src/action_server</location>
+		</link>
+		<link>
+			<name>[Subprojects]/airdrone_gazebo</name>
+			<type>2</type>
+			<location>/home/ncos/catkin_ws/src/airdrone_gazebo</location>
+		</link>
+		<link>
+			<name>[Subprojects]/airdrone_launch</name>
+			<type>2</type>
+			<location>/home/ncos/catkin_ws/src/airdrone_launch</location>
+		</link>
+		<link>
+			<name>[Subprojects]/altitude_cntrl</name>
+			<type>2</type>
+			<location>/home/ncos/catkin_ws/src/altitude_cntrl</location>
 		</link>
 		<link>
 			<name>[Subprojects]/gtest</name>
@@ -149,19 +149,14 @@
 			<location>/usr/src/gtest</location>
 		</link>
 		<link>
-			<name>[Subprojects]/laserscan_server</name>
-			<type>2</type>
-			<location>/home/ncos/catkin_ws/src/laserscan_server</location>
-		</link>
-		<link>
 			<name>[Subprojects]/rgbd_shrinker</name>
 			<type>2</type>
 			<location>/home/ncos/catkin_ws/src/rgbd_shrinker</location>
 		</link>
 		<link>
-			<name>[Subprojects]/velocity_server</name>
+			<name>[Subprojects]/vel_cntrl</name>
 			<type>2</type>
-			<location>/home/ncos/catkin_ws/src/velocity_server</location>
+			<location>/home/ncos/catkin_ws/src/vel_cntrl</location>
 		</link>
 		<link>
 			<name>[Targets]</name>
@@ -239,287 +234,167 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] airdrone_com_node</name>
+			<name>[Targets]/[exe] action_server_nd</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] airdrone_com_node/</name>
+			<name>[Targets]/[exe] action_server_nd/</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] airdrone_com_node/Source Files</name>
+			<name>[Targets]/[exe] action_server_nd/Source Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] airdrone_com_node/Source Files/airdrone_com.cpp</name>
+			<name>[Targets]/[exe] action_server_nd/Source Files/main.cpp</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/core/airdrone_com.cpp</location>
+			<location>/home/ncos/catkin_ws/src/action_server/main.cpp</location>
 		</link>
 		<link>
-			<name>[Targets]/[exe] airdrone_com_node/Header Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] airdrone_com_node/CMake Rules</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] airdrone_com_node/Resources</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] PCV</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] PCV/</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] PCV/Source Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] PCV/Source Files/pcv.cpp</name>
+			<name>[Targets]/[exe] action_server_nd/Source Files/RANSAC.cpp</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/PCV/pcv.cpp</location>
+			<location>/home/ncos/catkin_ws/src/action_server/RANSAC.cpp</location>
 		</link>
 		<link>
-			<name>[Targets]/[lib] PCV/Header Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] PCV/Header Files/pcv.h</name>
+			<name>[Targets]/[exe] action_server_nd/Source Files/passage_finder.cpp</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/PCV/pcv.h</location>
+			<location>/home/ncos/catkin_ws/src/action_server/passage_finder.cpp</location>
 		</link>
 		<link>
-			<name>[Targets]/[lib] PCV/CMake Rules</name>
+			<name>[Targets]/[exe] action_server_nd/Header Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[lib] PCV/Resources</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] KinectIN</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] KinectIN/</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] KinectIN/Source Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] KinectIN/Source Files/kin_control.cpp</name>
+			<name>[Targets]/[exe] action_server_nd/Header Files/RANSAC.h</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/KinectIN/kin_control.cpp</location>
+			<location>/home/ncos/catkin_ws/src/action_server/RANSAC.h</location>
 		</link>
 		<link>
-			<name>[Targets]/[lib] KinectIN/Source Files/kin_process.cpp</name>
+			<name>[Targets]/[exe] action_server_nd/Header Files/passage_finder.h</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/KinectIN/kin_process.cpp</location>
+			<location>/home/ncos/catkin_ws/src/action_server/passage_finder.h</location>
 		</link>
 		<link>
-			<name>[Targets]/[lib] KinectIN/Header Files</name>
+			<name>[Targets]/[exe] action_server_nd/CMake Rules</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[lib] KinectIN/Header Files/kin.h</name>
+			<name>[Targets]/[exe] action_server_nd/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] altitude_cntrl_nd</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] altitude_cntrl_nd/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] altitude_cntrl_nd/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] altitude_cntrl_nd/Source Files/main.cpp</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/KinectIN/kin.h</location>
+			<location>/home/ncos/catkin_ws/src/altitude_cntrl/main.cpp</location>
 		</link>
 		<link>
-			<name>[Targets]/[lib] KinectIN/CMake Rules</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] KinectIN/Resources</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] Pose</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] Pose/</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] Pose/Source Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[lib] Pose/Source Files/position.cpp</name>
+			<name>[Targets]/[exe] altitude_cntrl_nd/Source Files/ransac.cpp</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/Pose/position.cpp</location>
+			<location>/home/ncos/catkin_ws/src/altitude_cntrl/ransac.cpp</location>
 		</link>
 		<link>
-			<name>[Targets]/[lib] Pose/Header Files</name>
+			<name>[Targets]/[exe] altitude_cntrl_nd/Header Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[lib] Pose/Header Files/position.h</name>
-			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/airdrone/lib/Pose/position.h</location>
-		</link>
-		<link>
-			<name>[Targets]/[lib] Pose/CMake Rules</name>
+			<name>[Targets]/[exe] altitude_cntrl_nd/CMake Rules</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[lib] Pose/Resources</name>
+			<name>[Targets]/[exe] altitude_cntrl_nd/Resources</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] laserscan_server_node</name>
+			<name>[Targets]/[exe] rgbd_shrinker_nd</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] laserscan_server_node/</name>
+			<name>[Targets]/[exe] rgbd_shrinker_nd/</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Source Files</name>
+			<name>[Targets]/[exe] rgbd_shrinker_nd/Source Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Source Files/main.cpp</name>
-			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/laserscan_server/main.cpp</location>
-		</link>
-		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Source Files/RANSAC.cpp</name>
-			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/laserscan_server/RANSAC.cpp</location>
-		</link>
-		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Source Files/passage_finder.cpp</name>
-			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/laserscan_server/passage_finder.cpp</location>
-		</link>
-		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Header Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Header Files/RANSAC.h</name>
-			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/laserscan_server/RANSAC.h</location>
-		</link>
-		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Header Files/passage_finder.h</name>
-			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/laserscan_server/passage_finder.h</location>
-		</link>
-		<link>
-			<name>[Targets]/[exe] laserscan_server_node/CMake Rules</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] laserscan_server_node/Resources</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] rgbd_shrinker_node</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] rgbd_shrinker_node/</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] rgbd_shrinker_node/Source Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Targets]/[exe] rgbd_shrinker_node/Source Files/main.cpp</name>
+			<name>[Targets]/[exe] rgbd_shrinker_nd/Source Files/main.cpp</name>
 			<type>1</type>
 			<location>/home/ncos/catkin_ws/src/rgbd_shrinker/main.cpp</location>
 		</link>
 		<link>
-			<name>[Targets]/[exe] rgbd_shrinker_node/Header Files</name>
+			<name>[Targets]/[exe] rgbd_shrinker_nd/Header Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] rgbd_shrinker_node/CMake Rules</name>
+			<name>[Targets]/[exe] rgbd_shrinker_nd/CMake Rules</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] rgbd_shrinker_node/Resources</name>
+			<name>[Targets]/[exe] rgbd_shrinker_nd/Resources</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] velocity_server_node</name>
+			<name>[Targets]/[exe] vel_cntrl_nd</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] velocity_server_node/</name>
+			<name>[Targets]/[exe] vel_cntrl_nd/</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] velocity_server_node/Source Files</name>
+			<name>[Targets]/[exe] vel_cntrl_nd/Source Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] velocity_server_node/Source Files/main.cpp</name>
+			<name>[Targets]/[exe] vel_cntrl_nd/Source Files/main.cpp</name>
 			<type>1</type>
-			<location>/home/ncos/catkin_ws/src/velocity_server/main.cpp</location>
+			<location>/home/ncos/catkin_ws/src/vel_cntrl/main.cpp</location>
 		</link>
 		<link>
-			<name>[Targets]/[exe] velocity_server_node/Header Files</name>
+			<name>[Targets]/[exe] vel_cntrl_nd/Header Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] velocity_server_node/CMake Rules</name>
+			<name>[Targets]/[exe] vel_cntrl_nd/CMake Rules</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>[Targets]/[exe] velocity_server_node/Resources</name>
+			<name>[Targets]/[exe] vel_cntrl_nd/Resources</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>

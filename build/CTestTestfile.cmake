@@ -5,7 +5,9 @@
 # This file includes the relevent testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
 SUBDIRS(gtest)
-SUBDIRS(airdrone)
-SUBDIRS(laserscan_server)
+SUBDIRS(action_server)
+SUBDIRS(airdrone_gazebo)
+SUBDIRS(airdrone_launch)
+SUBDIRS(altitude_cntrl)
 SUBDIRS(rgbd_shrinker)
-SUBDIRS(velocity_server)
+SUBDIRS(vel_cntrl)
