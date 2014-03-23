@@ -1,0 +1,45 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(action_client)
+
+
+
+find_package(catkin REQUIRED COMPONENTS 
+				geometry_msgs 
+				message_generation 
+				pcl_ros
+				rospy
+				roslib
+				smach
+				smach_ros
+				actionlib
+				sensor_msgs
+				actionlib_msgs
+				std_msgs)
+
+
+
+add_action_files(
+  DIRECTORY action
+  FILES Fibonacci.action
+	Rotation.action
+	Test.action
+)
+
+generate_messages(
+  DEPENDENCIES actionlib_msgs std_msgs
+)
+
+
+catkin_package(
+  CATKIN_DEPENDS actionlib_msgs
+)
+
+
+
+
+
+
+
+
+
+

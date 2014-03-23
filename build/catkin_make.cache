@@ -1,1 +1,1 @@
-action_server:airdrone_gazebo:airdrone_launch:altitude_cntrl:rgbd_shrinker:roscopter:vel_cntrl
+action_client:action_server:airdrone_gazebo:airdrone_launch:altitude_cntrl:rgbd_shrinker:roscopter:vel_cntrl

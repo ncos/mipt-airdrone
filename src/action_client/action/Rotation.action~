@@ -1,0 +1,9 @@
+#goal definition
+double angle
+---
+#result definition
+bool success
+double percentage
+---
+#feedback
+double percentage
