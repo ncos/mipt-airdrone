@@ -1109,6 +1109,19 @@ altitude_cntrl_nd/fast:
 .PHONY : altitude_cntrl_nd/fast
 
 #=============================================================================
+# Target rules for targets named marker_detector_nd
+
+# Build rule for target.
+marker_detector_nd: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 marker_detector_nd
+.PHONY : marker_detector_nd
+
+# fast build rule for target.
+marker_detector_nd/fast:
+	$(MAKE) -f marker_detector/CMakeFiles/marker_detector_nd.dir/build.make marker_detector/CMakeFiles/marker_detector_nd.dir/build
+.PHONY : marker_detector_nd/fast
+
+#=============================================================================
 # Target rules for targets named rgbd_shrinker_nd
 
 # Build rule for target.
@@ -1312,6 +1325,7 @@ help:
 	@echo "... visualization_msgs_generate_messages_lisp"
 	@echo "... visualization_msgs_generate_messages_py"
 	@echo "... altitude_cntrl_nd"
+	@echo "... marker_detector_nd"
 	@echo "... rgbd_shrinker_nd"
 	@echo "... roscopter_gencpp"
 	@echo "... roscopter_generate_messages"

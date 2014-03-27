@@ -4,6 +4,8 @@
 #include <ros/ros.h>
 #include <pcl/point_cloud.h>
 #include <geometry_msgs/Twist.h>
+#include <boost/thread/mutex.hpp>
+
 
 #include <iostream>
 #include <cstdio>
@@ -36,6 +38,9 @@ struct stMemory
 {
 	double angle;
 	double distance;
+	stMemory () : angle(0),
+				  distance(0)
+	{}
 };
 
 
@@ -59,11 +64,19 @@ public:
 	bool lost_ref_wall;
 private:
 	double yaw;
-	stMemory stm, ltm;
+	stMemory stm;
 	Line_param *ref_wall, *corner_wall_left, *corner_wall_rght;
+	boost::shared_ptr<boost::mutex> mutex;
 
 public:
-	LocationServer () {lost_ref_wall = true; ref_wall = NULL; yaw = 0; stm.angle = 0; stm.distance = 0;}
+	LocationServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
+															  corner_wall_left(NULL),
+															  corner_wall_rght(NULL),
+															  lost_ref_wall(true),
+															  ref_wall(NULL),
+															  yaw(0)
+															  {};
+
 	double get_yaw() 		{return this->yaw; }
 	void   set_zero_yaw() 	{this->yaw = 0.0;  }
 	void   track_wall			(Line_param *wall);
@@ -73,6 +86,8 @@ public:
 	void   spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud);
 	bool   obstacle_detected_left ();
 	bool   obstacle_detected_rght ();
+	void   lock() {this->mutex->lock(); }
+	void   unlock() {this->mutex->unlock(); }
 };
 
 
@@ -84,11 +99,19 @@ private:
 	PID pid_ang;
 	PID pid_vel;
 	Line_param *ref_wall;
+	boost::shared_ptr<boost::mutex> mutex;
+
 public:
 	double ref_dist, ref_ang;
 	geometry_msgs::Twist base_cmd;
 
 public:
+	MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
+															ref_wall(NULL),
+															ref_dist(0),
+															ref_ang(0)
+															{}
+
 	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
 	void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
 	void set_ref_wall (Line_param *wall);
@@ -97,6 +120,8 @@ public:
 	bool move_parallel(double vel);
 	bool move_perpendicular(double shift);
 	void spin_once();
+	void lock() {this->mutex->lock(); }
+	void unlock() {this->mutex->unlock(); }
 
 private:
 	void set_target_angle (double angle) {this->ref_ang  = angle; }

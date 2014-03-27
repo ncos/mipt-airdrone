@@ -1,8 +1,8 @@
 #goal definition
-int32 order
+float32 vel
 ---
 #result definition
-int32[] sequence
+bool left
 ---
 #feedback
-int32[] sequence
+float32 vel

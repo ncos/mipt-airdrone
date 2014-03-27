@@ -1,8 +1,10 @@
 #goal definition
-int32 value
+
 ---
 #result definition
-int32 result
+bool success
+float32 x
+float32 y
 ---
 #feedback
-int32 feedback
+float32 percentage

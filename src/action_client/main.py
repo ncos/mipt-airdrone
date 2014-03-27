@@ -37,30 +37,27 @@ def main():
     sm0 = smach.StateMachine(outcomes=['succeeded','aborted','preempted'])
     with sm0:
         smach.StateMachine.add('ENTRY_STATE', EntryState (),
-                               transitions={'start':'ENTRY_STATE = fib(0)',
+                               transitions={'start':'ROTATE_FIRST',
                                             'abort':'preempted'})
         
         
-        smach.StateMachine.add('ENTRY_STATE = fib(0)',
-                               smach_ros.SimpleActionState('fibonacci', FibonacciAction),
-                               transitions={'succeeded':'GOAL_STATIC = fib(10)'})
 
-        smach.StateMachine.add('GOAL_STATIC = fib(10)',
-                               smach_ros.SimpleActionState('fibonacci', FibonacciAction,
-                                                       goal = FibonacciGoal(order=10)),
-                               transitions={'aborted'  :'ROTATE',
-                                            'succeeded':'ROTATE'} )
+        smach.StateMachine.add('ROTATE_FIRST',
+                               smach_ros.SimpleActionState('rotation', RotationAction,
+                                                       goal = RotationGoal(angle=0)),
+                               transitions={'aborted'  :'aborted',
+                                            'succeeded':'ROTATE_SECOND'} )
 
         def rotate_goal_callback(userdata, default_goal):
             goal = RotationGoal()
-            goal.angle = 15
+            goal.angle = 0
             return goal
 
-        smach.StateMachine.add('ROTATE',
+        smach.StateMachine.add('ROTATE_SECOND',
                                smach_ros.SimpleActionState('rotation', RotationAction,
                                                        goal_cb = rotate_goal_callback),
                                 transitions={'aborted'  :'aborted',
-                                             'succeeded':'succeeded'} )
+                                             'succeeded':'ROTATE_FIRST'} )
 
 
 

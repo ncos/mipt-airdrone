@@ -373,6 +373,12 @@ image_transport_DIR:PATH=/opt/ros/hydro/share/image_transport/cmake
 //Path to a library.
 lib:FILEPATH=/opt/ros/hydro/lib/libxmlrpcpp.so
 
+//Value Computed by CMake
+marker_detector_BINARY_DIR:STATIC=/home/ncos/catkin_ws/build/marker_detector
+
+//Value Computed by CMake
+marker_detector_SOURCE_DIR:STATIC=/home/ncos/catkin_ws/src/marker_detector
+
 //The directory containing a CMake configuration file for message_filters.
 message_filters_DIR:PATH=/opt/ros/hydro/share/message_filters/cmake
 
@@ -614,7 +620,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=10
+CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=11
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

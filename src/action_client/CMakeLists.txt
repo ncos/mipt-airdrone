@@ -17,27 +17,21 @@ find_package(catkin REQUIRED COMPONENTS
 				std_msgs)
 
 
-
+FILE(GLOB ACTION_SRCS RELATIVE ${CMAKE_CURRENT_LIST_DIR}/action action/*.action)
 add_action_files(
   DIRECTORY action
-  FILES Fibonacci.action
-	Rotation.action
-	Test.action
-)
+  FILES ${ACTION_SRCS}
+)  
+
 
 generate_messages(
-  DEPENDENCIES actionlib_msgs std_msgs
+  DEPENDENCIES actionlib_msgs std_msgs  # Or other packages containing msgs
 )
 
 
 catkin_package(
   CATKIN_DEPENDS actionlib_msgs
 )
-
-
-
-
-
 
 
 

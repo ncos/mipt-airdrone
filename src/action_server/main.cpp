@@ -16,14 +16,21 @@
 
 
 #include <actionlib/server/simple_action_server.h>
-#include <action_server/FibonacciAction.h>
+#include <action_server/MoveAction.h>
 #include <action_server/RotationAction.h>
+#include <action_server/Locate_doorAction.h>
+#include <action_server/MoveAlongAction.h>
+
+#include <boost/thread/mutex.hpp>
 
 
+boost::shared_ptr<boost::mutex> mutex_ptr;
+boost::shared_ptr<LocationServer> loc_srv;
+boost::shared_ptr<MotionServer>	  msn_srv;
 
-
-
-
+std::string input_topic;
+std::string output_topic_mrk;
+std::string output_topic_vel;
 
 ros::Subscriber sub;
 ros::Publisher  pub_mrk;
@@ -37,108 +44,6 @@ double target_angl = 0.0;
 double movement_speed = 0.0;
 
 visualization_msgs::Marker line_list;
-LocationServer loc_srv;
-MotionServer   msn_srv;
-
-
-
-
-
-
-
-
-
-
-class ActionServer
-{
-private:
-
-	// NodeHandle instance must be created before this line. Otherwise strange error may occur.
-	actionlib::SimpleActionServer<action_server::FibonacciAction> as_fibonacci;
-	actionlib::SimpleActionServer<action_server::RotationAction> as_rotation;
-
-	// create messages that are used to published feedback/result
-	action_server::FibonacciFeedback feedback_;
-
-public:
-
-	ActionServer(ros::NodeHandle nh_) :
-		as_fibonacci(nh_, "fibonacci", boost::bind(&ActionServer::fibonacciCB, this, _1), false),
-		as_rotation (nh_, "rotation",  boost::bind(&ActionServer::rotationCB, this, _1), false)
-	{
-		as_fibonacci.start();
-		as_rotation.start();
-		ROS_ERROR("Both servers started");
-	}
-
-  ~ActionServer(void) {}
-
-  void fibonacciCB(const action_server::FibonacciGoalConstPtr &goal)
-  {
-    // helper variables
-    ros::Rate r(2);
-    bool success = true;
-
-    // push_back the seeds for the fibonacci sequence
-    feedback_.sequence.clear();
-    feedback_.sequence.push_back(0);
-    feedback_.sequence.push_back(1);
-
-    // publish info to the console for the user
-    ROS_INFO("%s: Executing, creating fibonacci sequence of order %i with seeds %i, %i", "fibonacci", goal->order, feedback_.sequence[0], feedback_.sequence[1]);
-
-
-    if (goal->order < 0) { as_fibonacci.setAborted(); ROS_ERROR("fibonacci ABORTED\n"); return;}
-
-
-    // start executing the action
-    for(int i=1; i<=goal->order; i++)
-    {
-      // check that preempt has not been requested by the client
-      if (as_fibonacci.isPreemptRequested() || !ros::ok())
-      {
-    	ROS_INFO("%s: Preempted\n", "fibonacci");
-        // set the action state to preempted
-    	as_fibonacci.setPreempted();
-        success = false;
-        break;
-      }
-      feedback_.sequence.push_back(feedback_.sequence[i] + feedback_.sequence[i-1]);
-      // publish the feedback
-      as_fibonacci.publishFeedback(feedback_);
-      // this sleep is not necessary, the sequence is computed at 1 Hz for demonstration purposes
-      r.sleep();
-    }
-
-    if(success)
-    {
-    	action_server::FibonacciResult result_;
-    	result_.sequence = feedback_.sequence;
-    	ROS_INFO("%s: Succeeded\n", "fibonacci");
-    	// set the action state to succeeded
-    	as_fibonacci.setSucceeded(result_);
-    }
-  }
-
-
-  void rotationCB(const action_server::RotationGoalConstPtr &goal)
-  {
-	  action_server::RotationResult result_;
-	  result_.percentage = 100;
-	  as_rotation.setSucceeded(result_);
-  }
-
-
-
-
-
-
-
-
-};
-
-
-
 
 
 
@@ -215,6 +120,198 @@ void add_l(Line_param *lp)
 
 
 
+
+class ActionServer
+{
+public:
+	ActionServer(ros::NodeHandle nh_) :
+		as_rotation 	(nh_, "rotation", 	 boost::bind(&ActionServer::rotationCB,  this, _1), false),
+		as_locate_door 	(nh_, "locate_door", boost::bind(&ActionServer::locatedrCB,  this, _1), false),
+		as_move      	(nh_, "move",	 	 boost::bind(&ActionServer::moveCB,  	 this, _1), false),
+		as_move_along   (nh_, "move_along",	 boost::bind(&ActionServer::move_alongCB,  	 this, _1), false)
+	{
+		as_rotation.	start();
+		as_locate_door.	start();
+		as_move.		start();
+		as_move_along.  start();
+	}
+
+	~ActionServer(void) {}
+
+
+	void rotationCB(const action_server::RotationGoalConstPtr 		&goal)
+	{
+		ros::Rate r(60);
+		action_server::RotationFeedback feedback_;
+		action_server::RotationResult result_;
+		msn_srv->rotate(goal->angle);
+		double current_yaw = loc_srv->get_yaw();
+		double target_yaw  = loc_srv->get_yaw() + goal->angle;
+
+		mutex_ptr->lock();
+		ROS_ERROR("RotationCB");
+		mutex_ptr->unlock();
+
+		feedback_.percentage = 0;
+		while(feedback_.percentage < 80) {
+			mutex_ptr->lock();
+			ROS_ERROR("RotationCB - processing");
+			mutex_ptr->unlock();
+
+
+			if (as_rotation.isPreemptRequested() || !ros::ok()) {
+				ROS_INFO("rotation: Preempted");
+				as_rotation.setAborted();
+			    break;
+			}
+			feedback_.percentage = 100 - fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang)/goal->angle * 100;
+			as_rotation.publishFeedback(feedback_);
+			r.sleep();
+		}
+		result_.success = true;
+		result_.percentage = feedback_.percentage;
+		as_rotation.setSucceeded(result_);
+	}
+
+
+	void moveCB    (const action_server::MoveGoalConstPtr	  		&goal)
+	{
+		ros::Rate r(60);
+		action_server::MoveFeedback feedback_;
+		action_server::MoveResult 	result_;
+
+		feedback_.x = 0;
+		feedback_.y = 0;
+
+		if (as_move.isPreemptRequested() || !ros::ok()) {
+			ROS_INFO("move: Preempted");
+			as_move.setAborted();
+		}
+
+		as_move.publishFeedback(feedback_);
+
+		result_.x = 0;
+		result_.y = 0;
+		as_move.setSucceeded(result_);
+	}
+
+
+	void move_alongCB (const action_server::MoveAlongGoalConstPtr 	&goal)
+	{
+		action_server::MoveAlongFeedback feedback_;
+		action_server::MoveAlongResult 	 result_;
+
+
+
+	    if(loc_srv->obstacle_detected_left()) {
+	        loc_srv->track_wall(loc_srv->get_crn_wall_left());
+	        as_move_along.setSucceeded(result_);
+	    }
+	    msn_srv->ref_ang = target_angl;
+
+	    if(fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
+	    	msn_srv->ref_ang  = target_angl;
+	        msn_srv->ref_dist = target_dist;
+	        msn_srv->move_parallel(movement_speed);
+	    }
+
+	}
+
+
+	void locatedrCB(const action_server::Locate_doorGoalConstPtr 	&goal)
+	{
+
+	}
+
+
+
+
+
+private:
+	// NodeHandle instance must be created before this line. Otherwise strange error may occur.
+	actionlib::SimpleActionServer<action_server::RotationAction>  	as_rotation;
+	actionlib::SimpleActionServer<action_server::Locate_doorAction> as_locate_door;
+	actionlib::SimpleActionServer<action_server::MoveAction>  		as_move;
+	actionlib::SimpleActionServer<action_server::MoveAlongAction>   as_move_along;
+};
+
+
+/*
+
+class MoveAlongAction
+{
+public:
+
+	MoveAlongAction(ros::NodeHandle nh_) :
+		as_(nh_, "MoveAlongAS", false)
+	{
+		//register the goal and feeback callbacks
+		as_.registerGoalCallback(boost::bind(&MoveAlongAction::goalCB, this));
+		as_.registerPreemptCallback(boost::bind(&MoveAlongAction::preemptCB, this));
+
+		//subscribe to the data topic of interest
+		sub_    = nh_.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,  1, &MoveAlongAction::analysisCB, this);
+		as_.start();
+	}
+
+	~MoveAlongAction(void) {}
+
+	void goalCB()
+	{
+		// accept the new goal
+		goal_ = as_.acceptNewGoal()->vel;
+	}
+
+	void preemptCB()
+	{
+		ROS_INFO("MoveAlongAS: Preempted");
+		// set the action state to preempted
+		as_.setPreempted();
+	}
+
+	void analysisCB(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
+	{
+		// make sure that the action hasn't been canceled
+		if (!as_.isActive())
+			return;
+
+
+		as_.publishFeedback(feedback_);
+
+
+
+		if(false)
+		{
+			ROS_INFO("MoveAlongAS: Aborted");
+			//set the action state to aborted
+			as_.setAborted(result_);
+		}
+		else
+		{
+			ROS_INFO("MoveAlongAS: Succeeded");
+			// set the action state to succeeded
+			as_.setSucceeded(result_);
+		}
+    }
+
+
+protected:
+	int goal_;
+	action_server::MoveAlongFeedback feedback_;
+	action_server::MoveAlongResult 	 result_;
+	ros::Subscriber sub_;
+
+	// NodeHandle instance must be created before this line. Otherwise strange error may occur.
+	actionlib::SimpleActionServer<action_server::MoveAlongAction> as_;
+};
+
+
+
+*/
+
+
+/*
+
 bool explore_new_wall()
 {
 	Passage_finder pf(*loc_srv.get_ref_wall());
@@ -230,8 +327,12 @@ void move_along(double vel, double angl, double dist)
 	msn_srv.ref_ang  = angl;
 	msn_srv.ref_dist = dist;
 	msn_srv.move_parallel(vel);
-};
 
+
+
+
+};
+*/
 
 /*
 bool unexplored_wall = true;
@@ -242,11 +343,17 @@ bool ready_to_enter = false;
 
 void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
+	//mutex_ptr->lock();
+	loc_srv->lock();
+
+    ROS_WARN("Cloud callback entry");
+
+
     line_list.header.stamp = ros::Time::now();
     line_list.points.clear();
-    loc_srv.spin_once(cloud);
+    loc_srv->spin_once(cloud);
 
-    msn_srv.set_ref_wall(loc_srv.get_ref_wall());
+    msn_srv->set_ref_wall(loc_srv->get_ref_wall());
 
 /*
 
@@ -342,35 +449,31 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
 
 
+    //if(loc_srv.obstacle_detected_left()) ROS_INFO("Wall on the left");
+    //if(loc_srv.obstacle_detected_rght()) ROS_INFO("Wall on the right");
 
 
 
-
-
-    if(loc_srv.obstacle_detected_left()) ROS_INFO("Wall on the left");
-    if(loc_srv.obstacle_detected_rght()) ROS_INFO("Wall on the right");
-
-
-
-    add_l(loc_srv.get_ref_wall());
-    add_l(loc_srv.get_crn_wall_left());
-    add_l(loc_srv.get_crn_wall_rght());
+    add_l(loc_srv->get_ref_wall());
+    add_l(loc_srv->get_crn_wall_left());
+    add_l(loc_srv->get_crn_wall_rght());
 
 
 
-	msn_srv.spin_once();
-	pub_vel.publish(msn_srv.base_cmd);
+	msn_srv->spin_once();
+	pub_vel.publish(msn_srv->base_cmd);
     pub_mrk.publish(line_list);
 
+    ROS_WARN("Cloud callback exit\n\n");
 
+    loc_srv->unlock();
 };
 
 
 
 int main( int argc, char** argv )
 {
-  ros::init(argc, argv, "laserscan_server");
-
+  ros::init(argc, argv, "action_server");
   ros::NodeHandle nh;
 
 
@@ -390,13 +493,26 @@ int main( int argc, char** argv )
 
 
 
-  std::string input_topic      = nh.resolveName("/shrinker/depth/laser_points");
-  std::string output_topic_mrk = nh.resolveName("visualization_marker");
-  std::string output_topic_vel = nh.resolveName("/cmd_vel_2");
+  input_topic      = nh.resolveName("/shrinker/depth/laser_points");
+  output_topic_mrk = nh.resolveName("visualization_marker");
+  output_topic_vel = nh.resolveName("/cmd_vel_2");
 
   sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,  1, callback);
   pub_mrk = nh.advertise<visualization_msgs::Marker >     (output_topic_mrk, 5 );
   pub_vel = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
+
+  mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
+  loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
+  msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
+
+  msn_srv->set_pid_ang(ang_P, ang_I, ang_D);
+  msn_srv->set_pid_vel(vel_P, vel_I, vel_D);
+
+  ActionServer action_server(nh);
+
+
+
+
 
   line_list.header.frame_id = "/camera_link";
   line_list.ns = "lines_ns";
@@ -411,11 +527,7 @@ int main( int argc, char** argv )
   line_list.lifetime = ros::Duration(0.2);
 
 
-  msn_srv.set_pid_ang(ang_P, ang_I, ang_D);
-  msn_srv.set_pid_vel(vel_P, vel_I, vel_D);
 
-
-  ActionServer action_server(nh);
   ros::spin ();
 
   return 0;

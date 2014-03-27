@@ -165,6 +165,11 @@
 			<location>/usr/src/gtest</location>
 		</link>
 		<link>
+			<name>[Subprojects]/marker_detector</name>
+			<type>2</type>
+			<location>/home/ncos/catkin_ws/src/marker_detector</location>
+		</link>
+		<link>
 			<name>[Subprojects]/rgbd_shrinker</name>
 			<type>2</type>
 			<location>/home/ncos/catkin_ws/src/rgbd_shrinker</location>
@@ -186,6 +191,11 @@
 		</link>
 		<link>
 			<name>[Targets]/[exe] altitude_cntrl_nd/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -246,6 +256,26 @@
 		</link>
 		<link>
 			<name>[Targets]/[exe] altitude_cntrl_nd/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/Source Files</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -363,6 +393,21 @@
 			<name>[Targets]/[exe] altitude_cntrl_nd/Source Files/ransac.cpp</name>
 			<type>1</type>
 			<location>/home/ncos/catkin_ws/src/altitude_cntrl/ransac.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/Header Files/detector.h</name>
+			<type>1</type>
+			<location>/home/ncos/catkin_ws/src/marker_detector/detector.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/Source Files/detector.cpp</name>
+			<type>1</type>
+			<location>/home/ncos/catkin_ws/src/marker_detector/detector.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] marker_detector_nd/Source Files/main.cpp</name>
+			<type>1</type>
+			<location>/home/ncos/catkin_ws/src/marker_detector/main.cpp</location>
 		</link>
 		<link>
 			<name>[Targets]/[exe] rgbd_shrinker_nd/Source Files/main.cpp</name>

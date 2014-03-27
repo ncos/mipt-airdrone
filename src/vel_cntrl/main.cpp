@@ -91,7 +91,7 @@ int main( int argc, char** argv )
 	  vel_acc.angular.y = vel_1.angular.y + vel_2.angular.y + vel_3.angular.y;
 	  vel_acc.angular.z = vel_1.angular.z + vel_2.angular.z + vel_3.angular.z;
 
-	  pub_vel.publish(vel_acc);
+	  //pub_vel.publish(vel_acc);
 	  ros::spinOnce();
 	  loop_rate.sleep();
   }
