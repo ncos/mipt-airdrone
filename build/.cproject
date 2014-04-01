@@ -1364,6 +1364,55 @@
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
+<target name=": vel_cntrl_gencpp" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>vel_cntrl_gencpp</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": vel_cntrl_generate_messages" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>vel_cntrl_generate_messages</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": vel_cntrl_generate_messages_cpp" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>vel_cntrl_generate_messages_cpp</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": vel_cntrl_generate_messages_lisp" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>vel_cntrl_generate_messages_lisp</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": vel_cntrl_generate_messages_py" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>vel_cntrl_generate_messages_py</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": vel_cntrl_genlisp" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>vel_cntrl_genlisp</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
+<target name=": vel_cntrl_genpy" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
+<buildCommand>/usr/bin/make</buildCommand>
+<buildArguments>-j8</buildArguments>
+<buildTarget>vel_cntrl_genpy</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>false</useDefaultCommand>
+</target>
 <target name="[exe] vel_cntrl_nd" path="vel_cntrl" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
 <buildArguments>-j8</buildArguments>

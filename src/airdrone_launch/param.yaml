@@ -8,6 +8,10 @@ PID_ang_P: 0.020 #0.020
 PID_ang_I: 0.000 #0.000
 PID_ang_D: 0.000 #0.000
 
-movement_speed: 2.0
+base_height: 0.2
+vel_to_pwr: 0.03
+
+movement_speed: 0.0
 distance_to_wall: 1.5
 angle_to_wall: -45.0
+

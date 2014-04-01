@@ -1,9 +1,0 @@
-#goal definition
-float32 angle
----
-#result definition
-bool success
-float32 percentage
----
-#feedback
-float32 percentage

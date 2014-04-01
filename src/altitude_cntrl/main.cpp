@@ -19,6 +19,8 @@ ros::Publisher  pub_vel;
 
 Floor_SAC floor_detector;
 
+double base_height = 0.0;
+
 
 
 void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
@@ -29,7 +31,7 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
 	geometry_msgs::Twist base_cmd;
 	PID pid_vel(1, 0.5, 0.5);
 
-	base_cmd.linear.z = pid_vel.get_output(0.5, floor_detector.position.distance_to_floor);
+	base_cmd.linear.z = pid_vel.get_output(base_height, floor_detector.position.distance_to_floor);
 
 	pub_vel.publish(base_cmd);
 };
@@ -49,6 +51,8 @@ int main (int argc, char** argv)
 
 	sub 	= nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,  1, callback);
 	pub_vel = nh.advertise<geometry_msgs::Twist> (output_topic, 1);
+
+	if (!nh.getParam("base_height", base_height)) ROS_ERROR("Failed to get param 'base_height'");
 
 
 	ros::spin ();

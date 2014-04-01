@@ -37,27 +37,27 @@ def main():
     sm0 = smach.StateMachine(outcomes=['succeeded','aborted','preempted'])
     with sm0:
         smach.StateMachine.add('ENTRY_STATE', EntryState (),
-                               transitions={'start':'ROTATE_FIRST',
+                               transitions={'start':'MOVE_ALONG',
                                             'abort':'preempted'})
         
         
 
-        smach.StateMachine.add('ROTATE_FIRST',
-                               smach_ros.SimpleActionState('rotation', RotationAction,
-                                                       goal = RotationGoal(angle=0)),
+        smach.StateMachine.add('MOVE_ALONG',
+                               smach_ros.SimpleActionState('MoveAlongAS', MoveAlongAction,
+                                                       goal =  MoveAlongGoal(vel=2)),
                                transitions={'aborted'  :'aborted',
-                                            'succeeded':'ROTATE_SECOND'} )
+                                            'succeeded':'succeeded'} )
 
         def rotate_goal_callback(userdata, default_goal):
             goal = RotationGoal()
             goal.angle = 0
             return goal
 
-        smach.StateMachine.add('ROTATE_SECOND',
-                               smach_ros.SimpleActionState('rotation', RotationAction,
-                                                       goal_cb = rotate_goal_callback),
-                                transitions={'aborted'  :'aborted',
-                                             'succeeded':'ROTATE_FIRST'} )
+        #smach.StateMachine.add('ROTATE_SECOND',
+         #                      smach_ros.SimpleActionState('rotation', RotationAction,
+          #                                             goal_cb = rotate_goal_callback),
+           #                     transitions={'aborted'  :'aborted',
+            #                                 'succeeded':'ROTATE_FIRST'} )
 
 
 

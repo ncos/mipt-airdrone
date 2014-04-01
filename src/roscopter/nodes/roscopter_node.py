@@ -27,7 +27,7 @@ from optparse import OptionParser
 parser = OptionParser("roscopter.py [options]")
 
 parser.add_option("--baudrate", dest="baudrate", type='int',
-                  help="master port baud rate", default=57600)
+                  help="master port baud rate", default=115200)
 parser.add_option("--device", dest="device", default="/dev/ttyUSB0", help="serial device")
 parser.add_option("--rate", dest="rate", default=10, type='int', help="requested stream rate")
 parser.add_option("--source-system", dest='SOURCE_SYSTEM', type='int',

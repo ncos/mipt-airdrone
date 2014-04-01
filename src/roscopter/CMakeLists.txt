@@ -7,7 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
     sensor_msgs
     geometry_msgs
-    message_generation
 )
 
 add_message_files(

@@ -125,10 +125,10 @@ class ActionServer
 {
 public:
 	ActionServer(ros::NodeHandle nh_) :
-		as_rotation 	(nh_, "rotation", 	 boost::bind(&ActionServer::rotationCB,  this, _1), false),
-		as_locate_door 	(nh_, "locate_door", boost::bind(&ActionServer::locatedrCB,  this, _1), false),
-		as_move      	(nh_, "move",	 	 boost::bind(&ActionServer::moveCB,  	 this, _1), false),
-		as_move_along   (nh_, "move_along",	 boost::bind(&ActionServer::move_alongCB,  	 this, _1), false)
+		as_rotation 	(nh_, "RotationAS", 	 boost::bind(&ActionServer::rotationCB,  this, _1), false),
+		as_locate_door 	(nh_, "LocateDoorAS", 	 boost::bind(&ActionServer::locatedrCB,  this, _1), false),
+		as_move      	(nh_, "MoveAS",	 	 	 boost::bind(&ActionServer::moveCB,  	 this, _1), false),
+		as_move_along   (nh_, "MoveAlongAS",	 boost::bind(&ActionServer::moveAlongCB, this, _1), false)
 	{
 		as_rotation.	start();
 		as_locate_door.	start();
@@ -196,25 +196,28 @@ public:
 	}
 
 
-	void move_alongCB (const action_server::MoveAlongGoalConstPtr 	&goal)
+	void moveAlongCB (const action_server::MoveAlongGoalConstPtr 	&goal)
 	{
-		action_server::MoveAlongFeedback feedback_;
 		action_server::MoveAlongResult 	 result_;
+		ros::Rate r(60);
 
+		while (true) {
+			loc_srv->lock();
+			if(loc_srv->obstacle_detected_left()) {
+				loc_srv->track_wall(loc_srv->get_crn_wall_left());
+				result_.left = true;
+				//as_move_along.setSucceeded(result_);
+			}
+			msn_srv->ref_ang = target_angl;
 
-
-	    if(loc_srv->obstacle_detected_left()) {
-	        loc_srv->track_wall(loc_srv->get_crn_wall_left());
-	        as_move_along.setSucceeded(result_);
-	    }
-	    msn_srv->ref_ang = target_angl;
-
-	    if(fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
-	    	msn_srv->ref_ang  = target_angl;
-	        msn_srv->ref_dist = target_dist;
-	        msn_srv->move_parallel(movement_speed);
-	    }
-
+			if(fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
+				msn_srv->ref_ang  = target_angl;
+				msn_srv->ref_dist = target_dist;
+				msn_srv->move_parallel(goal->vel);
+			}
+			loc_srv->unlock();
+			r.sleep();
+		}
 	}
 
 
@@ -346,13 +349,11 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 	//mutex_ptr->lock();
 	loc_srv->lock();
 
-    ROS_WARN("Cloud callback entry");
-
-
+    //ROS_WARN("Cloud callback entry");
     line_list.header.stamp = ros::Time::now();
     line_list.points.clear();
-    loc_srv->spin_once(cloud);
 
+    loc_srv->spin_once(cloud);
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
 
 /*
@@ -460,11 +461,15 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
 
 
-	msn_srv->spin_once();
+
+
+
+    msn_srv->spin_once();
 	pub_vel.publish(msn_srv->base_cmd);
     pub_mrk.publish(line_list);
+    msn_srv->clear_cmd();
 
-    ROS_WARN("Cloud callback exit\n\n");
+    //ROS_WARN("Cloud callback exit\n\n");
 
     loc_srv->unlock();
 };

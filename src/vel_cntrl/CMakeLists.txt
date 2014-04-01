@@ -17,7 +17,21 @@ find_package(catkin REQUIRED COMPONENTS
 				visualization_msgs 
 				std_msgs)
 
-find_package(OpenCV REQUIRED)
+
+add_message_files(
+  FILES
+  Attitude.msg
+  Control.msg
+  Mavlink_RAW_IMU.msg
+  RC.msg
+  State.msg
+  VFR_HUD.msg)
+
+generate_messages(DEPENDENCIES std_msgs sensor_msgs geometry_msgs)
+
+
+
+
 catkin_package()
 
 ###########
@@ -25,14 +39,9 @@ catkin_package()
 ###########
 
 
-include_directories(	${catkin_INCLUDE_DIRS}
-			${VTK_INCLUDE_DIRS} )
+include_directories(	${catkin_INCLUDE_DIRS})
 
 
-set(VTK_LIBS 	libvtkCommon.so 
-		libvtkFiltering.so 
-		libvtkRendering.so 
-		libvtkGraphics.so	)
 
 
 

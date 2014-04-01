@@ -154,11 +154,17 @@ bool LocationServer::obstacle_detected_rght ()
 // *****************************************
 // 				Motion server
 // *****************************************
-void MotionServer::set_ref_wall (Line_param *wall)
+void MotionServer::clear_cmd ()
 {
 	this->base_cmd.angular.x = this->base_cmd.angular.y = this->base_cmd.angular.z = 0;
 	this->base_cmd.linear.x  = this->base_cmd.linear.y  = this->base_cmd.linear.z  = 0;
+	this->buf_cmd.angular.x  = this->buf_cmd.angular.y  = this->buf_cmd.angular.z  = 0;
+	this->buf_cmd.linear.x   = this->buf_cmd.linear.y   = this->buf_cmd.linear.z   = 0;
+};
 
+
+void MotionServer::set_ref_wall (Line_param *wall)
+{
 	if(wall == NULL) {
 		ROS_ERROR("MotionServer::set_ref_wall argument is NULL");
 		return;
@@ -202,8 +208,8 @@ bool MotionServer::move_parallel(double vel)
 		return false;
 	}
 
-	base_cmd.linear.x  -= vel * this->ref_wall->ldir_vec.cmd.x;
-	base_cmd.linear.y  -= vel * this->ref_wall->ldir_vec.cmd.y;
+	buf_cmd.linear.x  = - vel * this->ref_wall->ldir_vec.cmd.x;
+	buf_cmd.linear.y  = - vel * this->ref_wall->ldir_vec.cmd.y;
 
 	return true;
 };
@@ -232,8 +238,8 @@ void MotionServer::spin_once()
 	this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
 
 	double vel_k = - this->pid_vel.get_output(ref_dist, this->ref_wall->distance);
-	base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x;
-	base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y;
+	base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + buf_cmd.linear.x;
+	base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + buf_cmd.linear.y;
 };
 
 

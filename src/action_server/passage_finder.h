@@ -25,7 +25,7 @@ struct Passage
 	pcl::PointXY kin_rght;
 	double mid_ang, left_ang, rght_ang;
 
-	Passage ()
+	Passage () : mid_ang(0), left_ang(0), rght_ang(0)
 	{
 		width = 0.0;
 		kin_middle.x = 0.0;
@@ -103,7 +103,7 @@ private:
 
 public:
 	double ref_dist, ref_ang;
-	geometry_msgs::Twist base_cmd;
+	geometry_msgs::Twist base_cmd, buf_cmd;
 
 public:
 	MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
@@ -120,6 +120,7 @@ public:
 	bool move_parallel(double vel);
 	bool move_perpendicular(double shift);
 	void spin_once();
+	void clear_cmd();
 	void lock() {this->mutex->lock(); }
 	void unlock() {this->mutex->unlock(); }
 

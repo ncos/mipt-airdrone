@@ -1226,6 +1226,97 @@ roscopter_genpy/fast:
 .PHONY : roscopter_genpy/fast
 
 #=============================================================================
+# Target rules for targets named vel_cntrl_gencpp
+
+# Build rule for target.
+vel_cntrl_gencpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vel_cntrl_gencpp
+.PHONY : vel_cntrl_gencpp
+
+# fast build rule for target.
+vel_cntrl_gencpp/fast:
+	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_gencpp.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_gencpp.dir/build
+.PHONY : vel_cntrl_gencpp/fast
+
+#=============================================================================
+# Target rules for targets named vel_cntrl_generate_messages
+
+# Build rule for target.
+vel_cntrl_generate_messages: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vel_cntrl_generate_messages
+.PHONY : vel_cntrl_generate_messages
+
+# fast build rule for target.
+vel_cntrl_generate_messages/fast:
+	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/build
+.PHONY : vel_cntrl_generate_messages/fast
+
+#=============================================================================
+# Target rules for targets named vel_cntrl_generate_messages_cpp
+
+# Build rule for target.
+vel_cntrl_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vel_cntrl_generate_messages_cpp
+.PHONY : vel_cntrl_generate_messages_cpp
+
+# fast build rule for target.
+vel_cntrl_generate_messages_cpp/fast:
+	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_cpp.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_cpp.dir/build
+.PHONY : vel_cntrl_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named vel_cntrl_generate_messages_lisp
+
+# Build rule for target.
+vel_cntrl_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vel_cntrl_generate_messages_lisp
+.PHONY : vel_cntrl_generate_messages_lisp
+
+# fast build rule for target.
+vel_cntrl_generate_messages_lisp/fast:
+	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_lisp.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_lisp.dir/build
+.PHONY : vel_cntrl_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named vel_cntrl_generate_messages_py
+
+# Build rule for target.
+vel_cntrl_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vel_cntrl_generate_messages_py
+.PHONY : vel_cntrl_generate_messages_py
+
+# fast build rule for target.
+vel_cntrl_generate_messages_py/fast:
+	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_py.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_py.dir/build
+.PHONY : vel_cntrl_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named vel_cntrl_genlisp
+
+# Build rule for target.
+vel_cntrl_genlisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vel_cntrl_genlisp
+.PHONY : vel_cntrl_genlisp
+
+# fast build rule for target.
+vel_cntrl_genlisp/fast:
+	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_genlisp.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_genlisp.dir/build
+.PHONY : vel_cntrl_genlisp/fast
+
+#=============================================================================
+# Target rules for targets named vel_cntrl_genpy
+
+# Build rule for target.
+vel_cntrl_genpy: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 vel_cntrl_genpy
+.PHONY : vel_cntrl_genpy
+
+# fast build rule for target.
+vel_cntrl_genpy/fast:
+	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_genpy.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_genpy.dir/build
+.PHONY : vel_cntrl_genpy/fast
+
+#=============================================================================
 # Target rules for targets named vel_cntrl_nd
 
 # Build rule for target.
@@ -1334,6 +1425,13 @@ help:
 	@echo "... roscopter_generate_messages_py"
 	@echo "... roscopter_genlisp"
 	@echo "... roscopter_genpy"
+	@echo "... vel_cntrl_gencpp"
+	@echo "... vel_cntrl_generate_messages"
+	@echo "... vel_cntrl_generate_messages_cpp"
+	@echo "... vel_cntrl_generate_messages_lisp"
+	@echo "... vel_cntrl_generate_messages_py"
+	@echo "... vel_cntrl_genlisp"
+	@echo "... vel_cntrl_genpy"
 	@echo "... vel_cntrl_nd"
 .PHONY : help
 

@@ -51,6 +51,7 @@ cd roscopter/mavlink
 
 When connecting our APM via USB, it is seen as `/dev/ttyACM0`. Had to add
 myself to the `dialout` group to get permissions to read / write this device.
+(sudo usermod -a -G dialout ncos)
 
 Start roscore in one terminal.
 

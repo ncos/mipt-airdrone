@@ -5,6 +5,9 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <vel_cntrl/RC.h>
+
+
 
 
 using std::cout;
@@ -15,11 +18,13 @@ ros::Subscriber sub_vel_1;
 ros::Subscriber sub_vel_2;
 ros::Subscriber sub_vel_3;
 ros::Publisher  pub_vel;
+ros::Publisher  pub_rc;
 
 geometry_msgs::Twist vel_1;
 geometry_msgs::Twist vel_2;
 geometry_msgs::Twist vel_3;
 
+double vel_to_pwr = 0.0;
 
 
 
@@ -69,6 +74,8 @@ int main( int argc, char** argv )
   std::string input_topic_vel_2 = nh.resolveName("/cmd_vel_2");
   std::string input_topic_vel_3 = nh.resolveName("/cmd_vel_3");
   std::string output_topic_vel  = nh.resolveName("/cmd_vel");
+  std::string output_topic_rc   = nh.resolveName("/send_rc");
+
 
   sub_vel_1 = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_1,  1, callback_1);
   sub_vel_2 = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_2,  1, callback_2);
@@ -76,7 +83,10 @@ int main( int argc, char** argv )
 
 
   pub_vel   = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
+  pub_rc    = nh.advertise<vel_cntrl::RC        >           (output_topic_rc,  1 );
 
+
+  if (!nh.getParam("vel_to_pwr", vel_to_pwr)) ROS_ERROR("Failed to get param 'vel_to_pwr'");
 
 
 
@@ -91,7 +101,16 @@ int main( int argc, char** argv )
 	  vel_acc.angular.y = vel_1.angular.y + vel_2.angular.y + vel_3.angular.y;
 	  vel_acc.angular.z = vel_1.angular.z + vel_2.angular.z + vel_3.angular.z;
 
-	  //pub_vel.publish(vel_acc);
+	  pub_vel.publish(vel_acc);
+
+	  vel_cntrl::RC rc_msg;
+
+	  rc_msg.channel.elems[0] = 2000;
+	  rc_msg.channel.elems[1] = 2000;
+	  rc_msg.channel.elems[2] = 2000;
+
+	  pub_rc.publish(rc_msg);
+
 	  ros::spinOnce();
 	  loop_rate.sleep();
   }
