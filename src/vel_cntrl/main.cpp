@@ -5,6 +5,7 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <std_srvs/Empty.h>
 #include <vel_cntrl/RC.h>
 
 
@@ -25,6 +26,14 @@ geometry_msgs::Twist vel_2;
 geometry_msgs::Twist vel_3;
 
 double vel_to_pwr = 0.0;
+vel_cntrl::RC rc_msg;
+double rc_acc[8];
+
+
+#define ROLL 0
+#define PITCH 1
+#define YAW 3
+#define THROTTLE 2
 
 
 
@@ -62,6 +71,51 @@ void callback_3(const geometry_msgs::Twist vel)
 };
 
 
+void set_manual_control()
+{
+	for(int i = 0; i < 8; i++) rc_msg.channel.elems[i] = 0;
+};
+
+void set_all_min()
+{
+	rc_msg.channel.elems[2] = 1000;
+};
+
+
+void arm()
+{
+	std_srvs::Empty empty;
+
+	if (!ros::service::call("/arm", empty))
+	{
+		ROS_ERROR("Unable to call /arm service");
+	}
+};
+
+void disarm()
+{
+	std_srvs::Empty empty;
+
+	if (!ros::service::call("/disarm", empty))
+	{
+		ROS_ERROR("Unable to call /disarm service");
+	}
+};
+
+
+void vel_to_RC(geometry_msgs::Twist vel)
+{
+	rc_acc[THROTTLE] += vel_to_pwr * vel.linear.z;
+	if(rc_acc[THROTTLE] > 2000) rc_acc[THROTTLE] = 2000;
+	if(rc_acc[THROTTLE] < 1000) rc_acc[THROTTLE] = 1000;
+
+
+
+
+	for(int i = 0; i < 8; i++)
+		rc_msg.channel.elems[i] = rc_acc[i];
+};
+
 
 int main( int argc, char** argv )
 {
@@ -87,8 +141,11 @@ int main( int argc, char** argv )
 
 
   if (!nh.getParam("vel_to_pwr", vel_to_pwr)) ROS_ERROR("Failed to get param 'vel_to_pwr'");
+  set_all_min();
 
-
+  ros::service::waitForService("/disarm");
+  ros::service::waitForService("/arm");
+  arm();
 
   while (ros::ok())
   {
@@ -103,12 +160,7 @@ int main( int argc, char** argv )
 
 	  pub_vel.publish(vel_acc);
 
-	  vel_cntrl::RC rc_msg;
-
-	  rc_msg.channel.elems[0] = 2000;
-	  rc_msg.channel.elems[1] = 2000;
-	  rc_msg.channel.elems[2] = 2000;
-
+	  vel_to_RC(vel_acc);
 	  pub_rc.publish(rc_msg);
 
 	  ros::spinOnce();

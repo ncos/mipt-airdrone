@@ -25,6 +25,7 @@ double base_height = 0.0;
 
 void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
 {
+	if (floor_cloud->points.size() < 10) return;
 	PointCloudN::Ptr mls_cloud = floor_detector.filter(floor_cloud);
 	pcl::ModelCoefficients::Ptr coeff = floor_detector.find_plane(mls_cloud);
 
@@ -32,6 +33,7 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
 	PID pid_vel(1, 0.5, 0.5);
 
 	base_cmd.linear.z = pid_vel.get_output(base_height, floor_detector.position.distance_to_floor);
+	ROS_ERROR("Height = %f, tartget = %f", floor_detector.position.distance_to_floor, base_height);
 
 	pub_vel.publish(base_cmd);
 };

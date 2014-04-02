@@ -6,6 +6,11 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
+			<name>org.python.pydev.PyDevBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>org.eclipse.cdt.make.core.makeBuilder</name>
 			<triggers>clean,full,incremental,</triggers>
 			<arguments>
@@ -106,6 +111,7 @@
 		<nature>org.eclipse.cdt.make.core.makeNature</nature>
 		<nature>org.eclipse.cdt.make.core.ScannerConfigNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
 	<linkedResources>
 		<link>
@@ -350,11 +356,6 @@
 		</link>
 		<link>
 			<name>[Targets]/[lib] gtest_main/Source Files</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>[Subprojects]/Project/roscopter/nodes</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
