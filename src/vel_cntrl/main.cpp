@@ -7,6 +7,7 @@
 #include <geometry_msgs/Twist.h>
 #include <std_srvs/Empty.h>
 #include <vel_cntrl/RC.h>
+#include <vel_cntrl/State.h>
 
 
 
@@ -18,6 +19,7 @@ using std::endl;
 ros::Subscriber sub_vel_1;
 ros::Subscriber sub_vel_2;
 ros::Subscriber sub_vel_3;
+ros::Subscriber sub_state;
 ros::Publisher  pub_vel;
 ros::Publisher  pub_rc;
 
@@ -28,6 +30,7 @@ geometry_msgs::Twist vel_3;
 double vel_to_pwr = 0.0;
 vel_cntrl::RC rc_msg;
 double rc_acc[8];
+int is_armed = -1;
 
 
 #define ROLL 0
@@ -70,11 +73,18 @@ void callback_3(const geometry_msgs::Twist vel)
 	vel_3.angular.z = vel.angular.z;
 };
 
+void state_cb  (const vel_cntrl::State state)
+{
+	if (state.armed == true) is_armed = 1;
+	else is_armed = 0;
+};
 
 void set_manual_control()
 {
 	for(int i = 0; i < 8; i++) rc_msg.channel.elems[i] = 0;
 };
+
+
 
 void set_all_min()
 {
@@ -84,6 +94,7 @@ void set_all_min()
 
 void arm()
 {
+	set_all_min();
 	std_srvs::Empty empty;
 
 	if (!ros::service::call("/arm", empty))
@@ -103,14 +114,15 @@ void disarm()
 };
 
 
+
+
+
+
 void vel_to_RC(geometry_msgs::Twist vel)
 {
 	rc_acc[THROTTLE] += vel_to_pwr * vel.linear.z;
 	if(rc_acc[THROTTLE] > 2000) rc_acc[THROTTLE] = 2000;
 	if(rc_acc[THROTTLE] < 1000) rc_acc[THROTTLE] = 1000;
-
-
-
 
 	for(int i = 0; i < 8; i++)
 		rc_msg.channel.elems[i] = rc_acc[i];
@@ -127,6 +139,7 @@ int main( int argc, char** argv )
   std::string input_topic_vel_1 = nh.resolveName("/cmd_vel_1");
   std::string input_topic_vel_2 = nh.resolveName("/cmd_vel_2");
   std::string input_topic_vel_3 = nh.resolveName("/cmd_vel_3");
+  std::string input_topic_state = nh.resolveName("/state"  );
   std::string output_topic_vel  = nh.resolveName("/cmd_vel");
   std::string output_topic_rc   = nh.resolveName("/send_rc");
 
@@ -135,6 +148,7 @@ int main( int argc, char** argv )
   sub_vel_2 = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_2,  1, callback_2);
   sub_vel_3 = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_3,  1, callback_3);
 
+  sub_state = nh.subscribe<vel_cntrl::State     > (input_topic_state,  1, state_cb  );
 
   pub_vel   = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
   pub_rc    = nh.advertise<vel_cntrl::RC        >           (output_topic_rc,  1 );
@@ -161,7 +175,8 @@ int main( int argc, char** argv )
 	  pub_vel.publish(vel_acc);
 
 	  vel_to_RC(vel_acc);
-	  pub_rc.publish(rc_msg);
+	  // pub_rc.publish(rc_msg);
+	  ROS_WARN("IS_ARMED = %d\n", is_armed);
 
 	  ros::spinOnce();
 	  loop_rate.sleep();
