@@ -60,7 +60,7 @@ Position::Position ()
 
 void Position::renew (float &A, float &B, float &C, float &D, uint64 num_of_points)
 {
-	if (num_of_points < 200) {this->is_Nan = true; return;}
+	if (num_of_points < 10) {this->is_Nan = true; return;}
 	this->is_Nan = false;
 
 	this->normal_to_floor(0) = A;  // Component to the front

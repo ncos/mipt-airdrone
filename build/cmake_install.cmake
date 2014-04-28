@@ -1,8 +1,8 @@
-# Install script for directory: /home/ncos/catkin_ws/src
+# Install script for directory: /home/ncos/mipt-airdrone/src
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  SET(CMAKE_INSTALL_PREFIX "/home/ncos/catkin_ws/install")
+  SET(CMAKE_INSTALL_PREFIX "/home/ncos/mipt-airdrone/install")
 ENDIF(NOT DEFINED CMAKE_INSTALL_PREFIX)
 STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,44 +34,44 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ncos/catkin_ws/install/.catkin")
-FILE(INSTALL DESTINATION "/home/ncos/catkin_ws/install" TYPE FILE FILES "/home/ncos/catkin_ws/build/catkin_generated/installspace/.catkin")
+   "/home/ncos/mipt-airdrone/install/.catkin")
+FILE(INSTALL DESTINATION "/home/ncos/mipt-airdrone/install" TYPE FILE FILES "/home/ncos/mipt-airdrone/build/catkin_generated/installspace/.catkin")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ncos/catkin_ws/install/_setup_util.py")
-FILE(INSTALL DESTINATION "/home/ncos/catkin_ws/install" TYPE PROGRAM FILES "/home/ncos/catkin_ws/build/catkin_generated/installspace/_setup_util.py")
+   "/home/ncos/mipt-airdrone/install/_setup_util.py")
+FILE(INSTALL DESTINATION "/home/ncos/mipt-airdrone/install" TYPE PROGRAM FILES "/home/ncos/mipt-airdrone/build/catkin_generated/installspace/_setup_util.py")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ncos/catkin_ws/install/env.sh")
-FILE(INSTALL DESTINATION "/home/ncos/catkin_ws/install" TYPE PROGRAM FILES "/home/ncos/catkin_ws/build/catkin_generated/installspace/env.sh")
+   "/home/ncos/mipt-airdrone/install/env.sh")
+FILE(INSTALL DESTINATION "/home/ncos/mipt-airdrone/install" TYPE PROGRAM FILES "/home/ncos/mipt-airdrone/build/catkin_generated/installspace/env.sh")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ncos/catkin_ws/install/setup.bash")
-FILE(INSTALL DESTINATION "/home/ncos/catkin_ws/install" TYPE FILE FILES "/home/ncos/catkin_ws/build/catkin_generated/installspace/setup.bash")
+   "/home/ncos/mipt-airdrone/install/setup.bash")
+FILE(INSTALL DESTINATION "/home/ncos/mipt-airdrone/install" TYPE FILE FILES "/home/ncos/mipt-airdrone/build/catkin_generated/installspace/setup.bash")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ncos/catkin_ws/install/setup.sh")
-FILE(INSTALL DESTINATION "/home/ncos/catkin_ws/install" TYPE FILE FILES "/home/ncos/catkin_ws/build/catkin_generated/installspace/setup.sh")
+   "/home/ncos/mipt-airdrone/install/setup.sh")
+FILE(INSTALL DESTINATION "/home/ncos/mipt-airdrone/install" TYPE FILE FILES "/home/ncos/mipt-airdrone/build/catkin_generated/installspace/setup.sh")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ncos/catkin_ws/install/setup.zsh")
-FILE(INSTALL DESTINATION "/home/ncos/catkin_ws/install" TYPE FILE FILES "/home/ncos/catkin_ws/build/catkin_generated/installspace/setup.zsh")
+   "/home/ncos/mipt-airdrone/install/setup.zsh")
+FILE(INSTALL DESTINATION "/home/ncos/mipt-airdrone/install" TYPE FILE FILES "/home/ncos/mipt-airdrone/build/catkin_generated/installspace/setup.zsh")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
-   "/home/ncos/catkin_ws/install/.rosinstall")
-FILE(INSTALL DESTINATION "/home/ncos/catkin_ws/install" TYPE FILE FILES "/home/ncos/catkin_ws/build/catkin_generated/installspace/.rosinstall")
+   "/home/ncos/mipt-airdrone/install/.rosinstall")
+FILE(INSTALL DESTINATION "/home/ncos/mipt-airdrone/install" TYPE FILE FILES "/home/ncos/mipt-airdrone/build/catkin_generated/installspace/.rosinstall")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
@@ -84,16 +84,16 @@ ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unsp
 
 IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  INCLUDE("/home/ncos/catkin_ws/build/gtest/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/action_client/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/action_server/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/airdrone_gazebo/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/airdrone_launch/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/altitude_cntrl/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/marker_detector/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/rgbd_shrinker/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/roscopter/cmake_install.cmake")
-  INCLUDE("/home/ncos/catkin_ws/build/vel_cntrl/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/gtest/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/action_client/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/action_server/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/airdrone_gazebo/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/airdrone_launch/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/altitude_cntrl/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/marker_detector/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/rgbd_shrinker/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/roscopter/cmake_install.cmake")
+  INCLUDE("/home/ncos/mipt-airdrone/build/vel_cntrl/cmake_install.cmake")
 
 ENDIF(NOT CMAKE_INSTALL_LOCAL_ONLY)
 
@@ -103,7 +103,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/home/ncos/catkin_ws/build/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/home/ncos/mipt-airdrone/build/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/home/ncos/catkin_ws/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/home/ncos/mipt-airdrone/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)

@@ -64,7 +64,7 @@ def send_rc(data):
         data.channel[5],
         data.channel[6],
         data.channel[7])
-    print "sending rc: %s" % data
+    #print "sending rc: %s" % data
 
 
 def set_arm(req):
@@ -84,9 +84,7 @@ pub_raw_imu =  rospy.Publisher('raw_imu', roscopter.msg.Mavlink_RAW_IMU)
 if opts.enable_control:
     rospy.Subscriber("send_rc", roscopter.msg.RC , send_rc)
 
-#define service callbacks
-arm_service = rospy.Service('arm', Empty, set_arm)
-disarm_service = rospy.Service('disarm', Empty, set_disarm)
+
 
 
 #state
@@ -94,19 +92,50 @@ gps_msg = NavSatFix()
 
 
 
-def mainloop():
-    rospy.init_node('roscopter')
+
+def wait_until_ready():
+    char_buf = ""
     while not rospy.is_shutdown():
         rospy.sleep(0.001)
         msg = master.recv_match(blocking=False)
         if not msg:
             continue
-        #print msg.get_type()
+        
         if msg.get_type() == "BAD_DATA":
             if mavutil.all_printable(msg.data):
                 sys.stdout.write(msg.data)
                 sys.stdout.flush()
-        else: 
+                char_buf = char_buf + msg.data
+                if "Ready to FLY" in char_buf:
+                    print ()
+                    return
+
+def mainloop():
+    rospy.init_node('roscopter')
+
+    wait_until_ready()
+    print ("Arming...");
+    master.arducopter_arm()
+    master.motors_armed_wait()
+    print ("Arducopter is armed");
+
+    #define service callbacks
+    arm_service = rospy.Service('arm', Empty, set_arm)
+    disarm_service = rospy.Service('disarm', Empty, set_disarm)
+
+    while not rospy.is_shutdown():
+        if(not master.motors_armed()):
+            print ("Arducopter lost arm. Arming...");
+            master.arducopter_arm()
+            master.motors_armed_wait()
+            print ("...armed")
+
+        rospy.sleep(0.001)
+        msg = master.recv_match(blocking=False)
+        if not msg:
+            continue
+        
+        if msg.get_type() != "BAD_DATA":
             msg_type = msg.get_type()
             if msg_type == "RC_CHANNELS_RAW" :
                 pub_rc.publish([msg.chan1_raw, msg.chan2_raw, msg.chan3_raw, msg.chan4_raw, msg.chan5_raw, msg.chan6_raw, msg.chan7_raw, msg.chan8_raw]) 
@@ -126,7 +155,6 @@ def mainloop():
                                           altitude = msg.alt/1e03,
                                           status = NavSatStatus(status=fix, service = NavSatStatus.SERVICE_GPS) 
                                           ))
-            #pub.publish(String("MSG: %s"%msg))
             if msg_type == "ATTITUDE" :
                 pub_attitude.publish(msg.roll, msg.pitch, msg.yaw, msg.rollspeed, msg.pitchspeed, msg.yawspeed)
 
@@ -139,6 +167,8 @@ def mainloop():
                                      msg.xacc, msg.yacc, msg.zacc, 
                                      msg.xgyro, msg.ygyro, msg.zgyro,
                                      msg.xmag, msg.ymag, msg.zmag)
+        
+
 
 
 wait_heartbeat(master)
@@ -153,6 +183,5 @@ master.mav.request_data_stream_send(
 
 if __name__ == '__main__':
     try:
-        master.arducopter_arm()
         mainloop()
     except rospy.ROSInterruptException: pass

@@ -246,7 +246,7 @@
 <pathentry kind="mac" name="_GNU_SOURCE" path="" value="1"/>
 <pathentry include="/usr/src/gtest/include" kind="inc" path="" system="true"/>
 <pathentry include="/usr/src/gtest" kind="inc" path="" system="true"/>
-<pathentry include="/home/ncos/catkin_ws/devel/include" kind="inc" path="" system="true"/>
+<pathentry include="/home/ncos/mipt-airdrone/devel/include" kind="inc" path="" system="true"/>
 <pathentry include="/opt/ros/hydro/include" kind="inc" path="" system="true"/>
 <pathentry include="/opt/ros/hydro/include/opencv" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include" kind="inc" path="" system="true"/>
@@ -365,14 +365,14 @@
 </target>
 <target name="Build" path="[Targets]/[lib] gtest" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildArguments>-C "/home/ncos/mipt-airdrone/build" -j8</buildArguments>
 <buildTarget>gtest</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
 <target name="Clean" path="[Targets]/[lib] gtest" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/gtest" "/usr/bin/cmake" -P "CMakeFiles/gtest.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/mipt-airdrone/build/gtest" "/usr/bin/cmake" -P "CMakeFiles/gtest.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -393,14 +393,14 @@
 </target>
 <target name="Build" path="[Targets]/[lib] gtest_main" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildArguments>-C "/home/ncos/mipt-airdrone/build" -j8</buildArguments>
 <buildTarget>gtest_main</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
 <target name="Clean" path="[Targets]/[lib] gtest_main" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/gtest" "/usr/bin/cmake" -P "CMakeFiles/gtest_main.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/mipt-airdrone/build/gtest" "/usr/bin/cmake" -P "CMakeFiles/gtest_main.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -932,14 +932,14 @@
 </target>
 <target name="Build" path="[Targets]/[exe] action_server_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildArguments>-C "/home/ncos/mipt-airdrone/build" -j8</buildArguments>
 <buildTarget>action_server_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
 <target name="Clean" path="[Targets]/[exe] action_server_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/action_server" "/usr/bin/cmake" -P "CMakeFiles/action_server_nd.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/mipt-airdrone/build/action_server" "/usr/bin/cmake" -P "CMakeFiles/action_server_nd.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -1086,14 +1086,14 @@
 </target>
 <target name="Build" path="[Targets]/[exe] altitude_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildArguments>-C "/home/ncos/mipt-airdrone/build" -j8</buildArguments>
 <buildTarget>altitude_cntrl_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
 <target name="Clean" path="[Targets]/[exe] altitude_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/altitude_cntrl" "/usr/bin/cmake" -P "CMakeFiles/altitude_cntrl_nd.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/mipt-airdrone/build/altitude_cntrl" "/usr/bin/cmake" -P "CMakeFiles/altitude_cntrl_nd.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -1170,14 +1170,14 @@
 </target>
 <target name="Build" path="[Targets]/[exe] marker_detector_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildArguments>-C "/home/ncos/mipt-airdrone/build" -j8</buildArguments>
 <buildTarget>marker_detector_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
 <target name="Clean" path="[Targets]/[exe] marker_detector_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/marker_detector" "/usr/bin/cmake" -P "CMakeFiles/marker_detector_nd.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/mipt-airdrone/build/marker_detector" "/usr/bin/cmake" -P "CMakeFiles/marker_detector_nd.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -1254,14 +1254,14 @@
 </target>
 <target name="Build" path="[Targets]/[exe] rgbd_shrinker_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildArguments>-C "/home/ncos/mipt-airdrone/build" -j8</buildArguments>
 <buildTarget>rgbd_shrinker_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
 <target name="Clean" path="[Targets]/[exe] rgbd_shrinker_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/rgbd_shrinker" "/usr/bin/cmake" -P "CMakeFiles/rgbd_shrinker_nd.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/mipt-airdrone/build/rgbd_shrinker" "/usr/bin/cmake" -P "CMakeFiles/rgbd_shrinker_nd.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -1429,14 +1429,14 @@
 </target>
 <target name="Build" path="[Targets]/[exe] vel_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/make</buildCommand>
-<buildArguments>-C "/home/ncos/catkin_ws/build" -j8</buildArguments>
+<buildArguments>-C "/home/ncos/mipt-airdrone/build" -j8</buildArguments>
 <buildTarget>vel_cntrl_nd</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
 </target>
 <target name="Clean" path="[Targets]/[exe] vel_cntrl_nd" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>/usr/bin/cmake</buildCommand>
-<buildArguments>-E chdir "/home/ncos/catkin_ws/build/vel_cntrl" "/usr/bin/cmake" -P "CMakeFiles/vel_cntrl_nd.dir/cmake_clean.cmake"</buildArguments>
+<buildArguments>-E chdir "/home/ncos/mipt-airdrone/build/vel_cntrl" "/usr/bin/cmake" -P "CMakeFiles/vel_cntrl_nd.dir/cmake_clean.cmake"</buildArguments>
 <buildTarget></buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
