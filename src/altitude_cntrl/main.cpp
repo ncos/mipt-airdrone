@@ -21,42 +21,142 @@ ros::Publisher  pub_mrk;
 
 Floor_SAC floor_detector;
 
-double base_height = 0.0;
+double target_height = 0.0;
+unsigned int fear_threshold = 10;
+double max_takeoff_time = 3;
+
 visualization_msgs::Marker height_text;
 
 
+struct Fear_trigger
+{
+    bool decided_to_land;
+    bool decided_to_takeoff;
+    unsigned int uncertainty_cnt;
+    double takeoff_timer, land_timer;
+    Fear_trigger()
+    {
+        decided_to_land = false;
+        decided_to_takeoff = false;
+        uncertainty_cnt = 0;
+    }
 
-void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
+    Fear_trigger& operator++ ()
+    {
+        if (this->uncertainty_cnt < 100)
+             this->uncertainty_cnt ++;
+        if (uncertainty_cnt > fear_threshold)
+        {
+            ROS_ERROR("Arducopter decided to land due to altitude estimation errors!");
+            this->decide_to_land();
+        }
+        return *this;
+    }
+    Fear_trigger& operator-- ()
+    {
+        if (this->uncertainty_cnt > 0)
+            this->uncertainty_cnt --;
+        return *this;
+    }
+    void decide_to_takeoff()
+    {
+        this->takeoff_timer = 0;
+        this->decided_to_takeoff = true;
+        this->decided_to_land = false;
+    }
+    void decide_to_land()
+    {
+        this->land_timer = 0;
+        this->decided_to_land = true;
+        this->decided_to_takeoff = false;
+    }
+    double get_takeoff_time()
+    {
+        return (this->takeoff_timer - this->takeoff_timer);
+    }
+    double get_land_time()
+    {
+        return (this->land_timer - this->land_timer);
+    }
+    double stop_takeoff()
+    {
+        this->decided_to_takeoff = false;
+        return get_takeoff_time();
+    }
+    double stop_land()
+    {
+        this->decided_to_land = false;
+        return get_land_time();
+    }
+} fear_trigger;
+
+
+
+inline bool locate_floor(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
 {
     if (floor_cloud->points.size() < 10)
     {
         height_text.text = "Height = Nan";
         pub_mrk.publish(height_text);
-        return;
+        return false;
     }
-    PointCloudN::Ptr mls_cloud = floor_detector.filter(floor_cloud);
-    pcl::ModelCoefficients::Ptr coeff = floor_detector.find_plane(mls_cloud);
 
-    geometry_msgs::Twist base_cmd;
-    PID pid_vel(1, 0.5, 0.5);
+    floor_detector.find_plane(floor_detector.filter(floor_cloud));
 
-    base_cmd.linear.z = pid_vel.get_output(base_height, floor_detector.position.distance_to_floor);
-
-    char text[20];
-    if (!floor_detector.position.is_Nan)
+    if (!floor_detector.position.is_Nan || floor_detector.position.distance_to_floor < 0)
     {
+        char text[20];
         sprintf(text, "Height = %f", floor_detector.position.distance_to_floor);
+        height_text.text = text;
+        pub_mrk.publish(height_text);
+        return true;
     }
     else
     {
-        sprintf(text, "Height = Nan");
+        height_text.text = "Height = Nan";
+        pub_mrk.publish(height_text);
         ROS_WARN("Lost floor");
+        return false;
+    }
+};
+
+
+
+void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
+{
+    geometry_msgs::Twist base_cmd;
+    PID pid_vel(1, 0.5, 0.5);
+
+
+    if (locate_floor(floor_cloud) == true)
+        --fear_trigger;
+    else
+        ++fear_trigger;
+
+
+    base_cmd.linear.z = pid_vel.get_output(target_height, floor_detector.position.distance_to_floor);
+
+    if (fear_trigger.decided_to_land)
+    {
+        base_cmd.linear.z = pid_vel.get_output(1, 1.08);
+    }
+    if (fear_trigger.decided_to_takeoff)
+    {
+        ROS_INFO("Airdrone is taking off blind (%2.1f s. passed)", fear_trigger.get_takeoff_time());
+        base_cmd.linear.z = pid_vel.get_output(1.08, 1);
+        if(fear_trigger.get_takeoff_time() > max_takeoff_time)
+        {
+            ROS_ERROR("Time is out, trying to land...");
+            fear_trigger.decide_to_land();
+        }
+    }
+    if (fear_trigger.uncertainty_cnt == 0 && fear_trigger.decided_to_takeoff)
+    {
+        fear_trigger.decided_to_takeoff = false;
+        ROS_INFO("Airdrone acquired reliable altitude. Continuing in normal mode");
     }
 
-    height_text.text = text;
-
     pub_vel.publish(base_cmd);
-    pub_mrk.publish(height_text);
 };
 
 
@@ -77,8 +177,7 @@ int main (int argc, char** argv)
     pub_vel = nh.advertise<geometry_msgs::Twist> (output_topic, 1);
     pub_mrk = nh.advertise<visualization_msgs::Marker >     (output_topic_mrk, 5 );
 
-    if (!nh.getParam("base_height", base_height)) ROS_ERROR("Failed to get param 'base_height'");
-
+    if (!nh.getParam("base_height", target_height)) ROS_ERROR("Failed to get param 'base_height'");
 
     height_text.header.frame_id = "/camera_link";
     height_text.ns = "text_ns";
@@ -95,8 +194,9 @@ int main (int argc, char** argv)
     height_text.lifetime = ros::Duration(0.2);
     pub_mrk.publish(height_text);
 
+    fear_trigger.decide_to_takeoff();
     ros::spin ();
 
     return 0;
-}
+};
 

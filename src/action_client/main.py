@@ -44,9 +44,14 @@ def main():
 
         smach.StateMachine.add('MOVE_ALONG',
                                smach_ros.SimpleActionState('MoveAlongAS', MoveAlongAction,
-                                                       goal =  MoveAlongGoal(vel=2)),
+                                                       goal =  MoveAlongGoal(vel=0.5)),
                                transitions={'aborted'  :'aborted',
-                                            'succeeded':'succeeded'} )
+                                            'succeeded':'ROTATE'} )
+	smach.StateMachine.add('ROTATE',
+                               smach_ros.SimpleActionState('SwitchWallAS', SwitchWallAction,
+                                                       goal =  SwitchWallGoal(left=1)),
+                               transitions={'aborted'  :'aborted',
+                                            'succeeded':'MOVE_ALONG'} )
 
         def rotate_goal_callback(userdata, default_goal):
             goal = RotationGoal()

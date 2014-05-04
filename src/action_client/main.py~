@@ -1,42 +1,83 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
-import roslib; roslib.load_manifest('actionlib_tutorials')
-import rospy
+import roslib; roslib.load_manifest('action_client')
+import rospy, smach, smach_ros
+import time
 
-# Brings in the SimpleActionClient
-import actionlib
+from action_client.msg import *
+from actionlib import *
+from actionlib.msg import *
 
-# Brings in the messages used by the fibonacci action, including the
-# goal message and the result message.
-import actionlib_tutorials.msg
 
-def fibonacci_client():
-    # Creates the SimpleActionClient, passing the type of the action
-    # (FibonacciAction) to the constructor.
-    client = actionlib.SimpleActionClient('fibonacci', actionlib_tutorials.msg.FibonacciAction)
 
-    # Waits until the action server has started up and started
-    # listening for goals.
-    client.wait_for_server()
 
-    # Creates a goal to send to the action server.
-    goal = actionlib_tutorials.msg.FibonacciGoal(order=20)
+class EntryState(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['start', 'abort'])
 
-    # Sends the goal to the action server.
-    client.send_goal(goal)
+    def execute(self, userdata):
+        rospy.loginfo("EntryState: press 'y' to continue or 'n' to abort...")
 
-    # Waits for the server to finish performing the action.
-    client.wait_for_result()
+        char = raw_input()
+        while char.lower() not in ("y", "n"):
+            rospy.loginfo("Please, choose 'y' or 'n'")
+            char = raw_input()
+        
+        if char == 'y':
+            return 'start'
+        return 'abort'
 
-    # Prints out the result of executing the action
-    return client.get_result()  # A FibonacciResult
+
+
+
+def main():
+    rospy.init_node('action_server_state_mashine')
+
+
+    sm0 = smach.StateMachine(outcomes=['succeeded','aborted','preempted'])
+    with sm0:
+        smach.StateMachine.add('ENTRY_STATE', EntryState (),
+                               transitions={'start':'MOVE_ALONG',
+                                            'abort':'preempted'})
+        
+        
+
+        smach.StateMachine.add('MOVE_ALONG',
+                               smach_ros.SimpleActionState('MoveAlongAS', MoveAlongAction,
+                                                       goal =  MoveAlongGoal(vel=2)),
+                               transitions={'aborted'  :'aborted',
+                                            'succeeded':'ROTATE'} )
+	smach.StateMachine.add('ROTATE',
+                               smach_ros.SimpleActionState('SwitchWallAS', SwitchWallAction,
+                                                       goal =  SwitchWallGoal(left=1)),
+                               transitions={'aborted'  :'aborted',
+                                            'succeeded':'MOVE_ALONG'} )
+
+        def rotate_goal_callback(userdata, default_goal):
+            goal = RotationGoal()
+            goal.angle = 0
+            return goal
+
+        #smach.StateMachine.add('ROTATE_SECOND',
+         #                      smach_ros.SimpleActionState('rotation', RotationAction,
+          #                                             goal_cb = rotate_goal_callback),
+           #                     transitions={'aborted'  :'aborted',
+            #                                 'succeeded':'ROTATE_FIRST'} )
+
+
+
+
+    # Create and start the introspection server
+    sis = smach_ros.IntrospectionServer('introspection_server', sm0, '/STATE_MASHINE')
+    sis.start()
+
+
+    # Execute SMACH plan
+    outcome = sm0.execute()
+
+
+    rospy.spin()
+    sis.stop()
 
 if __name__ == '__main__':
-    try:
-        # Initializes a rospy node so that the SimpleActionClient can
-        # publish and subscribe over ROS.
-        rospy.init_node('fibonacci_client_py')
-        result = fibonacci_client()
-        print "Result:", ', '.join([str(n) for n in result.sequence])
-    except rospy.ROSInterruptException:
-        print "program interrupted before completion"
+    main()

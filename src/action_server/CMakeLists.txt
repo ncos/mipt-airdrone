@@ -20,13 +20,6 @@ find_package(OpenCV REQUIRED)
 
 
 
-#add_action_files(
-#  DIRECTORY action
-#  FILES Fibonacci.action
-#	Rotation.action
-#	Test.action
-#)
-
 FILE(GLOB ACTION_SRCS RELATIVE ${CMAKE_CURRENT_LIST_DIR}/action action/*.action)
 add_action_files(
   DIRECTORY action

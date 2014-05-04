@@ -9,7 +9,7 @@
 #include <std_srvs/Empty.h>
 #include <vel_cntrl/RC.h>
 
-
+#define TEST
 
 using std::cout;
 using std::cerr;
@@ -148,8 +148,10 @@ int main( int argc, char** argv )
   pub_mrk.publish(height_text);
 
 
-
+#ifndef TEST
   ros::service::waitForService("/arm");
+#endif
+
   height_text.lifetime = ros::Duration(0.2);
   while (ros::ok())
   {
