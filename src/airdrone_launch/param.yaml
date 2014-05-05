@@ -11,7 +11,7 @@ PID_ang_D: 0.000 #0.000
 base_height: 0.6
 vel_to_pwr: 10.0
 
-movement_speed: 0.3
-distance_to_wall: 1.5
+movement_speed: 1.0
+distance_to_wall: 2.0
 angle_to_wall: -45.0
 

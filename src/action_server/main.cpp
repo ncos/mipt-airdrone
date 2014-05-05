@@ -206,8 +206,6 @@ public:
 
 			if(loc_srv->obstacle_detected_left() && goal->vel > 0) {
 			    // Found wall on the left and moving towards
-				//loc_srv->track_wall(loc_srv->get_crn_wall_left()); // Switch to the next wall
-			    ROS_WARN("DETECTED LEFT\n");
 				result_.left = true;
 				msn_srv->move_parallel(0); // Stop movement
 				loc_srv->unlock();         // Releasing mutex
@@ -216,7 +214,6 @@ public:
 			}
 
             if(loc_srv->obstacle_detected_rght() && goal->vel < 0) { // Found wall on the left and moving towards
-                //loc_srv->track_wall(loc_srv->get_crn_wall_left()); // Switch to the next wall
                 result_.rght = true;
                 msn_srv->move_parallel(0); // Stop movement
                 loc_srv->unlock();         // Releasing mutex

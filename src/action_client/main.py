@@ -44,7 +44,7 @@ def main():
 
         smach.StateMachine.add('MOVE_ALONG',
                                smach_ros.SimpleActionState('MoveAlongAS', MoveAlongAction,
-                                                       goal =  MoveAlongGoal(vel=0.5)),
+                                                       goal =  MoveAlongGoal(vel=0.8)),
                                transitions={'aborted'  :'aborted',
                                             'succeeded':'ROTATE'} )
 	smach.StateMachine.add('ROTATE',
@@ -74,7 +74,7 @@ def main():
 
     # Execute SMACH plan
     outcome = sm0.execute()
-
+    print("Stopped", outcome)
 
     rospy.spin()
     sis.stop()

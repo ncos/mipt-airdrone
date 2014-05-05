@@ -45,7 +45,7 @@ struct Fear_trigger
     {
         if (this->uncertainty_cnt < 100)
              this->uncertainty_cnt ++;
-        if (uncertainty_cnt > fear_threshold)
+        if (uncertainty_cnt > fear_threshold && !decided_to_land)
         {
             ROS_ERROR("Arducopter decided to land due to altitude estimation errors!");
             this->decide_to_land();
@@ -98,6 +98,7 @@ inline bool locate_floor(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_c
     {
         height_text.text = "Height = Nan";
         pub_mrk.publish(height_text);
+        ROS_WARN("Lost floor");
         return false;
     }
 
