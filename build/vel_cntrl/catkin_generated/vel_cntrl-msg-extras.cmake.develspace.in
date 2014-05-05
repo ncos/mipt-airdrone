@@ -1,0 +1,2 @@
+set(vel_cntrl_MESSAGE_FILES "/home/ncos/mipt-airdrone/src/vel_cntrl/msg/Attitude.msg;/home/ncos/mipt-airdrone/src/vel_cntrl/msg/Control.msg;/home/ncos/mipt-airdrone/src/vel_cntrl/msg/Mavlink_RAW_IMU.msg;/home/ncos/mipt-airdrone/src/vel_cntrl/msg/RC.msg;/home/ncos/mipt-airdrone/src/vel_cntrl/msg/State.msg;/home/ncos/mipt-airdrone/src/vel_cntrl/msg/VFR_HUD.msg")
+set(vel_cntrl_SERVICE_FILES "")

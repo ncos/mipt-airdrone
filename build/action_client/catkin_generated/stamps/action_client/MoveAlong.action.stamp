@@ -1,0 +1,11 @@
+#goal definition
+float32 vel
+---
+#result definition
+bool left
+bool rght
+bool found
+bool error
+---
+#feedback
+float32 vel

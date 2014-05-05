@@ -1,0 +1,8 @@
+prefix=/home/ncos/mipt-airdrone/install
+
+Name: altitude_cntrl
+Description: Description of altitude_cntrl
+Version: 0.1.0
+Cflags: 
+Libs: -L/home/ncos/mipt-airdrone/install/lib 
+Requires: 

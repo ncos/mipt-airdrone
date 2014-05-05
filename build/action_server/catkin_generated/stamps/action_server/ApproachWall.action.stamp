@@ -1,0 +1,12 @@
+#goal definition
+float32 x
+float32 y
+---
+#result definition
+bool success
+float32 x
+float32 y
+---
+#feedback
+float32 x
+float32 y

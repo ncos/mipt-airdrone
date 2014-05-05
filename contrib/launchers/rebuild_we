@@ -1,0 +1,13 @@
+#!/bin/bash         
+
+
+
+source /opt/ros/hydro/setup.bash
+
+cd /home/ncos/mipt-airdrone
+catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8
+
+source /home/ncos/mipt-airdrone/devel/setup.bash
+
+echo "Press any key to continue..."
+read

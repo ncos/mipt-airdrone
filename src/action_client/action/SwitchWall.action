@@ -1,0 +1,10 @@
+#goal definition
+bool left
+bool rght
+bool any
+---
+#result definition
+bool success
+---
+#feedback
+bool success

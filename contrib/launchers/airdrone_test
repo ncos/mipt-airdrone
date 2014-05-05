@@ -1,0 +1,10 @@
+#!/bin/bash         
+
+source /opt/ros/hydro/setup.bash
+source /home/ncos/mipt-airdrone/devel/setup.bash
+#source /home/ncos/hector_quadrotor_tutorial/devel/setup.bash
+
+roslaunch airdrone_launch airdrone_simulator.launch 
+
+
+sleep 1

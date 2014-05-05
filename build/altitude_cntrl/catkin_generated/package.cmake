@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "altitude_cntrl")
+set(altitude_cntrl_MAINTAINER "ncos <anton.mitrokhin@phystech.edu>")
+set(altitude_cntrl_DEPRECATED "")
+set(altitude_cntrl_VERSION "0.1.0")
+set(altitude_cntrl_BUILD_DEPENDS "OpenCV" "cv_bridge" "image_transport" "geometry_msgs" "sensor_msgs" "std_msgs" "pcl_conversions" "pcl_ros" "libpcl-all-dev" "roscpp")
+set(altitude_cntrl_RUN_DEPENDS "OpenCV" "cv_bridge" "image_transport" "geometry_msgs" "sensor_msgs" "std_msgs" "pcl_conversions" "pcl_ros" "libpcl-all" "roscpp")
+set(altitude_cntrl_BUILDTOOL_DEPENDS "catkin")

@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "action_client")
+set(action_client_MAINTAINER "ncos <anton.mitrokhin@phystech.edu>")
+set(action_client_DEPRECATED "")
+set(action_client_VERSION "0.1.0")
+set(action_client_BUILD_DEPENDS "geometry_msgs" "actionlib_msgs" "sensor_msgs" "std_msgs" "message_generation" "pcl_ros" "rospy" "roslib" "actionlib" "smach" "smach_ros")
+set(action_client_RUN_DEPENDS "geometry_msgs" "actionlib_msgs" "sensor_msgs" "std_msgs" "message_generation" "pcl_ros" "rospy" "roslib" "actionlib" "smach" "smach_ros")
+set(action_client_BUILDTOOL_DEPENDS "catkin")
