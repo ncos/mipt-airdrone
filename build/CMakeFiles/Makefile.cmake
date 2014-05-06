@@ -270,7 +270,9 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "/usr/share/cmake-2.8/Modules/CMakeDetermineCompilerABI.cmake"
   "/usr/share/cmake-2.8/Modules/CMakeDetermineCompilerId.cmake"
   "/usr/share/cmake-2.8/Modules/CMakeDetermineSystem.cmake"
+  "/usr/share/cmake-2.8/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake"
   "/usr/share/cmake-2.8/Modules/CMakeFindBinUtils.cmake"
+  "/usr/share/cmake-2.8/Modules/CMakeFindEclipseCDT4.cmake"
   "/usr/share/cmake-2.8/Modules/CMakeGenericSystem.cmake"
   "/usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake"
   "/usr/share/cmake-2.8/Modules/CMakeParseImplicitLinkInfo.cmake"
@@ -296,6 +298,7 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "/usr/share/cmake-2.8/Modules/Platform/Linux-GNU.cmake"
   "/usr/share/cmake-2.8/Modules/Platform/Linux.cmake"
   "/usr/share/cmake-2.8/Modules/Platform/UnixPaths.cmake"
+  "/usr/share/cmake-2.8/Modules/ProcessorCount.cmake"
   "/usr/src/gtest/CMakeLists.txt"
   "/usr/src/gtest/cmake/internal_utils.cmake"
   )

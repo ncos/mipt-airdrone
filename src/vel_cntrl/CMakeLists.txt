@@ -33,7 +33,7 @@ generate_messages(DEPENDENCIES std_msgs sensor_msgs geometry_msgs)
 
 
 
-catkin_package()
+catkin_package(CATKIN_DEPENDS message_runtime)
 
 ###########
 ## Build ##
@@ -50,7 +50,7 @@ set(SOURCES main.cpp)	  # Установка переменной со спис�
 
 add_executable(vel_cntrl_nd ${SOURCES})
 target_link_libraries(vel_cntrl_nd 	${catkin_LIBRARIES})
-
+add_dependencies(vel_cntrl_nd ${PROJECT_NAME}_gencpp)
 
 
 

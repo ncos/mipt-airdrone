@@ -1,4 +1,3 @@
-/marker_detector/
 /action_client/
 /action_server/
 /airdrone_gazebo/
@@ -8,7 +7,14 @@
 /catkin_generated/
 /CMakeFiles/
 /gtest/
+/marker_detector/
 /rgbd_shrinker/
 /roscopter/
 /test_results/
 /vel_cntrl/
+/CATKIN_IGNORE
+/catkin_make.cache
+/cmake_install.cmake
+/CMakeCache.txt
+/CTestTestfile.cmake
+/Makefile

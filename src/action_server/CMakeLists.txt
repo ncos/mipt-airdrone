@@ -57,7 +57,7 @@ target_link_libraries(action_server_nd	 	${catkin_LIBRARIES}
 						${OpenCV_LIBS} 
 						${PCL_LIBRARIES})
 
-
+add_dependencies(action_server_nd ${PROJECT_NAME}_gencpp)
 
 
 

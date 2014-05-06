@@ -34,6 +34,10 @@ ransac.h
 
 /home/ncos/mipt-airdrone/src/altitude_cntrl/pid_regulator.h
 
+/home/ncos/mipt-airdrone/src/altitude_cntrl/ransac.cpp
+ransac.h
+/home/ncos/mipt-airdrone/src/altitude_cntrl/ransac.h
+
 /home/ncos/mipt-airdrone/src/altitude_cntrl/ransac.h
 stdio.h
 -

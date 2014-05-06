@@ -28,6 +28,7 @@
 #include <boost/thread/mutex.hpp>
 
 
+
 boost::shared_ptr<boost::mutex> mutex_ptr;
 boost::shared_ptr<LocationServer> loc_srv;
 boost::shared_ptr<MotionServer>	  msn_srv;
