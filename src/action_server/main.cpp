@@ -168,7 +168,7 @@ public:
 
 			if (as_rotation.isPreemptRequested() || !ros::ok()) {
 				ROS_INFO("rotation: Preempted");
-				as_rotation.setAborted();
+				as_rotation.setAborted(result_);
 			    break;
 			}
 			feedback_.percentage = 100 - fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang)/goal->angle * 100;
@@ -196,7 +196,7 @@ public:
 			//
 			// Stop cases:
 			//
-	        if(goal->vel == 0) {
+	        if (goal->vel == 0) {
 	            // No velocity no movement. This is actually a misuse case
 	            result_.error = true;
                 msn_srv->move_parallel(0); // Stop movement
@@ -205,7 +205,7 @@ public:
                 return;
 	        }
 
-			if(loc_srv->obstacle_detected_left() && goal->vel > 0) {
+			if (loc_srv->obstacle_detected_left() && goal->vel > 0) {
 			    // Found wall on the left and moving towards
 				result_.left = true;
 				msn_srv->move_parallel(0); // Stop movement
@@ -214,7 +214,7 @@ public:
 				return;
 			}
 
-            if(loc_srv->obstacle_detected_rght() && goal->vel < 0) { // Found wall on the left and moving towards
+            if (loc_srv->obstacle_detected_rght() && goal->vel < 0) { // Found wall on the left and moving towards
                 result_.rght = true;
                 msn_srv->move_parallel(0); // Stop movement
                 loc_srv->unlock();         // Releasing mutex
@@ -222,7 +222,12 @@ public:
                 return;
             }
 
-            if(false) { // Found door in some wall
+            if (this->locate_passage()) { // Found door in some wall
+                ROS_ERROR("Passage found...");
+                while(1)
+                    this->locate_passage();
+
+
                 result_.found = true;
                 msn_srv->move_parallel(0); // Stop movement
                 loc_srv->unlock();         // Releasing mutex
@@ -233,21 +238,22 @@ public:
             if (as_move_along.isPreemptRequested() || !ros::ok()) {
                 msn_srv->move_parallel(0); // Stop movement
                 loc_srv->unlock();         // Releasing mutex
-                as_move_along.setAborted();
+                as_move_along.setPreempted();
                 return;
             }
 
             //
             // Movement sustain
             //
-			if(fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
+            this->locate_passage();
+			if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
 				msn_srv->ref_ang  = target_angl;
 				msn_srv->ref_dist = target_dist;
 				msn_srv->move_parallel(goal->vel);
 			}
 			loc_srv->unlock();
 
-			feedback_.vel = goal->vel; // Publish current velocitu (TODO)
+			feedback_.vel = goal->vel; // TODO: Publish current velocity (from sensors), not input
 			as_move_along.publishFeedback(feedback_);
 			r.sleep();
 		}
@@ -256,12 +262,10 @@ public:
 	void switchWallCB(const action_server::SwitchWallGoalConstPtr  &goal)
 	{
         action_server::SwitchWallResult   result_;
-
-        result_.success = false;
         loc_srv->lock();
 
-        if(goal->left) {
-            if(loc_srv->obstacle_detected_left()) {
+        if (goal->left) {
+            if (loc_srv->obstacle_detected_left()) {
                 loc_srv->track_wall(loc_srv->get_crn_wall_left());
                 loc_srv->unlock();
                 result_.success = true;
@@ -270,13 +274,13 @@ public:
             }
             else
             {
-                // TODO: Handle errors
-                as_switch_wall.setAborted();
+                result_.success = false;
+                as_switch_wall.setAborted(result_);
                 return;
             }
         }
-        if(goal->rght) {
-            if(loc_srv->obstacle_detected_rght()) {
+        if (goal->rght) {
+            if (loc_srv->obstacle_detected_rght()) {
                 loc_srv->track_wall(loc_srv->get_crn_wall_rght());
                 loc_srv->unlock();
                 result_.success = true;
@@ -285,20 +289,20 @@ public:
             }
             else
             {
-                // TODO: Handle errors
-                as_switch_wall.setAborted();
+                result_.success = false;
+                as_switch_wall.setAborted(result_);
                 return;
             }
         }
-        if(goal->any) {
-            if(loc_srv->obstacle_detected_left()) {
+        if (goal->any) {
+            if (loc_srv->obstacle_detected_left()) {
                 loc_srv->track_wall(loc_srv->get_crn_wall_left());
                 loc_srv->unlock();
                 result_.success = true;
                 as_switch_wall.setSucceeded(result_);
                 return;
             }
-            if(loc_srv->obstacle_detected_rght()) {
+            if (loc_srv->obstacle_detected_rght()) {
                 loc_srv->track_wall(loc_srv->get_crn_wall_rght());
                 loc_srv->unlock();
                 result_.success = true;
@@ -307,8 +311,8 @@ public:
             }
             else
             {
-                // TODO: Handle errors
-                as_switch_wall.setAborted();
+                result_.success = false;
+                as_switch_wall.setAborted(result_);
                 return;
             }
         }
@@ -317,17 +321,21 @@ public:
 	}
 
 
-	void locate_passage()
+	bool locate_passage()
 	{
-	    loc_srv->lock();
+	    // WARNING! mutex lock/unlock should be handled outside the function!
 	    Passage_finder pf(*(loc_srv->get_ref_wall()));
-	    loc_srv->unlock();
+
+	    if(pf.passage.size() <= 0)
+	        return false;
 
         for (int i = 0; i < pf.passage.size(); i++) {
             draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0);
             draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1);
             draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2);
         }
+
+        return true;
 	}
 
 
@@ -338,7 +346,7 @@ public:
         action_server::ApproachWallFeedback feedback_;
         ros::Rate r(60);
 
-        // TODO: Rewrote this function so it can accept passage coordinates instead of searching for it again
+        // TODO: Rewrite this function so it can accept passage coordinates instead of searching for it again
         while (true) {
 
             if (as_approach_wall.isPreemptRequested() || !ros::ok()) {
@@ -347,7 +355,7 @@ public:
                 msn_srv->move_parallel(0); // Stop movement
                 msn_srv->set_angles_current(); // And rotation
                 msn_srv->unlock();
-                as_approach_wall.setAborted();
+                as_approach_wall.setPreempted();
                 return;
             }
 

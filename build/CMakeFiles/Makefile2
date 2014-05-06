@@ -357,8 +357,8 @@ clean: action_client/CMakeFiles/action_client_gencpp.dir/clean
 
 # All Build rule for target.
 action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_cpp.dir/all
-action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_lisp.dir/all
 action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_py.dir/all
+action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_lisp.dir/all
 	$(MAKE) -f action_client/CMakeFiles/action_client_generate_messages.dir/build.make action_client/CMakeFiles/action_client_generate_messages.dir/depend
 	$(MAKE) -f action_client/CMakeFiles/action_client_generate_messages.dir/build.make action_client/CMakeFiles/action_client_generate_messages.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles 
@@ -2935,8 +2935,8 @@ clean: vel_cntrl/CMakeFiles/vel_cntrl_gencpp.dir/clean
 
 # All Build rule for target.
 vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/all: vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_py.dir/all
-vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/all: vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_cpp.dir/all
 vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/all: vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_lisp.dir/all
+vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/all: vel_cntrl/CMakeFiles/vel_cntrl_generate_messages_cpp.dir/all
 	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/depend
 	$(MAKE) -f vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/build.make vel_cntrl/CMakeFiles/vel_cntrl_generate_messages.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles 

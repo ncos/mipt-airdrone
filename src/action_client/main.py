@@ -37,21 +37,21 @@ def main():
     sm0 = smach.StateMachine(outcomes=['succeeded','aborted','preempted'])
     with sm0:
         smach.StateMachine.add('ENTRY_STATE', EntryState (),
-                               transitions={'start':'MOVE_ALONG',
+                               transitions={'start':'Move along',
                                             'abort':'preempted'})
         
         
 
-        smach.StateMachine.add('MOVE_ALONG',
+        smach.StateMachine.add('Move along',
                                smach_ros.SimpleActionState('MoveAlongAS', MoveAlongAction,
                                                        goal =  MoveAlongGoal(vel=0.8)),
                                transitions={'aborted'  :'aborted',
-                                            'succeeded':'ROTATE'} )
-	smach.StateMachine.add('ROTATE',
+                                            'succeeded':'Switch wall'} )
+        smach.StateMachine.add('Switch wall',
                                smach_ros.SimpleActionState('SwitchWallAS', SwitchWallAction,
                                                        goal =  SwitchWallGoal(left=1)),
                                transitions={'aborted'  :'aborted',
-                                            'succeeded':'MOVE_ALONG'} )
+                                            'succeeded':'Move along'} )
 
         def rotate_goal_callback(userdata, default_goal):
             goal = RotationGoal()
