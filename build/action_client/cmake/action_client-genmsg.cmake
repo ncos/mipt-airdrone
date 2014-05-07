@@ -24,15 +24,21 @@ _generate_msg_cpp(action_client
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg"
+  "${MSG_I_FLAGS}"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg"
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
+)
+_generate_msg_cpp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg"
   "${MSG_I_FLAGS}"
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
@@ -60,6 +66,12 @@ _generate_msg_cpp(action_client
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
+)
+_generate_msg_cpp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
@@ -72,45 +84,21 @@ _generate_msg_cpp(action_client
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
-)
-_generate_msg_cpp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
-)
-_generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg"
-  "${MSG_I_FLAGS}"
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg"
   "${MSG_I_FLAGS}"
   ""
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
-)
-_generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
-)
-_generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
@@ -138,6 +126,12 @@ _generate_msg_cpp(action_client
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
+)
+_generate_msg_cpp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg"
   "${MSG_I_FLAGS}"
   ""
@@ -150,7 +144,19 @@ _generate_msg_cpp(action_client
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
+)
+_generate_msg_cpp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
+)
+_generate_msg_cpp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
@@ -165,12 +171,6 @@ _generate_msg_cpp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationAction.msg"
   "${MSG_I_FLAGS}"
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg"
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
-)
-_generate_msg_cpp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg"
-  "${MSG_I_FLAGS}"
-  ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/action_client
 )
 _generate_msg_cpp(action_client
@@ -215,15 +215,21 @@ _generate_msg_lisp(action_client
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg"
+  "${MSG_I_FLAGS}"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
+)
+_generate_msg_lisp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg"
   "${MSG_I_FLAGS}"
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
@@ -251,6 +257,12 @@ _generate_msg_lisp(action_client
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
+)
+_generate_msg_lisp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
@@ -263,45 +275,21 @@ _generate_msg_lisp(action_client
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
-)
-_generate_msg_lisp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
-)
-_generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg"
-  "${MSG_I_FLAGS}"
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg"
   "${MSG_I_FLAGS}"
   ""
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
-)
-_generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
-)
-_generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
@@ -329,6 +317,12 @@ _generate_msg_lisp(action_client
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
+)
+_generate_msg_lisp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg"
   "${MSG_I_FLAGS}"
   ""
@@ -341,7 +335,19 @@ _generate_msg_lisp(action_client
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
+)
+_generate_msg_lisp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
+)
+_generate_msg_lisp(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
@@ -356,12 +362,6 @@ _generate_msg_lisp(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationAction.msg"
   "${MSG_I_FLAGS}"
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
-)
-_generate_msg_lisp(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg"
-  "${MSG_I_FLAGS}"
-  ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/action_client
 )
 _generate_msg_lisp(action_client
@@ -406,15 +406,21 @@ _generate_msg_py(action_client
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg"
+  "${MSG_I_FLAGS}"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
+)
+_generate_msg_py(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg"
   "${MSG_I_FLAGS}"
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
@@ -442,6 +448,12 @@ _generate_msg_py(action_client
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
+)
+_generate_msg_py(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
@@ -454,45 +466,21 @@ _generate_msg_py(action_client
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
-)
-_generate_msg_py(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg"
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
-)
-_generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg"
-  "${MSG_I_FLAGS}"
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg"
   "${MSG_I_FLAGS}"
   ""
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
-)
-_generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
-)
-_generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
@@ -520,6 +508,12 @@ _generate_msg_py(action_client
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
+)
+_generate_msg_py(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg"
   "${MSG_I_FLAGS}"
   ""
@@ -532,7 +526,19 @@ _generate_msg_py(action_client
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
+)
+_generate_msg_py(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
+)
+_generate_msg_py(action_client
+  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
@@ -547,12 +553,6 @@ _generate_msg_py(action_client
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationAction.msg"
   "${MSG_I_FLAGS}"
   "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionFeedback.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg;/opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg;/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
-)
-_generate_msg_py(action_client
-  "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg"
-  "${MSG_I_FLAGS}"
-  ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/action_client
 )
 _generate_msg_py(action_client

@@ -45,29 +45,29 @@ include action_server/CMakeFiles/action_server_generate_messages_cpp.dir/progres
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallFeedback.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongResult.h
-action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h
-action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h
-action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallResult.h
+action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongFeedback.h
+action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h
-action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h
+action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h
+action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h
+action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionFeedback.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallAction.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionResult.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionGoal.h
-action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionGoal.h
-action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationResult.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationAction.h
+action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionResult.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionFeedback.h
-action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h
+action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationFeedback.h
 action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionResult.h
 
@@ -92,17 +92,6 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/MoveAlongResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionResult.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallResult.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_4)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachWallActionResult.msg"
-	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
-
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongActionFeedback.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
@@ -110,39 +99,23 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/MoveAlongActionFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongActionFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
-
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallResult.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_6)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachWallResult.msg"
-	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
-
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallAction.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionResult.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallResult.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionFeedback.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallGoal.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionGoal.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallFeedback.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_7)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachWallAction.msg"
-	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallAction.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallResult.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallResult.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallResult.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_8)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/SwitchWallResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
+
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorGoal.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_6)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachDoorGoal.msg"
+	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallActionGoal.msg
@@ -150,16 +123,27 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallGoal.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionGoal.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/SwitchWallActionGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallActionGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongFeedback.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_10)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/MoveAlongFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
+
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionFeedback.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorFeedback.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachDoorActionFeedback.msg"
+	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongAction.msg
@@ -173,21 +157,44 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongActionGoal.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongActionFeedback.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/MoveAlongAction.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongAction.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallFeedback.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorFeedback.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_11)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachDoorFeedback.msg"
+	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
+
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorResult.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_12)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachWallFeedback.msg"
-	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachDoorResult.msg"
+	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
+
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorAction.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionResult.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorGoal.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionFeedback.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorFeedback.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionGoal.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorResult.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_13)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachDoorAction.msg"
+	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorAction.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongGoal.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_13)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_14)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/MoveAlongGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
@@ -198,7 +205,7 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_14)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_15)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/RotationActionFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationActionFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
@@ -214,7 +221,7 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallActionResult.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallActionFeedback.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallAction.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_15)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_16)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/SwitchWallAction.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallAction.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
@@ -225,14 +232,14 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionResult.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionResult.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionResult.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_16)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_17)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/MoveAlongActionResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongActionResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationGoal.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_17)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_18)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/RotationGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
@@ -242,16 +249,9 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongGoal.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionGoal.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_18)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_19)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/MoveAlongActionGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/MoveAlongActionGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
-
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallGoal.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_19)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachWallGoal.msg"
-	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationActionGoal.msg
@@ -263,20 +263,10 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/RotationActionGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationActionGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionGoal.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallGoal.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_21)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachWallActionGoal.msg"
-	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
-
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationResult.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationResult.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationResult.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_22)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_21)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/RotationResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
@@ -292,9 +282,20 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationFeedback.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationAction.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationActionResult.msg
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationAction.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_23)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_22)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/RotationAction.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationAction.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
+
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionResult.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorResult.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_23)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachDoorActionResult.msg"
+	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionResult.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionResult.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionResult.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallActionResult.msg
@@ -318,16 +319,15 @@ action_server/CMakeFiles/action_server_generate_messages_cpp: /home/ncos/mipt-ai
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/SwitchWallActionFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/SwitchWallActionFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionFeedback.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallFeedback.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionGoal.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorGoal.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_26)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachWallActionFeedback.msg"
-	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachWallActionFeedback.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from action_server/ApproachDoorActionGoal.msg"
+	cd /home/ncos/mipt-airdrone/build/action_server && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/ncos/mipt-airdrone/devel/share/action_server/msg/ApproachDoorActionGoal.msg -Iaction_server:/home/ncos/mipt-airdrone/devel/share/action_server/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_server -o /home/ncos/mipt-airdrone/devel/include/action_server -e /opt/ros/hydro/share/gencpp/cmake/..
 
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationFeedback.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /home/ncos/mipt-airdrone/devel/include/action_server/RotationFeedback.h: /home/ncos/mipt-airdrone/devel/share/action_server/msg/RotationFeedback.msg
@@ -351,29 +351,29 @@ action_server_generate_messages_cpp: action_server/CMakeFiles/action_server_gene
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallFeedback.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongResult.h
-action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h
-action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h
-action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallResult.h
+action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongFeedback.h
+action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h
-action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h
+action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h
+action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h
+action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionFeedback.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallAction.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionResult.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionGoal.h
-action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionGoal.h
-action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationResult.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationAction.h
+action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionResult.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/SwitchWallActionFeedback.h
-action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h
+action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationFeedback.h
 action_server_generate_messages_cpp: /home/ncos/mipt-airdrone/devel/include/action_server/RotationActionResult.h
 action_server_generate_messages_cpp: action_server/CMakeFiles/action_server_generate_messages_cpp.dir/build.make

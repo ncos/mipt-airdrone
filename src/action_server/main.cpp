@@ -21,7 +21,7 @@
 #include <action_server/MoveAlongAction.h>
 #include <action_server/SwitchWallAction.h>
 #include <action_server/RotationAction.h>
-#include <action_server/ApproachWallAction.h>
+#include <action_server/ApproachDoorAction.h>
 
 // Mutex is necessary to avoid control races between task handlers and cloud callback
 // cloud callback (or callback) is needed to renew information about point cloud and external sensors
@@ -133,18 +133,18 @@ public:
         as_move_along   (nh_, "MoveAlongAS",     boost::bind(&ActionServer::moveAlongCB,    this, _1), false),
         as_switch_wall  (nh_, "SwitchWallAS",    boost::bind(&ActionServer::switchWallCB,   this, _1), false),
 		as_rotation 	(nh_, "RotationAS", 	 boost::bind(&ActionServer::rotationCB,     this, _1), false),
-		as_approach_wall(nh_, "ApproachWallAS",  boost::bind(&ActionServer::approachWallCB, this, _1), false)
+		as_approach_door(nh_, "ApproachDoorAS",  boost::bind(&ActionServer::approachDoorCB, this, _1), false)
 	{
         as_move_along.   start();
         as_switch_wall.  start();
 		as_rotation.	 start();
-        as_approach_wall.start();
+        as_approach_door.start();
 	}
 
 	~ActionServer(void) {}
 
 
-	void rotationCB(const action_server::RotationGoalConstPtr 		&goal)
+	void rotationCB(const action_server::RotationGoalConstPtr &goal)
 	{
 		ros::Rate r(60);
 		action_server::RotationFeedback feedback_;
@@ -223,11 +223,6 @@ public:
             }
 
             if (this->locate_passage()) { // Found door in some wall
-                ROS_ERROR("Passage found...");
-                while(1)
-                    this->locate_passage();
-
-
                 result_.found = true;
                 msn_srv->move_parallel(0); // Stop movement
                 loc_srv->unlock();         // Releasing mutex
@@ -245,7 +240,7 @@ public:
             //
             // Movement sustain
             //
-            this->locate_passage();
+            // TODO: Try to start movement before the angle is completely set
 			if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
 				msn_srv->ref_ang  = target_angl;
 				msn_srv->ref_dist = target_dist;
@@ -340,22 +335,22 @@ public:
 
 
 
-    void approachWallCB(const action_server::ApproachWallGoalConstPtr  &goal)
+    void approachDoorCB(const action_server::ApproachDoorGoalConstPtr  &goal)
     {
-        action_server::ApproachWallResult   result_;
-        action_server::ApproachWallFeedback feedback_;
+        action_server::ApproachDoorResult   result_;
+        action_server::ApproachDoorFeedback feedback_;
         ros::Rate r(60);
 
         // TODO: Rewrite this function so it can accept passage coordinates instead of searching for it again
         while (true) {
 
-            if (as_approach_wall.isPreemptRequested() || !ros::ok()) {
+            if (as_approach_door.isPreemptRequested() || !ros::ok()) {
                 ROS_INFO("Full stop called at approach the wall callback");
                 msn_srv->lock(); // Location and motion servers are bound to the same mutex
                 msn_srv->move_parallel(0); // Stop movement
                 msn_srv->set_angles_current(); // And rotation
                 msn_srv->unlock();
-                as_approach_wall.setPreempted();
+                as_approach_door.setPreempted();
                 return;
             }
 
@@ -371,7 +366,8 @@ public:
                 ROS_WARN("No passage here (mistaken or lost)!");
                 // TODO: Handle errors (no passage, continue search)
                 loc_srv->unlock();
-                as_approach_wall.setAborted();
+                result_.success = false;
+                as_approach_door.setAborted(result_);
                 return;
             }
             else {
@@ -389,7 +385,7 @@ public:
                     result_.success = true;
                     result_.x = pf.passage.at(0).kin_middle.x; // TODO: Check that
                     result_.y = pf.passage.at(0).kin_middle.y; // TODO: Check that
-                    as_approach_wall.setSucceeded(result_);
+                    as_approach_door.setSucceeded(result_);
                     return;
                 }
             }
@@ -397,7 +393,7 @@ public:
             feedback_.x = pf.passage.at(0).kin_middle.x; // TODO: Check that
             feedback_.y = pf.passage.at(0).kin_middle.y; // TODO: Check that
             loc_srv->unlock();
-            as_approach_wall.publishFeedback(feedback_);
+            as_approach_door.publishFeedback(feedback_);
             r.sleep();
         }
     }
@@ -409,7 +405,7 @@ private:
     actionlib::SimpleActionServer<action_server::MoveAlongAction>    as_move_along;
     actionlib::SimpleActionServer<action_server::SwitchWallAction>   as_switch_wall;
 	actionlib::SimpleActionServer<action_server::RotationAction>  	 as_rotation;
-    actionlib::SimpleActionServer<action_server::ApproachWallAction> as_approach_wall;
+    actionlib::SimpleActionServer<action_server::ApproachDoorAction> as_approach_door;
 };
 
 

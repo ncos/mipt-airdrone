@@ -60,23 +60,23 @@ struct Fear_trigger
     }
     void decide_to_takeoff()
     {
-        this->takeoff_timer = 0;
+        this->takeoff_timer = ros::WallTime::now().toSec();
         this->decided_to_takeoff = true;
         this->decided_to_land = false;
     }
     void decide_to_land()
     {
-        this->land_timer = 0;
+        this->land_timer = ros::WallTime::now().toSec();
         this->decided_to_land = true;
         this->decided_to_takeoff = false;
     }
     double get_takeoff_time()
     {
-        return (this->takeoff_timer - this->takeoff_timer);
+        return (ros::WallTime::now().toSec() - this->takeoff_timer);
     }
     double get_land_time()
     {
-        return (this->land_timer - this->land_timer);
+        return (ros::WallTime::now().toSec() - this->land_timer);
     }
     double stop_takeoff()
     {
@@ -129,17 +129,26 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
     PID pid_vel(1, 0.5, 0.5);
 
 
+
+
     if (locate_floor(floor_cloud) == true)
         --fear_trigger;
     else
         ++fear_trigger;
 
 
+
     base_cmd.linear.z = pid_vel.get_output(target_height, floor_detector.position.distance_to_floor);
 
     if (fear_trigger.decided_to_land)
     {
+        ROS_INFO("Airdrone is landing (%2.1f s. passed)", fear_trigger.get_land_time());
         base_cmd.linear.z = pid_vel.get_output(1, 1.08);
+        if(fear_trigger.get_takeoff_time() > max_takeoff_time) // TODO: Check the height here (if we happen to have a reliable altimeter)
+        {
+            ROS_ERROR("Time is out. Goodbye, cruel world...");
+            ros::shutdown(); // I hope this will kill the entire roslaunch (roslaunch should be configured for that)
+        }
     }
     if (fear_trigger.decided_to_takeoff)
     {
@@ -194,6 +203,7 @@ int main (int argc, char** argv)
     height_text.text    = "Initializing altitude controller...";
     height_text.lifetime = ros::Duration(0.2);
     pub_mrk.publish(height_text);
+
 
     fear_trigger.decide_to_takeoff();
     ros::spin ();

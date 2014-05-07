@@ -296,13 +296,13 @@ action_server/CMakeFiles/action_server_nd.dir/RANSAC.cpp.o
  /usr/include/pcl-1.7/pcl/segmentation/impl/sac_segmentation.hpp
  /usr/include/pcl-1.7/pcl/segmentation/sac_segmentation.h
 action_server/CMakeFiles/action_server_nd.dir/main.cpp.o
- /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h
- /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h
- /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h
- /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h
- /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h
- /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h
- /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h
+ /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h
+ /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h
+ /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h
+ /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h
+ /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h
+ /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h
+ /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h
  /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h
  /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h
  /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionGoal.h

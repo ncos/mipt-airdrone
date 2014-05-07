@@ -295,13 +295,13 @@ action_server/CMakeFiles/action_server_nd.dir/RANSAC.cpp.o: /usr/include/pcl-1.7
 action_server/CMakeFiles/action_server_nd.dir/RANSAC.cpp.o: /usr/include/pcl-1.7/pcl/segmentation/impl/sac_segmentation.hpp
 action_server/CMakeFiles/action_server_nd.dir/RANSAC.cpp.o: /usr/include/pcl-1.7/pcl/segmentation/sac_segmentation.h
 
-action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h
-action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h
-action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h
-action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h
-action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h
-action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h
-action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h
+action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h
+action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h
+action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h
+action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h
+action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h
+action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h
+action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h
 action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongAction.h
 action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionFeedback.h
 action_server/CMakeFiles/action_server_nd.dir/main.cpp.o: /home/ncos/mipt-airdrone/devel/include/action_server/MoveAlongActionGoal.h

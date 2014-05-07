@@ -35,8 +35,8 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/action_client/action" TYPE FILE FILES
     "/home/ncos/mipt-airdrone/src/action_client/action/MoveAlong.action"
-    "/home/ncos/mipt-airdrone/src/action_client/action/ApproachWall.action"
     "/home/ncos/mipt-airdrone/src/action_client/action/Rotation.action"
+    "/home/ncos/mipt-airdrone/src/action_client/action/ApproachDoor.action"
     "/home/ncos/mipt-airdrone/src/action_client/action/SwitchWall.action"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
@@ -55,18 +55,6 @@ ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unsp
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/action_client/msg" TYPE FILE FILES
-    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg"
-    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg"
-    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg"
-    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg"
-    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg"
-    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg"
-    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg"
-    )
-ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-
-IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/action_client/msg" TYPE FILE FILES
     "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationAction.msg"
     "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg"
     "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg"
@@ -74,6 +62,18 @@ IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
     "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg"
     "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg"
     "/home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg"
+    )
+ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+
+IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/action_client/msg" TYPE FILE FILES
+    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg"
+    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg"
+    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg"
+    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg"
+    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg"
+    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg"
+    "/home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

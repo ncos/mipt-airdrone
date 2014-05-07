@@ -357,8 +357,8 @@ clean: action_client/CMakeFiles/action_client_gencpp.dir/clean
 
 # All Build rule for target.
 action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_cpp.dir/all
-action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_py.dir/all
 action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_lisp.dir/all
+action_client/CMakeFiles/action_client_generate_messages.dir/all: action_client/CMakeFiles/action_client_generate_messages_py.dir/all
 	$(MAKE) -f action_client/CMakeFiles/action_client_generate_messages.dir/build.make action_client/CMakeFiles/action_client_generate_messages.dir/depend
 	$(MAKE) -f action_client/CMakeFiles/action_client_generate_messages.dir/build.make action_client/CMakeFiles/action_client_generate_messages.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles 
@@ -2128,8 +2128,8 @@ clean: action_server/CMakeFiles/action_server_gencpp.dir/clean
 
 # All Build rule for target.
 action_server/CMakeFiles/action_server_generate_messages.dir/all: action_server/CMakeFiles/action_server_generate_messages_cpp.dir/all
-action_server/CMakeFiles/action_server_generate_messages.dir/all: action_server/CMakeFiles/action_server_generate_messages_py.dir/all
 action_server/CMakeFiles/action_server_generate_messages.dir/all: action_server/CMakeFiles/action_server_generate_messages_lisp.dir/all
+action_server/CMakeFiles/action_server_generate_messages.dir/all: action_server/CMakeFiles/action_server_generate_messages_py.dir/all
 	$(MAKE) -f action_server/CMakeFiles/action_server_generate_messages.dir/build.make action_server/CMakeFiles/action_server_generate_messages.dir/depend
 	$(MAKE) -f action_server/CMakeFiles/action_server_generate_messages.dir/build.make action_server/CMakeFiles/action_server_generate_messages.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles 
@@ -2682,9 +2682,9 @@ clean: roscopter/CMakeFiles/roscopter_gencpp.dir/clean
 # Target rules for target roscopter/CMakeFiles/roscopter_generate_messages.dir
 
 # All Build rule for target.
-roscopter/CMakeFiles/roscopter_generate_messages.dir/all: roscopter/CMakeFiles/roscopter_generate_messages_py.dir/all
-roscopter/CMakeFiles/roscopter_generate_messages.dir/all: roscopter/CMakeFiles/roscopter_generate_messages_lisp.dir/all
 roscopter/CMakeFiles/roscopter_generate_messages.dir/all: roscopter/CMakeFiles/roscopter_generate_messages_cpp.dir/all
+roscopter/CMakeFiles/roscopter_generate_messages.dir/all: roscopter/CMakeFiles/roscopter_generate_messages_lisp.dir/all
+roscopter/CMakeFiles/roscopter_generate_messages.dir/all: roscopter/CMakeFiles/roscopter_generate_messages_py.dir/all
 	$(MAKE) -f roscopter/CMakeFiles/roscopter_generate_messages.dir/build.make roscopter/CMakeFiles/roscopter_generate_messages.dir/depend
 	$(MAKE) -f roscopter/CMakeFiles/roscopter_generate_messages.dir/build.make roscopter/CMakeFiles/roscopter_generate_messages.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles 

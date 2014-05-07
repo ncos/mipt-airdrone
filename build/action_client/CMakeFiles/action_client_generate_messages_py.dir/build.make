@@ -43,31 +43,31 @@ CMAKE_BINARY_DIR = /home/ncos/mipt-airdrone/build
 include action_client/CMakeFiles/action_client_generate_messages_py.dir/progress.make
 
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionFeedback.py
-action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py
+action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorFeedback.py
+action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionResult.py
+action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallFeedback.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionGoal.py
-action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationFeedback.py
-action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallResult.py
-action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py
+action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationResult.py
-action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py
-action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallAction.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionResult.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionFeedback.py
+action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongFeedback.py
+action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallResult.py
+action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorResult.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongGoal.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationAction.py
-action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallFeedback.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionFeedback.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongResult.py
 action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py
@@ -82,12 +82,6 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/SwitchWallActionFeedback"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_2)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachWallGoal"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
-
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg
@@ -99,16 +93,37 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/MoveAlongAction"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
+
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachDoorFeedback"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
+
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachDoorAction"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/RotationActionGoal"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
@@ -117,13 +132,13 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionGoal.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallGoal.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionGoal.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/SwitchWallActionGoal"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_6)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/SwitchWallGoal"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
@@ -133,13 +148,19 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_7)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/MoveAlongActionResult"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachDoorGoal"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
+
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_8)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/SwitchWallFeedback"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
@@ -148,46 +169,25 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionGoal.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionGoal.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_11)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/MoveAlongActionGoal"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_10)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachWallActionResult"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
-
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/RotationFeedback"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallResult.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_12)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachWallResult"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
-
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_13)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachWallAction"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachDoorActionFeedback"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationResult.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg
@@ -195,32 +195,13 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/RotationResult"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_15)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachWallActionGoal"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
-
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_16)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachWallActionFeedback"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
-
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionResult.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_17)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_15)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/SwitchWallActionResult"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
@@ -235,7 +216,7 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionResult.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_18)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_16)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/SwitchWallAction"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
@@ -245,7 +226,7 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_19)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_17)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/RotationActionResult"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
@@ -255,21 +236,40 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionFeedback.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionFeedback.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_20)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_18)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/MoveAlongActionFeedback"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_19)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachDoorActionGoal"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
+
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_21)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_20)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/RotationGoal"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_22)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_21)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/MoveAlongFeedback"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
+
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_22)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachDoorActionResult"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallResult.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg
@@ -277,9 +277,15 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/SwitchWallResult"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorResult.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorResult.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_24)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachDoorResult"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
+
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongGoal.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongGoal.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_24)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_25)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/MoveAlongGoal"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
@@ -294,15 +300,9 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationAction.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_25)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_26)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/RotationAction"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
-
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_26)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Python from MSG action_client/ApproachWallFeedback"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionFeedback.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionFeedback.py: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionFeedback.msg
@@ -322,31 +322,31 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /opt/ros/hydro/share/genpy/cmake/../../../lib/genpy/genmsg_py.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionFeedback.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorFeedback.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionResult.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallFeedback.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionGoal.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationFeedback.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallResult.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationResult.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallAction.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionResult.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionFeedback.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongFeedback.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallResult.py
+/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorResult.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongGoal.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationAction.py
-/home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallFeedback.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionFeedback.py
 /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongResult.py
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_29)
@@ -355,31 +355,31 @@ action_client/CMakeFiles/action_client_generate_messages_py: /home/ncos/mipt-air
 
 action_client_generate_messages_py: action_client/CMakeFiles/action_client_generate_messages_py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionFeedback.py
-action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongAction.py
+action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorFeedback.py
+action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorAction.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionResult.py
+action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallFeedback.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionGoal.py
-action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionResult.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationFeedback.py
-action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallResult.py
-action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallAction.py
+action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionFeedback.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationResult.py
-action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionGoal.py
-action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallActionFeedback.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallActionResult.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallAction.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionResult.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongActionFeedback.py
+action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongFeedback.py
+action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorActionResult.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_SwitchWallResult.py
+action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachDoorResult.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongGoal.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationAction.py
-action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_ApproachWallFeedback.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_RotationActionFeedback.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/_MoveAlongResult.py
 action_client_generate_messages_py: /home/ncos/mipt-airdrone/devel/lib/python2.7/dist-packages/action_client/msg/__init__.py

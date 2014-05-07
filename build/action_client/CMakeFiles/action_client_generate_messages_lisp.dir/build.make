@@ -43,31 +43,31 @@ CMAKE_BINARY_DIR = /home/ncos/mipt-airdrone/build
 include action_client/CMakeFiles/action_client_generate_messages_lisp.dir/progress.make
 
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionFeedback.lisp
-action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp
+action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorFeedback.lisp
+action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionResult.lisp
+action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallFeedback.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionGoal.lisp
-action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationFeedback.lisp
-action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallResult.lisp
-action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp
+action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationResult.lisp
-action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionGoal.lisp
-action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallAction.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionResult.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionFeedback.lisp
+action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongFeedback.lisp
+action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallResult.lisp
+action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorResult.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongGoal.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationAction.lisp
-action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallFeedback.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionFeedback.lisp
 action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongResult.lisp
 
@@ -81,12 +81,6 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/SwitchWallActionFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_2)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachWallGoal.msg"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
-
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg
@@ -98,16 +92,37 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/MoveAlongAction.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
+
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_3)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachDoorFeedback.msg"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
+
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachDoorAction.msg"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionGoal.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionGoal.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/RotationActionGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
@@ -116,13 +131,13 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionGoal.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallGoal.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionGoal.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/SwitchWallActionGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_6)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_7)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/SwitchWallGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
@@ -132,13 +147,19 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongResult.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_7)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_8)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/MoveAlongActionResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachDoorGoal.msg"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
+
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_8)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_10)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/SwitchWallFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
@@ -147,46 +168,25 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionGoal.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionGoal.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_9)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_11)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/MoveAlongActionGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_10)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachWallActionResult.msg"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
-
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_11)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_12)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/RotationFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallResult.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_12)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachWallResult.msg"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
-
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallResult.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionResult.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorFeedback.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_13)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachWallAction.msg"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachDoorActionFeedback.msg"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationResult.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg
@@ -194,32 +194,13 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/RotationResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionGoal.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallGoal.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionGoal.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_15)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachWallActionGoal.msg"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
-
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_16)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachWallActionFeedback.msg"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
-
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionResult.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_17)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_15)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/SwitchWallActionResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
@@ -234,7 +215,7 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallFeedback.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallActionResult.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_18)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_16)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/SwitchWallAction.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
@@ -244,7 +225,7 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationResult.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_19)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_17)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/RotationActionResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
@@ -254,21 +235,40 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionFeedback.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionFeedback.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_20)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_18)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/MoveAlongActionFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongActionFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionGoal.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorGoal.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionGoal.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_19)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachDoorActionGoal.msg"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
+
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_21)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_20)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/RotationGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_22)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_21)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/MoveAlongFeedback.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
+
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalStatus.msg
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp: /opt/ros/hydro/share/actionlib_msgs/cmake/../msg/GoalID.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_22)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachDoorActionResult.msg"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorActionResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallResult.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg
@@ -276,9 +276,15 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/SwitchWallResult.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/SwitchWallResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorResult.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
+/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorResult.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_24)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachDoorResult.msg"
+	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachDoorResult.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
+
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongGoal.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongGoal.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_24)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_25)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/MoveAlongGoal.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/MoveAlongGoal.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
@@ -293,15 +299,9 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationGoal.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionResult.msg
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationAction.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionGoal.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_25)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_26)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/RotationAction.msg"
 	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationAction.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
-
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
-/home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/ncos/mipt-airdrone/build/CMakeFiles $(CMAKE_PROGRESS_26)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating Lisp code from action_client/ApproachWallFeedback.msg"
-	cd /home/ncos/mipt-airdrone/build/action_client && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py /home/ncos/mipt-airdrone/devel/share/action_client/msg/ApproachWallFeedback.msg -Iaction_client:/home/ncos/mipt-airdrone/devel/share/action_client/msg -Iactionlib_msgs:/opt/ros/hydro/share/actionlib_msgs/cmake/../msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p action_client -o /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg
 
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionFeedback.lisp: /opt/ros/hydro/share/genlisp/cmake/../../../lib/genlisp/gen_lisp.py
 /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionFeedback.lisp: /home/ncos/mipt-airdrone/devel/share/action_client/msg/RotationActionFeedback.msg
@@ -321,31 +321,31 @@ action_client/CMakeFiles/action_client_generate_messages_lisp: /home/ncos/mipt-a
 
 action_client_generate_messages_lisp: action_client/CMakeFiles/action_client_generate_messages_lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionFeedback.lisp
-action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongAction.lisp
+action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorFeedback.lisp
+action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorAction.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionResult.lisp
+action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallFeedback.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionGoal.lisp
-action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionResult.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationFeedback.lisp
-action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallResult.lisp
-action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallAction.lisp
+action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionFeedback.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationResult.lisp
-action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionGoal.lisp
-action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallActionFeedback.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallActionResult.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallAction.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionResult.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongActionFeedback.lisp
+action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongFeedback.lisp
+action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorActionResult.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/SwitchWallResult.lisp
+action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachDoorResult.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongGoal.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationAction.lisp
-action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/ApproachWallFeedback.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/RotationActionFeedback.lisp
 action_client_generate_messages_lisp: /home/ncos/mipt-airdrone/devel/share/common-lisp/ros/action_client/msg/MoveAlongResult.lisp
 action_client_generate_messages_lisp: action_client/CMakeFiles/action_client_generate_messages_lisp.dir/build.make

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallAction.h
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorAction.h
 string
 -
 vector
@@ -21,14 +21,14 @@ ros/builtin_message_traits.h
 -
 ros/message_operations.h
 -
-action_server/ApproachWallActionGoal.h
+action_server/ApproachDoorActionGoal.h
 -
-action_server/ApproachWallActionResult.h
+action_server/ApproachDoorActionResult.h
 -
-action_server/ApproachWallActionFeedback.h
+action_server/ApproachDoorActionFeedback.h
 -
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionFeedback.h
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionFeedback.h
 string
 -
 vector
@@ -47,10 +47,10 @@ std_msgs/Header.h
 -
 actionlib_msgs/GoalStatus.h
 -
-action_server/ApproachWallFeedback.h
+action_server/ApproachDoorFeedback.h
 -
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionGoal.h
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionGoal.h
 string
 -
 vector
@@ -69,10 +69,10 @@ std_msgs/Header.h
 -
 actionlib_msgs/GoalID.h
 -
-action_server/ApproachWallGoal.h
+action_server/ApproachDoorGoal.h
 -
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallActionResult.h
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorActionResult.h
 string
 -
 vector
@@ -91,10 +91,10 @@ std_msgs/Header.h
 -
 actionlib_msgs/GoalStatus.h
 -
-action_server/ApproachWallResult.h
+action_server/ApproachDoorResult.h
 -
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallFeedback.h
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorFeedback.h
 string
 -
 vector
@@ -110,7 +110,7 @@ ros/builtin_message_traits.h
 ros/message_operations.h
 -
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallGoal.h
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorGoal.h
 string
 -
 vector
@@ -126,7 +126,7 @@ ros/builtin_message_traits.h
 ros/message_operations.h
 -
 
-/home/ncos/mipt-airdrone/devel/include/action_server/ApproachWallResult.h
+/home/ncos/mipt-airdrone/devel/include/action_server/ApproachDoorResult.h
 string
 -
 vector
@@ -609,7 +609,7 @@ action_server/SwitchWallAction.h
 -
 action_server/RotationAction.h
 -
-action_server/ApproachWallAction.h
+action_server/ApproachDoorAction.h
 -
 boost/thread/mutex.hpp
 -
