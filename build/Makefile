@@ -29,7 +29,7 @@ cmake_force:
 # The shell in which to execute make rules.
 SHELL = /bin/sh
 
-# The CMake executable.
+
 CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
