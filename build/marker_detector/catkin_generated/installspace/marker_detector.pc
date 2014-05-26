@@ -1,8 +1,0 @@
-prefix=/home/ncos/mipt-airdrone/install
-
-Name: marker_detector
-Description: Description of marker_detector
-Version: 0.1.0
-Cflags: 
-Libs: -L/home/ncos/mipt-airdrone/install/lib 
-Requires: 

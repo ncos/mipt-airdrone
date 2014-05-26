@@ -1,7 +1,0 @@
-set(_CATKIN_CURRENT_PACKAGE "rgbd_shrinker")
-set(rgbd_shrinker_MAINTAINER "ncos <anton.mitrokhin@phystech.edu>")
-set(rgbd_shrinker_DEPRECATED "")
-set(rgbd_shrinker_VERSION "0.1.0")
-set(rgbd_shrinker_BUILD_DEPENDS "OpenCV" "cv_bridge" "image_transport" "geometry_msgs" "sensor_msgs" "std_msgs" "pcl_conversions" "pcl_ros" "libpcl-all-dev" "roscpp" "visualization_msgs")
-set(rgbd_shrinker_RUN_DEPENDS "OpenCV" "cv_bridge" "image_transport" "geometry_msgs" "sensor_msgs" "std_msgs" "pcl_conversions" "pcl_ros" "libpcl-all" "roscpp" "visualization_msgs")
-set(rgbd_shrinker_BUILDTOOL_DEPENDS "catkin")

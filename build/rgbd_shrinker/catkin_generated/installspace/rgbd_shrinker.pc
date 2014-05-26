@@ -1,8 +1,0 @@
-prefix=/home/ncos/mipt-airdrone/install
-
-Name: rgbd_shrinker
-Description: Description of rgbd_shrinker
-Version: 0.1.0
-Cflags: 
-Libs: -L/home/ncos/mipt-airdrone/install/lib 
-Requires: 

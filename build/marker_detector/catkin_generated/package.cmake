@@ -1,7 +1,0 @@
-set(_CATKIN_CURRENT_PACKAGE "marker_detector")
-set(marker_detector_MAINTAINER "ncos <anton.mitrokhin@phystech.edu>")
-set(marker_detector_DEPRECATED "")
-set(marker_detector_VERSION "0.1.0")
-set(marker_detector_BUILD_DEPENDS "OpenCV" "cv_bridge" "image_transport" "geometry_msgs" "sensor_msgs" "std_msgs" "pcl_conversions" "pcl_ros" "libpcl-all-dev" "roscpp")
-set(marker_detector_RUN_DEPENDS "OpenCV" "cv_bridge" "image_transport" "geometry_msgs" "sensor_msgs" "std_msgs" "pcl_conversions" "pcl_ros" "libpcl-all" "roscpp")
-set(marker_detector_BUILDTOOL_DEPENDS "catkin")
