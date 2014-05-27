@@ -112,6 +112,14 @@ void LocationServer::track_wall(Line_param *wall)
 
 void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
+    if(cloud->points.size() < 10) {
+        ROS_WARN("The cloud is empty. Location server is unable to provide pose estimation. Skipping...");
+        if (this->ref_wall != NULL) {
+            this->ref_wall->found = false;
+        }
+        return;
+    };
+
     if(this->ref_wall == NULL) {
     	ROS_WARN("No ref_wall. Using random!");
     };
@@ -217,6 +225,11 @@ bool MotionServer::move_parallel(double vel)
 
 bool MotionServer::move_perpendicular(double shift)
 {
+    if(this->ref_wall == NULL) {
+        ROS_ERROR("MotionServer::move_perpendicular ref_wall == NULL");
+        return false;
+    }
+
 	this->ref_dist += shift;
 	return true;
 };

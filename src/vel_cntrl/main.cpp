@@ -1,10 +1,9 @@
-#include <stdio.h>
-#include <iostream>
 #include <vector>
 #include <math.h>
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3.h>
 #include <visualization_msgs/Marker.h>
 #include <std_srvs/Empty.h>
 #include <vel_cntrl/RC.h>
@@ -28,9 +27,12 @@ geometry_msgs::Twist vel_3;
 
 visualization_msgs::Marker height_text;
 
+#define PI 3.14159265
+
 double vel_to_pwr = 0.0;
-vel_cntrl::RC rc_msg;
+double angle_of_kinect = 0.0;
 double rc_acc[8];
+vel_cntrl::RC rc_msg;
 
 
 
@@ -40,13 +42,22 @@ double rc_acc[8];
 #define THROTTLE 2
 
 
+geometry_msgs::Vector3 rotate_z(const geometry_msgs::Vector3 linear_vel, double angle)
+{
+    geometry_msgs::Vector3 rotated;
+    rotated.z = linear_vel.z;
+    rotated.x = linear_vel.x * cos(angle*PI/180.0) - linear_vel.y * sin(angle*PI/180.0);
+    rotated.y = linear_vel.x * sin(angle*PI/180.0) + linear_vel.y * cos(angle*PI/180.0);
+
+    return rotated;
+}
+
+
+
 
 void callback_1(const geometry_msgs::Twist vel)
 {
-    vel_1.linear.x = vel.linear.x;
-    vel_1.linear.y = vel.linear.y;
-    vel_1.linear.z = vel.linear.z;
-
+    vel_1.linear = rotate_z(vel.linear, angle_of_kinect);
     vel_1.angular.x = vel.angular.x;
     vel_1.angular.y = vel.angular.y;
     vel_1.angular.z = vel.angular.z;
@@ -54,10 +65,7 @@ void callback_1(const geometry_msgs::Twist vel)
 
 void callback_2(const geometry_msgs::Twist vel)
 {
-    vel_2.linear.x = vel.linear.x;
-    vel_2.linear.y = vel.linear.y;
-    vel_2.linear.z = vel.linear.z;
-
+    vel_2.linear = rotate_z(vel.linear, angle_of_kinect);
     vel_2.angular.x = vel.angular.x;
     vel_2.angular.y = vel.angular.y;
     vel_2.angular.z = vel.angular.z;
@@ -65,10 +73,7 @@ void callback_2(const geometry_msgs::Twist vel)
 
 void callback_3(const geometry_msgs::Twist vel)
 {
-    vel_3.linear.x = vel.linear.x;
-    vel_3.linear.y = vel.linear.y;
-    vel_3.linear.z = vel.linear.z;
-
+    vel_3.linear = rotate_z(vel.linear, angle_of_kinect);
     vel_3.angular.x = vel.angular.x;
     vel_3.angular.y = vel.angular.y;
     vel_3.angular.z = vel.angular.z;
@@ -132,6 +137,8 @@ int main( int argc, char** argv )
 
 
   if (!nh.getParam("vel_to_pwr", vel_to_pwr)) ROS_ERROR("Failed to get param 'vel_to_pwr'");
+  if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
+
 
   height_text.header.frame_id = "/camera_link";
   height_text.ns = "text_ns";

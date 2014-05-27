@@ -423,6 +423,10 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     line_list.header.stamp = ros::Time::now();
     line_list.points.clear();
 
+    if(cloud->points.size() < 10) {
+        ROS_ERROR("AS: Cloud size = %lu", cloud->points.size());
+    }
+
     loc_srv->spin_once(cloud);
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
 

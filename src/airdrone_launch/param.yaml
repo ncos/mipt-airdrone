@@ -10,6 +10,7 @@ PID_ang_D: 0.000 #0.000
 
 base_height: 0.6
 vel_to_pwr: 10.0
+angle_of_kinect: -45.0
 
 movement_speed: 0.5
 distance_to_wall: 2.0

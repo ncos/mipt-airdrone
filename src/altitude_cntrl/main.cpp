@@ -23,7 +23,7 @@ Floor_SAC floor_detector;
 
 double target_height = 0.0;
 unsigned int fear_threshold = 10;
-double max_takeoff_time = 3;
+double max_takeoff_time = 3.0;
 
 visualization_msgs::Marker height_text;
 
@@ -32,12 +32,14 @@ struct Fear_trigger
 {
     bool decided_to_land;
     bool decided_to_takeoff;
+    bool hovering;
     unsigned int uncertainty_cnt;
     double takeoff_timer, land_timer;
     Fear_trigger()
     {
         decided_to_land = false;
         decided_to_takeoff = false;
+        hovering = false;
         uncertainty_cnt = 0;
     }
 
@@ -45,7 +47,7 @@ struct Fear_trigger
     {
         if (this->uncertainty_cnt < 100)
              this->uncertainty_cnt ++;
-        if (uncertainty_cnt > fear_threshold && !decided_to_land)
+        if (uncertainty_cnt > fear_threshold && hovering)
         {
             ROS_ERROR("Arducopter decided to land due to altitude estimation errors!");
             this->decide_to_land();
@@ -60,15 +62,24 @@ struct Fear_trigger
     }
     void decide_to_takeoff()
     {
-        this->takeoff_timer = ros::WallTime::now().toSec();
         this->decided_to_takeoff = true;
-        this->decided_to_land = false;
+        this->decided_to_land    = false;
+        this->hovering           = false;
+        this->takeoff_timer = ros::WallTime::now().toSec();
     }
     void decide_to_land()
     {
-        this->land_timer = ros::WallTime::now().toSec();
-        this->decided_to_land = true;
         this->decided_to_takeoff = false;
+        this->decided_to_land    = true;
+        this->hovering           = false;
+        this->land_timer = ros::WallTime::now().toSec();
+    }
+    void decide_to_hover()
+    {
+        this->decided_to_takeoff = false;
+        this->decided_to_land    = false;
+        this->hovering           = true;
+        this->uncertainty_cnt    = 0;
     }
     double get_takeoff_time()
     {
@@ -80,13 +91,17 @@ struct Fear_trigger
     }
     double stop_takeoff()
     {
-        this->decided_to_takeoff = false;
+        this->decide_to_hover();
         return get_takeoff_time();
     }
     double stop_land()
     {
-        this->decided_to_land = false;
+        this->decide_to_hover();
         return get_land_time();
+    }
+    void print()
+    {
+        ROS_INFO("FT Counter val: %d/%d", this->uncertainty_cnt, fear_threshold);
     }
 } fear_trigger;
 
@@ -98,7 +113,6 @@ inline bool locate_floor(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_c
     {
         height_text.text = "Height = Nan";
         pub_mrk.publish(height_text);
-        ROS_WARN("Lost floor");
         return false;
     }
 
@@ -116,7 +130,6 @@ inline bool locate_floor(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_c
     {
         height_text.text = "Height = Nan";
         pub_mrk.publish(height_text);
-        ROS_WARN("Lost floor");
         return false;
     }
 };
@@ -129,8 +142,6 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
     PID pid_vel(1, 0.5, 0.5);
 
 
-
-
     if (locate_floor(floor_cloud) == true)
         --fear_trigger;
     else
@@ -140,30 +151,25 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
 
     base_cmd.linear.z = pid_vel.get_output(target_height, floor_detector.position.distance_to_floor);
 
-    if (fear_trigger.decided_to_land)
-    {
+    if (fear_trigger.decided_to_land) {
         ROS_INFO("Airdrone is landing (%2.1f s. passed)", fear_trigger.get_land_time());
-        base_cmd.linear.z = pid_vel.get_output(1, 1.08);
-        if(fear_trigger.get_takeoff_time() > max_takeoff_time) // TODO: Check the height here (if we happen to have a reliable altimeter)
-        {
+        base_cmd.linear.z = -0.5;
+        if(fear_trigger.get_land_time() > max_takeoff_time) { // TODO: Check the height here (if we happen to have a reliable altimeter)
             ROS_ERROR("Time is out. Goodbye, cruel world...");
             ros::shutdown(); // I hope this will kill the entire roslaunch (roslaunch should be configured for that)
         }
     }
-    if (fear_trigger.decided_to_takeoff)
-    {
+    if (fear_trigger.decided_to_takeoff) {
         ROS_INFO("Airdrone is taking off blind (%2.1f s. passed)", fear_trigger.get_takeoff_time());
-        base_cmd.linear.z = pid_vel.get_output(1.08, 1);
-        if(fear_trigger.get_takeoff_time() > max_takeoff_time)
-        {
+        base_cmd.linear.z = 0.5;
+        if(fear_trigger.get_takeoff_time() > max_takeoff_time) {
             ROS_ERROR("Time is out, trying to land...");
             fear_trigger.decide_to_land();
         }
     }
-    if (fear_trigger.uncertainty_cnt == 0 && fear_trigger.decided_to_takeoff)
-    {
-        fear_trigger.decided_to_takeoff = false;
-        ROS_INFO("Airdrone acquired reliable altitude. Continuing in normal mode");
+    if (fear_trigger.uncertainty_cnt == 0 && fear_trigger.decided_to_takeoff) {
+        fear_trigger.decide_to_hover();
+        ROS_INFO("Airdrone haz reliable altitude. Continuing in normal mode");
     }
 
     pub_vel.publish(base_cmd);
