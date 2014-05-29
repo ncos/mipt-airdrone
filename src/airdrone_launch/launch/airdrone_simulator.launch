@@ -7,6 +7,12 @@
    
   <!-- Spawn simulated quadrotor uav -->
   <include file="$(find airdrone_launch)inherited_from_hector/launch/spawn_quadrotor.launch" >
+    <!--
+    (15.0;  -3.0; 0.3)  // Main launchpad
+    (15.0;  -6.0; 0.3)  // Room
+    (15.0; -12.0; 0.3)  // Room
+    -->
+
     <arg name="model" value="$(find airdrone_launch)/inherited_from_hector/urdf/quadrotor_with_kinect.gazebo.xacro"/>
     <arg name="x" value="15.0"/>
     <arg name="y" value="-3.0"/>

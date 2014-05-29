@@ -47,8 +47,8 @@ void floor_filter(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
 	pcl::PassThrough<pcl::PointXYZ> pass;
 	pass.setInputCloud (cloud);
-	pass.setFilterFieldName ("y");  // z is to front, y is DOWN!
-	pass.setFilterLimits (0.0, 4.0);
+	pass.setFilterFieldName ("y");    // z is to front, y is DOWN!
+	pass.setFilterLimits (-0.2, 4.0); // (-0.2, 4.0)
 	pass.filter (*floor_cloud);
 
 	// Downsampling the cloud //
@@ -64,8 +64,8 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 	//cerr << "\tIdle_sec: " << ros::Time::now().toSec() - start.toSec(); start = ros::Time::now();
 	pcl::PassThrough<pcl::PointXYZ> pass;
 	pass.setInputCloud (cloud);
-	pass.setFilterFieldName ("y");  // z is to front, y is DOWN!
-	pass.setFilterLimits (-0.5, -0.48);
+	pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
+	pass.setFilterLimits (-0.7, -0.6);  // (-0.7, -0.6)
 	pass.filter (*laser_cloud);
 
 	for (int i = 0; i < laser_cloud->points.size(); i++)

@@ -62,7 +62,7 @@ def approach_door_result_cb(userdata, status, result):
         return 'aborted'
     
     if status == GoalStatus.SUCCEEDED:
-        if result.succes == True:
+        if result.success == True:
             rospy.loginfo("approach_door_result_cb -> result.succes == True")
             return 'succeeded'
         return 'aborted'
@@ -110,7 +110,7 @@ def main():
                                                            goal =  ApproachDoorGoal(),
                                                            result_cb = approach_door_result_cb,
                                                            outcomes=['aborted', 'succeeded']),
-                               transitions={'aborted'   :'Move along',
+                               transitions={'aborted'   :'Pause',
                                             'succeeded' :'Pause'} )
         
     # Create and start the introspection server

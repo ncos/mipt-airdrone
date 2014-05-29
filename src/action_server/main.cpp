@@ -373,7 +373,7 @@ public:
             else {
                 msn_srv->ref_ang = loc_srv->get_ref_wall()->angle + pf.passage.at(0).rght_ang + 15;
 
-                // TODO: Always choosing the "0" passage. Maybe better the closest? (Or something smarter than current decision)
+                // TODO: Always choosing the "0" passage. Maybe better the closest?
                 double err_shift = loc_srv->get_ref_wall()->ldir_vec.kin.x * pf.passage.at(0).kin_middle.x +
                                    loc_srv->get_ref_wall()->ldir_vec.kin.y * pf.passage.at(0).kin_middle.y;
 
