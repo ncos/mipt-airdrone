@@ -31,7 +31,8 @@
 
 boost::shared_ptr<boost::mutex> mutex_ptr;
 boost::shared_ptr<LocationServer> loc_srv;
-boost::shared_ptr<MotionServer>      msn_srv;
+boost::shared_ptr<MotionServer>   msn_srv;
+boost::shared_ptr<Advanced_Passage_finder> apf;
 
 std::string input_topic;
 std::string output_topic_mrk;
@@ -57,6 +58,8 @@ visualization_msgs::Marker line_list;
 enum POINT_COLOR {RED, GREEN, BLUE};
 void draw_point(double x, double y, int id, POINT_COLOR color)
 {
+    if (isnan(x) || isnan(y)) return;
+
     visualization_msgs::Marker marker;
 
     marker.header.frame_id = "/camera_link";
@@ -99,7 +102,7 @@ void draw_point(double x, double y, int id, POINT_COLOR color)
     }
 
     marker.color.a = 0.6;
-    marker.lifetime = ros::Duration(0.2);
+    marker.lifetime = ros::Duration(0.1);
     marker.header.stamp = ros::Time::now();
     // Publish the marker
     pub_mrk.publish(marker);
@@ -204,6 +207,7 @@ public:
             if (this->locate_passage()) { // Found door in some wall
                 result_.found = true;
                 msn_srv->move_parallel(0); // Stop movement
+                msn_srv->set_angles_current(); // And rotation
                 loc_srv->unlock();         // Releasing mutex
                 as_move_along.setSucceeded(result_); // Instantly leave the function
                 return;
@@ -223,7 +227,7 @@ public:
                 msn_srv->ref_ang  = target_angl;
                 msn_srv->ref_dist = target_dist;
                 msn_srv->move_parallel(goal->vel);
-            }
+            }/*
             else if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) > 30) {
                 double A = loc_srv->get_ref_wall()->A;
                 double B = loc_srv->get_ref_wall()->B;
@@ -243,7 +247,7 @@ public:
                                            (loc_srv->get_ref_wall()->angle * loc_srv->get_ref_wall()->angle));
                 else
                     msn_srv->move_parallel(goal->vel);
-            }
+            }*/
             else
             {
                 msn_srv->move_parallel(0);
@@ -327,12 +331,6 @@ public:
         if(pf.passage.size() <= 0)
             return false;
 
-        for (int i = 0; i < pf.passage.size(); ++i) {
-            draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0, RED);
-            draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1, RED);
-            draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2, RED);
-        }
-
         return true;
     }
 
@@ -358,11 +356,7 @@ public:
 
             loc_srv->lock();
             Passage_finder pf(*(loc_srv->get_ref_wall()));
-            for (int i = 0; i < pf.passage.size(); ++i) {
-                draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0, RED);
-                draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1, GREEN);
-                draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2, RED);
-            }
+
 
             if (pf.passage.size() == 0) {
                 ROS_WARN("No passage here (mistaken or lost)! Continue searching...");
@@ -488,11 +482,18 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
     loc_srv->spin_once(cloud);
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
-
+    apf->renew(cloud);
 
     add_l(loc_srv->get_ref_wall());
     add_l(loc_srv->get_crn_wall_left());
     add_l(loc_srv->get_crn_wall_rght());
+
+    for (int i = 0; i < apf->passages.size(); ++i) {
+        draw_point(apf->passages.at(i).kin_left.x,   apf->passages.at(i).kin_left.y,   i*3 + 0, RED);
+        draw_point(apf->passages.at(i).kin_middle.x, apf->passages.at(i).kin_middle.y, i*3 + 0, GREEN);
+        draw_point(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 0, RED);
+    }
+
 
 
     msn_srv->spin_once();
@@ -539,6 +540,7 @@ int main( int argc, char** argv )
   mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
   loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
   msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
+  apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
 
   msn_srv->set_pid_ang(ang_P, ang_I, ang_D);
   msn_srv->set_pid_vel(vel_P, vel_I, vel_D);

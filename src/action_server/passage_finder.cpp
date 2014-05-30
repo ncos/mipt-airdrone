@@ -98,7 +98,9 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
 {
     // cloud->points.at(0).x is "x" coordinate
     // cloud->points.at(0).z is "y" coordinate
+    this->passages.clear();
     const double min_width = 1.4;
+    const int max_id = cloud->points.size() - 1;
     if (cloud->points.size() < 2) return;
     for (int i = 1; i < cloud->points.size(); ++i) {
         if (this->sqrange(cloud->points.at(i-1), cloud->points.at(i)) > min_width) {
@@ -107,8 +109,22 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
     }
 
     // Check the leftmost point
+    double left_ang = atan(cloud->points.at(0).x/cloud->points.at(0).z)*180/PI;
+    double rght_ang = atan(cloud->points.at(max_id).x/cloud->points.at(max_id).z)*180/PI;
+    double left_sqdist = cloud->points.at(0).x*cloud->points.at(0).x + cloud->points.at(0).z*cloud->points.at(0).z;
+    double rght_sqdist = cloud->points.at(max_id).x*cloud->points.at(max_id).x + cloud->points.at(max_id).z*cloud->points.at(max_id).z;
 
+    //ROS_INFO("LA: %3f - %3f    %3f - %3f", left_ang, left_sqdist, rght_ang, rght_sqdist);
 
+    if ((cloud->points.at(0).z < 2.8) && (left_ang > -25)) {
+        ROS_INFO("LA: %3f - %3f", left_ang, cloud->points.at(0).z);
+        add_passage(cloud->points.at(0).x, cloud->points.at(0).z, NAN, NAN);
+    }
+
+    if ((cloud->points.at(max_id).z < 2.8) && (rght_ang <  25)) {
+        ROS_ERROR("RA: %3f - %3f", rght_ang, cloud->points.at(max_id).z);
+        add_passage(cloud->points.at(max_id).x, cloud->points.at(max_id).z, NAN, NAN);
+    }
 };
 
 

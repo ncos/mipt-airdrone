@@ -94,7 +94,7 @@ def main():
                                                            outcomes=['aborted', 'succeeded', 'wall_found']),
                                transitions={'aborted'   :'aborted',
                                             'succeeded' :'Switch wall',
-                                            'wall_found':'Approach door'} )
+                                            'wall_found':'Pause'} )
 
 
         smach.StateMachine.add('Switch wall',

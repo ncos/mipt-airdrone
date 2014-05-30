@@ -80,17 +80,6 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 	floor_filter(cloud);
 	pub_floor.publish(floor_cloud);
 	//cerr << "\tFF_sec: " << ros::Time::now().toSec() - start.toSec() << endl; start = ros::Time::now();
-
-	/*
-	for (int i = 0; i < laser_cloud->points.size(); i++)
-	{
-		cerr << atan(laser_cloud->points[i].x/laser_cloud->points[i].z)*180.0/3.14 << "\t"
-			 << laser_cloud->points[i].x << "\t" << laser_cloud->points[i].z << "\t"
-			 << endl;
-	}
-	getchar();
-	*/
-
 };
 
 
