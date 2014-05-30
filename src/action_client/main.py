@@ -111,7 +111,7 @@ def main():
                                                            result_cb = approach_door_result_cb,
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
-                                            'succeeded' :'Pause'} )
+                                            'succeeded' :'Pass door'} )
         smach.StateMachine.add('Pass door',
                                smach_ros.SimpleActionState('PassDoorAS',
                                                            PassDoorAction,

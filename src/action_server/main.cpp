@@ -241,7 +241,7 @@ public:
 
                 msn_srv->ref_ang  = target_angl;
                 msn_srv->ref_dist = target_dist;
-                ROS_INFO ("Distance: %f", distance);
+                //ROS_INFO ("Distance: %f", distance);
                 if (distance < goal->vel)
                     msn_srv->move_parallel(distance * 1 + 0.1 * loc_srv->get_ref_wall()->distance /
                                            (loc_srv->get_ref_wall()->angle * loc_srv->get_ref_wall()->angle));
@@ -430,7 +430,7 @@ public:
         msn_srv->unlock();
         while (true) {
             msn_srv->lock();
-            msn_srv->ref_ang  = 0;
+            msn_srv->ref_ang  = 15;
             msn_srv->ref_dist = door_width;
             if (fabs (loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 3) {
                 msn_srv->unlock();

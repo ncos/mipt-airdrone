@@ -39,7 +39,7 @@ void Passage_finder::add_passage (int id1, int id2, Line_param &line)
 	new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/PI;
 
 	if (new_passage.width > 1.7)
-		this->passage.push_back(new_passage);
+	    this->passage.push_back(new_passage);
 };
 
 
@@ -57,7 +57,7 @@ void Passage_finder::check_boundary (Line_param &line)
 
 	//ROS_INFO("lra %f, \tlrd %f", left_ref_angle, lra_sq_distance);
 	Passage new_passage;
-	new_passage.width += 1.8;
+	new_passage.width = 1.8;
 
 	if (lra_sq_distance < 8.0 && left_ref_angle > -25)
 	{

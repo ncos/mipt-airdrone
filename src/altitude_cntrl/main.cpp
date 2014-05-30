@@ -9,6 +9,7 @@
 #include <pcl/common/common_headers.h>
 #include <visualization_msgs/Marker.h>
 #include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Range.h>
 
 #include "pid_regulator.h"
 #include "ransac.h"
@@ -19,11 +20,9 @@ ros::Subscriber sub;
 ros::Publisher  pub_vel;
 ros::Publisher  pub_mrk;
 
-Floor_SAC floor_detector;
-
 double target_height = 0.0;
 unsigned int fear_threshold = 10;
-double max_takeoff_time = 1.0;
+double max_takeoff_time = 3.0;
 
 visualization_msgs::Marker height_text;
 
@@ -107,49 +106,22 @@ struct Fear_trigger
 
 
 
-inline bool locate_floor(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
-{
-    if (floor_cloud->points.size() < 10)
-    {
-        height_text.text = "Height = Nan";
-        pub_mrk.publish(height_text);
-        return false;
-    }
 
-    floor_detector.find_plane(floor_detector.filter(floor_cloud));
-
-    if (!floor_detector.position.is_Nan || floor_detector.position.distance_to_floor < 0)
-    {
-        char text[20];
-        sprintf(text, "Height = %f", floor_detector.position.distance_to_floor);
-        height_text.text = text;
-        pub_mrk.publish(height_text);
-        return true;
-    }
-    else
-    {
-        height_text.text = "Height = Nan";
-        pub_mrk.publish(height_text);
-        return false;
-    }
-};
-
-
-
-void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& floor_cloud)
+void callback(const sensor_msgs::Range floor_msg)
 {
     geometry_msgs::Twist base_cmd;
     PID pid_vel(1, 0.5, 0.5);
 
 
-    if (locate_floor(floor_cloud) == true)
+    if ((floor_msg.range < floor_msg.max_range) ||
+        (floor_msg.range > floor_msg.min_range))
         --fear_trigger;
     else
         ++fear_trigger;
 
 
 
-    base_cmd.linear.z = pid_vel.get_output(target_height, floor_detector.position.distance_to_floor);
+    base_cmd.linear.z = pid_vel.get_output(target_height, floor_msg.range);
 
     if (fear_trigger.decided_to_land) {
         ROS_INFO("Airdrone is landing (%2.1f s. passed)", fear_trigger.get_land_time());
@@ -185,11 +157,11 @@ int main (int argc, char** argv)
     ros::init (argc, argv, "Altitude_controller_ransac");
 
     ros::NodeHandle nh;
-    std::string input_topic  = nh.resolveName("/shrinker/depth/floor_points");
+    std::string input_topic  = nh.resolveName("/sonar_height");
     std::string output_topic = nh.resolveName("/cmd_vel_1");
     std::string output_topic_mrk = nh.resolveName("visualization_marker");
 
-    sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,  1, callback);
+    sub     = nh.subscribe<sensor_msgs::Range> (input_topic,  1, callback);
     pub_vel = nh.advertise<geometry_msgs::Twist> (output_topic, 1);
     pub_mrk = nh.advertise<visualization_msgs::Marker >     (output_topic_mrk, 5 );
 
