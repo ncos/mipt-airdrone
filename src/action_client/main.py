@@ -62,7 +62,7 @@ def approach_door_result_cb(userdata, status, result):
         return 'aborted'
     
     if status == GoalStatus.SUCCEEDED:
-        if result.succes == True:
+        if result.success == True:
             rospy.loginfo("approach_door_result_cb -> result.succes == True")
             return 'succeeded'
         return 'aborted'
@@ -110,8 +110,15 @@ def main():
                                                            goal =  ApproachDoorGoal(),
                                                            result_cb = approach_door_result_cb,
                                                            outcomes=['aborted', 'succeeded']),
-                               transitions={'aborted'   :'Move along',
-                                            'succeeded' :'Pause'} )
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Pass door'} )
+        smach.StateMachine.add('Pass door',
+                               smach_ros.SimpleActionState('PassDoorAS',
+                                                           PassDoorAction,
+                                                           goal =  PassDoorGoal(vel=0.8),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Move along'} )
         
     # Create and start the introspection server
     sis = smach_ros.IntrospectionServer('introspection_server', sm0, '/STATE_MASHINE')

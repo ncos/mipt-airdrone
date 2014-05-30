@@ -23,7 +23,7 @@ Floor_SAC floor_detector;
 
 double target_height = 0.0;
 unsigned int fear_threshold = 10;
-double max_takeoff_time = 3.0;
+double max_takeoff_time = 1.0;
 
 visualization_msgs::Marker height_text;
 
