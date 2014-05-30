@@ -111,7 +111,14 @@ def main():
                                                            result_cb = approach_door_result_cb,
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
-                                            'succeeded' :'Pause'} )
+                                            'succeeded' :'Pass door'} )
+        smach.StateMachine.add('Pass door',
+                               smach_ros.SimpleActionState('PassDoorAS',
+                                                           PassDoorAction,
+                                                           goal =  PassDoorGoal(vel=0.8),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Move along'} )
         
     # Create and start the introspection server
     sis = smach_ros.IntrospectionServer('introspection_server', sm0, '/STATE_MASHINE')
