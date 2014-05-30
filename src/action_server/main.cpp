@@ -20,7 +20,6 @@
 // Action description files (check the /action dir)
 #include <action_server/MoveAlongAction.h>
 #include <action_server/SwitchWallAction.h>
-#include <action_server/RotationAction.h>
 #include <action_server/ApproachDoorAction.h>
 #include <action_server/PassDoorAction.h>
 
@@ -54,9 +53,9 @@ visualization_msgs::Marker line_list;
 
 
 
-
 // Draw in kinect coordinates
-void draw_point(double x, double y, int id)
+enum POINT_COLOR {RED, GREEN, BLUE};
+void draw_point(double x, double y, int id, POINT_COLOR color)
 {
     visualization_msgs::Marker marker;
 
@@ -76,13 +75,31 @@ void draw_point(double x, double y, int id)
     marker.scale.z = 0.1;
 
     // Set the color -- be sure to set alpha to something non-zero!
-    marker.color.r = 1.0f;
-    marker.color.g = 0.0f;
-    marker.color.b = 0.0f;
+    switch (color)
+    {
+    case RED:
+        marker.color.r = 1.0f;
+        marker.color.g = 0.0f;
+        marker.color.b = 0.0f;
+        break;
+    case GREEN:
+        marker.color.r = 0.0f;
+        marker.color.g = 1.0f;
+        marker.color.b = 0.0f;
+        break;
+    case BLUE:
+        marker.color.r = 0.0f;
+        marker.color.g = 0.0f;
+        marker.color.b = 1.0f;
+        break;
+    default:
+        marker.color.r = 1.0f;
+        marker.color.g = 0.0f;
+        marker.color.b = 0.0f;
+    }
+
     marker.color.a = 0.6;
-
     marker.lifetime = ros::Duration(0.2);
-
     marker.header.stamp = ros::Time::now();
     // Publish the marker
     pub_mrk.publish(marker);
@@ -133,57 +150,16 @@ public:
     ActionServer(ros::NodeHandle nh_) :
         as_move_along   (nh_, "MoveAlongAS",     boost::bind(&ActionServer::moveAlongCB,    this, _1), false),
         as_switch_wall  (nh_, "SwitchWallAS",    boost::bind(&ActionServer::switchWallCB,   this, _1), false),
-        as_rotation     (nh_, "RotationAS",      boost::bind(&ActionServer::rotationCB,     this, _1), false),
         as_approach_door(nh_, "ApproachDoorAS",  boost::bind(&ActionServer::approachDoorCB, this, _1), false),
-        as_pass_door    (nh_, "PassDoorAS",       boost::bind(&ActionServer::passDoorCB,     this, _1), false)
+        as_pass_door    (nh_, "PassDoorAS",      boost::bind(&ActionServer::passDoorCB,     this, _1), false)
     {
-        as_move_along.   start();
-        as_switch_wall.  start();
-        as_rotation.     start();
+        as_move_along   .start();
+        as_switch_wall  .start();
         as_approach_door.start();
         as_pass_door    .start();
     }
 
     ~ActionServer(void) {}
-
-
-    void rotationCB(const action_server::RotationGoalConstPtr &goal)
-    {
-        ros::Rate r(60);
-        action_server::RotationFeedback feedback_;
-        action_server::RotationResult result_;
-
-        // TODO: Rewrite the function as it uses obsolete interfaces
-        msn_srv->rotate(goal->angle);
-        double current_yaw = loc_srv->get_yaw();
-        double target_yaw  = loc_srv->get_yaw() + goal->angle;
-
-        mutex_ptr->lock();
-        ROS_ERROR("RotationCB");
-        mutex_ptr->unlock();
-
-        feedback_.percentage = 0;
-        while(feedback_.percentage < 80) {
-            mutex_ptr->lock();
-            ROS_ERROR("RotationCB - processing");
-            mutex_ptr->unlock();
-
-
-            if (as_rotation.isPreemptRequested() || !ros::ok()) {
-                ROS_INFO("rotation: Preempted");
-                as_rotation.setAborted(result_);
-                break;
-            }
-            feedback_.percentage = 100 - fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang)/goal->angle * 100;
-            as_rotation.publishFeedback(feedback_);
-            r.sleep();
-        }
-        result_.success = true;
-        result_.percentage = feedback_.percentage;
-        as_rotation.setSucceeded(result_);
-    }
-
-
 
 
     void moveAlongCB (const action_server::MoveAlongGoalConstPtr     &goal)
@@ -243,7 +219,6 @@ public:
             //
             // Movement sustain
             //
-            // TODO: Try to start movement before the angle is completely set
             if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
                 msn_srv->ref_ang  = target_angl;
                 msn_srv->ref_dist = target_dist;
@@ -255,10 +230,8 @@ public:
                 double C = loc_srv->get_ref_wall()->C;
                 double p_x = - (A * C) / (A * A + B * B);
                 double p_y = - (B * C) / (A * A + B * B);
-                draw_point(p_x, p_y, 666);
                 double p_x1 = loc_srv->get_ref_wall()->kin_inliers.at(0).x;
                 double p_y1 = loc_srv->get_ref_wall()->kin_inliers.at(0).y;
-                draw_point(p_x1, p_y1, 667);
 
                 double distance = (p_x - p_x1) * (p_x - p_x1) + (p_y - p_y1) * (p_y - p_y1);
 
@@ -354,10 +327,10 @@ public:
         if(pf.passage.size() <= 0)
             return false;
 
-        for (int i = 0; i < pf.passage.size(); i++) {
-            draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0);
-            draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1);
-            draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2);
+        for (int i = 0; i < pf.passage.size(); ++i) {
+            draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0, RED);
+            draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1, RED);
+            draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2, RED);
         }
 
         return true;
@@ -371,7 +344,6 @@ public:
         action_server::ApproachDoorFeedback feedback_;
         ros::Rate r(60);
 
-        // TODO: Rewrite this function so it can accept passage coordinates instead of searching for it again
         while (true) {
 
             if (as_approach_door.isPreemptRequested() || !ros::ok()) {
@@ -386,15 +358,14 @@ public:
 
             loc_srv->lock();
             Passage_finder pf(*(loc_srv->get_ref_wall()));
-            for (int i = 0; i < pf.passage.size(); i++) {
-                draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0);
-                draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1);
-                draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2);
+            for (int i = 0; i < pf.passage.size(); ++i) {
+                draw_point(pf.passage.at(i).kin_middle.x, pf.passage.at(i).kin_middle.y, i*3 + 0, RED);
+                draw_point(pf.passage.at(i).kin_left.x,   pf.passage.at(i).kin_left.y,   i*3 + 1, GREEN);
+                draw_point(pf.passage.at(i).kin_rght.x,   pf.passage.at(i).kin_rght.y,   i*3 + 2, RED);
             }
 
             if (pf.passage.size() == 0) {
-                ROS_WARN("No passage here (mistaken or lost)!");
-                // TODO: Handle errors (no passage, continue search)
+                ROS_WARN("No passage here (mistaken or lost)! Continue searching...");
                 loc_srv->unlock();
                 result_.success = false;
                 as_approach_door.setAborted(result_);
@@ -413,15 +384,15 @@ public:
                     msn_srv->ref_ang = 55;
                     loc_srv->unlock(); // Release the mutex
                     result_.success = true;
-                    result_.x = pf.passage.at(0).kin_middle.x; // TODO: Check that
-                    result_.y = pf.passage.at(0).kin_middle.y; // TODO: Check that
+                    result_.x = pf.passage.at(0).kin_middle.x;
+                    result_.y = pf.passage.at(0).kin_middle.y;
                     as_approach_door.setSucceeded(result_);
                     return;
                 }
             }
 
-            feedback_.x = pf.passage.at(0).kin_middle.x; // TODO: Check that
-            feedback_.y = pf.passage.at(0).kin_middle.y; // TODO: Check that
+            feedback_.x = pf.passage.at(0).kin_middle.x;
+            feedback_.y = pf.passage.at(0).kin_middle.y;
             loc_srv->unlock();
             as_approach_door.publishFeedback(feedback_);
             r.sleep();
@@ -430,7 +401,7 @@ public:
 
 
     void passDoorCB(const action_server::PassDoorGoalConstPtr  &goal) {
-        //TODO: Change for door on left sight
+        // TODO: Change for door on left sight
         action_server::PassDoorResult   result_;
         action_server::PassDoorFeedback feedback_;
 
@@ -492,9 +463,8 @@ private:
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.
     actionlib::SimpleActionServer<action_server::MoveAlongAction>    as_move_along;
     actionlib::SimpleActionServer<action_server::SwitchWallAction>   as_switch_wall;
-    actionlib::SimpleActionServer<action_server::RotationAction>       as_rotation;
     actionlib::SimpleActionServer<action_server::ApproachDoorAction> as_approach_door;
-    actionlib::SimpleActionServer<action_server::PassDoorAction>      as_pass_door;
+    actionlib::SimpleActionServer<action_server::PassDoorAction>     as_pass_door;
 };
 
 
@@ -518,42 +488,6 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
     loc_srv->spin_once(cloud);
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
-
-/*
-// Actually pass through door
-    if(in_front_of_passage)
-    {
-        if(fabs(loc_srv.get_ref_wall()->angle - msn_srv.ref_ang) < 5 ) {
-            if(!loc_srv.obstacle_detected_rght() && ready_to_enter) ROS_ERROR("CANT SEE WALL ON THE RIGHT");
-        }
-
-
-        if( loc_srv.obstacle_detected_rght() && ready_to_enter) {
-            ROS_INFO("in_front_of_passage");
-            loc_srv.track_wall(loc_srv.get_crn_wall_rght());
-            msn_srv.set_ref_wall(loc_srv.get_ref_wall());
-            msn_srv.ref_dist = loc_srv.get_ref_wall()->distance;
-            msn_srv.ref_ang = 20;
-            ready_to_enter = false;
-        }
-
-
-        if(!ready_to_enter) {
-            move_along(movement_speed, 20, msn_srv.ref_dist);
-
-
-            if(loc_srv.obstacle_detected_rght()) {
-                ROS_ERROR("ON THE RIGHT");
-
-                left_wall_with_door = false;
-                in_front_of_passage = false;
-                unexplored_wall = false;
-            }
-        }
-    }
-*/
-
-
 
 
     add_l(loc_srv->get_ref_wall());
@@ -598,7 +532,7 @@ int main( int argc, char** argv )
   output_topic_mrk = nh.resolveName("visualization_marker");
   output_topic_vel = nh.resolveName("/cmd_vel_2");
 
-  sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,  1, callback);
+  sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,      1, callback);
   pub_mrk = nh.advertise<visualization_msgs::Marker >     (output_topic_mrk, 5 );
   pub_vel = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
 

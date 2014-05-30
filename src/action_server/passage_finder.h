@@ -23,13 +23,19 @@ struct Passage
 	pcl::PointXY kin_middle;
 	pcl::PointXY kin_left;
 	pcl::PointXY kin_rght;
+	bool is_nan;
 	double mid_ang, left_ang, rght_ang;
 
 	Passage () : mid_ang(0), left_ang(0), rght_ang(0)
 	{
-		width = 0.0;
-		kin_middle.x = 0.0;
-		kin_middle.y = 0.0;
+		width = NAN;
+		kin_middle.x = NAN;
+		kin_middle.y = NAN;
+		kin_left.x   = NAN;
+		kin_left.y   = NAN;
+		kin_rght.x   = NAN;
+		kin_rght.y   = NAN;
+		is_nan = true;
 	}
 };
 
@@ -48,10 +54,25 @@ class Passage_finder // Da Passage findr! (looks for holes in walls)
 {
 public:
 	std::vector<Passage> passage;
-	Passage_finder (Line_param &line);
+	Passage_finder(Line_param &line);
 private:
 	void add_passage(int id1, int id2, Line_param &line);
 	void check_boundary(Line_param &line);
+};
+
+
+
+class Advanced_Passage_finder // Da ADVANCED Passage findr! (looks for holes in walls and is better than Passage findr)
+{
+public:
+    std::vector<Passage> passages;
+    void renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud);
+    bool passage_on_line(Line_param &line, Passage &passage);
+    Line_param *get_best_line(Passage &passage, Line_map &linemap);
+
+private:
+    void add_passage(double point1x, double point1y, double point2x, double point2y);
+    double sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2);
 };
 
 

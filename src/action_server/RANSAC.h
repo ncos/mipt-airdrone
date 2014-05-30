@@ -32,6 +32,7 @@ public:
 	double angle; // with the ldir_vec
 	double distance, A, B, C;
 	bool on_left;
+	int quality; // How good we can see this line
 	std::vector<pcl::PointXY> kin_inliers;
 	struct LDirection
 	{
@@ -111,22 +112,28 @@ public:
 	    	else this->angle = 90;
 	    }
 	    else this->angle = atan(this->ldir_vec.kin.y / fabs(this->ldir_vec.kin.x))*180.0/PI;
-	    if(this->angle > 0 && this->ldir_vec.kin.x < 0) this->angle += 90;
-	    if(this->angle < 0 && this->ldir_vec.kin.x < 0) this->angle -= 90;
+	    if (this->angle > 0 && this->ldir_vec.kin.x < 0) this->angle += 90;
+	    if (this->angle < 0 && this->ldir_vec.kin.x < 0) this->angle -= 90;
 
-	    this->distance = fabs( coefficients->values[2]*coefficients->values[3]
-	                         - coefficients->values[0]*coefficients->values[5] );
+	    this->distance = fabs( this->C );
 
-	    for (int i = 0; i < inliers_idx->indices.size(); i++)
+	    for (int i = 0; i < inliers_idx->indices.size(); ++i)
 	    {
 	    	pcl::PointXY point;
 	    	point.x = cloud->points.at(inliers_idx->indices.at(i)).x;
 	    	point.y = cloud->points.at(inliers_idx->indices.at(i)).z;
 	    	this->kin_inliers.push_back(point);
 	    }
+
+	    this->quality = this->kin_inliers.size();
 	};
 
+	double distance_to_point(double x, double y)
+	{
+	    return fabs(this->A * x + this->B * y + this->C);
+	};
 
+private:
 	void normalize(pcl::ModelCoefficients::Ptr coefficients)
 	{
 		// line direction coordinates in kinect frame:

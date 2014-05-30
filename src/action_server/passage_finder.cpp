@@ -8,7 +8,7 @@ Passage_finder::Passage_finder (Line_param &line)
 {
 	const double critical_angle = 11.0;
 	double ref_angle = atan(line.kin_inliers.at(0).x/line.kin_inliers.at(0).y)*180/PI;
-	for (int i = 1; i < line.kin_inliers.size(); i++)
+	for (int i = 1; i < line.kin_inliers.size(); ++i)
 	{
 		double current_angle = atan(line.kin_inliers.at(i).x/line.kin_inliers.at(i).y)*180/PI;
 		if (fabs(current_angle - ref_angle) > critical_angle) this->add_passage (i-1, i, line);
@@ -59,7 +59,7 @@ void Passage_finder::check_boundary (Line_param &line)
 	Passage new_passage;
 	new_passage.width += 1.8;
 
-	if(lra_sq_distance < 8.0 && left_ref_angle > -25)
+	if (lra_sq_distance < 8.0 && left_ref_angle > -25)
 	{
 		new_passage.kin_left.x = line.kin_inliers.at(0).x - (new_passage.width)*line.ldir_vec.kin.x;
 		new_passage.kin_left.y = line.kin_inliers.at(0).y - (new_passage.width)*line.ldir_vec.kin.y;
@@ -76,7 +76,7 @@ void Passage_finder::check_boundary (Line_param &line)
 		this->passage.push_back(new_passage);
 	}
 /*
-	if(rght_ref_angle < 29)
+	if (rght_ref_angle < 29)
 	{
 		new_passage.kin_middle.x = line.kin_inliers.at(line.kin_inliers.size() - 1).x + 0.9*line.ldir_vec.kin.x;
 		new_passage.kin_middle.y = line.kin_inliers.at(line.kin_inliers.size() - 1).y + 0.9*line.ldir_vec.kin.y;
@@ -86,17 +86,109 @@ void Passage_finder::check_boundary (Line_param &line)
 };
 
 
+
+
+
+
+// *****************************************
+//              Advanced Passage Finder
+// *****************************************
+
+void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud)
+{
+    // cloud->points.at(0).x is "x" coordinate
+    // cloud->points.at(0).z is "y" coordinate
+    const double min_width = 1.4;
+    if (cloud->points.size() < 2) return;
+    for (int i = 1; i < cloud->points.size(); ++i) {
+        if (this->sqrange(cloud->points.at(i-1), cloud->points.at(i)) > min_width) {
+            this->add_passage(cloud->points.at(i-1).x, cloud->points.at(i-1).z, cloud->points.at(i).x, cloud->points.at(i).z);
+        }
+    }
+
+    // Check the leftmost point
+
+
+};
+
+
+void Advanced_Passage_finder::add_passage(double point1x, double point1y, double point2x, double point2y)
+{
+    Passage new_passage;
+
+    if (!isnan(point1x) && !isnan(point1y) && !isnan(point2x) && !isnan(point2y))
+        new_passage.is_nan = false;
+
+    new_passage.kin_left.x = point1x;
+    new_passage.kin_left.y = point1y;
+    new_passage.kin_rght.x = point2x;
+    new_passage.kin_rght.y = point2y;
+
+    new_passage.width += pow(point1x - point2x, 2.0);
+    new_passage.width += pow(point1y - point2y, 2.0);
+    new_passage.width =  sqrt(new_passage.width);
+
+    new_passage.kin_middle.x = (point1x + point2x)/2;
+    new_passage.kin_middle.y = (point1y + point2y)/2;
+
+    new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/PI;
+    new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/PI;
+    new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/PI;
+
+    this->passages.push_back(new_passage);
+};
+
+
+
+bool Advanced_Passage_finder::passage_on_line(Line_param &line, Passage &passage)
+{
+    const double eps = 0.1; // How close should be the passage border to the line
+
+    if (line.distance_to_point(passage.kin_left.x, passage.kin_left.y) < eps) return true;
+    if (line.distance_to_point(passage.kin_rght.x, passage.kin_rght.y) < eps) return true;
+
+    return false;
+};
+
+
+Line_param* Advanced_Passage_finder::get_best_line(Passage &passage, Line_map &linemap)
+{
+    const double eps = 0.1; // How close should be the passage border to the line
+    const int min_quality = 10;
+
+    int best_quality = 0, best_i = 0;
+    for (int i = 0; i < linemap.lines.size(); ++i) {
+        if ((linemap.lines.at(i).distance_to_point(passage.kin_left.x, passage.kin_left.y) < eps)
+           && (linemap.lines.at(i).quality > best_quality))
+        {
+            best_quality = linemap.lines.at(i).quality;
+            best_i = i;
+        }
+    }
+
+    if (best_quality < min_quality) return NULL;
+    return &linemap.lines.at(best_i);
+};
+
+
+double Advanced_Passage_finder::sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2)
+{
+    return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
+};
+
+
+
 // *****************************************
 // 				Location server
 // *****************************************
 void LocationServer::track_wall(Line_param *wall)
 {
-	if(wall == NULL) {
+	if (wall == NULL) {
 		ROS_ERROR("LocationServer::track_wall argument is NULL");
 		return;
 	}
 
-	if(this->ref_wall == NULL) {
+	if (this->ref_wall == NULL) {
 		this->yaw = wall->angle;
 	}
 
@@ -112,7 +204,7 @@ void LocationServer::track_wall(Line_param *wall)
 
 void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
-    if(cloud->points.size() < 10) {
+    if (cloud->points.size() < 10) {
         ROS_WARN("The cloud is empty. Location server is unable to provide pose estimation. Skipping...");
         if (this->ref_wall != NULL) {
             this->ref_wall->found = false;
@@ -120,7 +212,7 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
         return;
     };
 
-    if(this->ref_wall == NULL) {
+    if (this->ref_wall == NULL) {
     	ROS_WARN("No ref_wall. Using random!");
     };
 
@@ -128,7 +220,7 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
     this->ref_wall = this->lm.get_best_fit(this->stm.angle, this->stm.distance);
 
 
-    if(!this->ref_wall->found) { this->lost_ref_wall = true; ROS_WARN("Lost ref_wall"); }
+    if (!this->ref_wall->found) { this->lost_ref_wall = true; ROS_WARN("Lost ref_wall"); }
     else this->lost_ref_wall = false;
     double d_angle = this->stm.angle - this->ref_wall->angle;
     this->stm.angle = this->ref_wall->angle;
@@ -146,7 +238,7 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
 
 bool LocationServer::obstacle_detected_left ()
 {
-	if(this->corner_wall_left == NULL) return false;
+	if (this->corner_wall_left == NULL) return false;
 	return true;
 };
 
@@ -154,7 +246,7 @@ bool LocationServer::obstacle_detected_left ()
 
 bool LocationServer::obstacle_detected_rght ()
 {
-	if(this->corner_wall_rght == NULL) return false;
+	if (this->corner_wall_rght == NULL) return false;
 	return true;
 };
 
@@ -173,21 +265,21 @@ void MotionServer::clear_cmd ()
 
 void MotionServer::set_ref_wall (Line_param *wall)
 {
-	if(wall == NULL) {
+	if (wall == NULL) {
 		ROS_ERROR("MotionServer::set_ref_wall argument is NULL");
 		return;
 	}
 
 	this->ref_wall = wall;
 
-	if(!wall->found)
+	if (!wall->found)
 		this->set_angles_current();
 };
 
 
 void MotionServer::set_angles_current ()
 {
-	if(this->ref_wall == NULL) {
+	if (this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::set_angles_current ref_wall == NULL");
 		return;
 	}
@@ -199,7 +291,7 @@ void MotionServer::set_angles_current ()
 
 bool MotionServer::rotate(double angle)
 {
-	if(this->ref_wall == NULL) {
+	if (this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::rotate ref_wall == NULL");
 		return false;
 	}
@@ -211,7 +303,7 @@ bool MotionServer::rotate(double angle)
 
 bool MotionServer::move_parallel(double vel)
 {
-	if(this->ref_wall == NULL) {
+	if (this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::move_parallel ref_wall == NULL");
 		return false;
 	}
@@ -225,7 +317,7 @@ bool MotionServer::move_parallel(double vel)
 
 bool MotionServer::move_perpendicular(double shift)
 {
-    if(this->ref_wall == NULL) {
+    if (this->ref_wall == NULL) {
         ROS_ERROR("MotionServer::move_perpendicular ref_wall == NULL");
         return false;
     }
@@ -237,12 +329,12 @@ bool MotionServer::move_perpendicular(double shift)
 
 void MotionServer::spin_once()
 {
-	if(this->ref_wall == NULL) {
+	if (this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::spin_once ref_wall == NULL");
 		return;
 	}
 
-	if(this->ref_dist < 0.6) {
+	if (this->ref_dist < 0.6) {
     	ROS_WARN("Invalid ref_dist (%f)", this->ref_dist);
 		this->ref_dist = 0.6;
 	}
