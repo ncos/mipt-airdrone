@@ -339,7 +339,6 @@ public:
     void approachDoorCB(const action_server::ApproachDoorGoalConstPtr  &goal)
     {
         action_server::ApproachDoorResult   result_;
-        action_server::ApproachDoorFeedback feedback_;
         ros::Rate r(60);
 
         while (true) {
@@ -355,10 +354,8 @@ public:
             }
 
             loc_srv->lock();
-            Passage_finder pf(*(loc_srv->get_ref_wall()));
 
-
-            if (pf.passage.size() == 0) {
+            if (apf->passages.size() == 0) {
                 ROS_WARN("No passage here (mistaken or lost)! Continue searching...");
                 loc_srv->unlock();
                 result_.success = false;
@@ -366,29 +363,14 @@ public:
                 return;
             }
             else {
-                msn_srv->ref_ang = loc_srv->get_ref_wall()->angle + pf.passage.at(0).rght_ang + 15;
-
                 // TODO: Always choosing the "0" passage. Maybe better the closest?
-                double err_shift = loc_srv->get_ref_wall()->ldir_vec.kin.x * pf.passage.at(0).kin_middle.x +
-                                   loc_srv->get_ref_wall()->ldir_vec.kin.y * pf.passage.at(0).kin_middle.y;
 
-                msn_srv->move_parallel(-vel_P * movement_speed * err_shift);
-                msn_srv->ref_dist = 1.2;
-                if (fabs(err_shift) < 0.1) {
-                    msn_srv->ref_ang = 55;
-                    loc_srv->unlock(); // Release the mutex
-                    result_.success = true;
-                    result_.x = pf.passage.at(0).kin_middle.x;
-                    result_.y = pf.passage.at(0).kin_middle.y;
-                    as_approach_door.setSucceeded(result_);
-                    return;
-                }
+                as_approach_door.setSucceeded(result_);
+                return;
             }
 
-            feedback_.x = pf.passage.at(0).kin_middle.x;
-            feedback_.y = pf.passage.at(0).kin_middle.y;
+
             loc_srv->unlock();
-            as_approach_door.publishFeedback(feedback_);
             r.sleep();
         }
     }

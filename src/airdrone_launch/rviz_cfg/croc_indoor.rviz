@@ -129,8 +129,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 17.2202
-        Min Value: 16.3363
+        Max Value: -15.1867
+        Min Value: -17.1136
         Value: true
       Axis: X
       Channel Name: intensity
@@ -151,7 +151,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.01
       Style: Flat Squares
-      Topic: /shrinker/depth/floor_points
+      Topic: /shrinker/depth/laser_points
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -160,6 +160,7 @@ Visualization Manager:
       Marker Topic: visualization_marker
       Name: Marker
       Namespaces:
+        basic_shapes: true
         lines_ns: true
         text_ns: true
       Queue Size: 100
@@ -188,7 +189,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 16.3374
+      Distance: 7.35028
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -200,10 +201,10 @@ Visualization Manager:
         Z: -0.674569
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.594797
+      Pitch: 1.2348
       Target Frame: base_stabilized
       Value: Orbit (rviz)
-      Yaw: 4.2654
+      Yaw: 2.6704
     Saved: ~
 Window Geometry:
   Camera:

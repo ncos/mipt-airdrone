@@ -65,7 +65,7 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 	pcl::PassThrough<pcl::PointXYZ> pass;
 	pass.setInputCloud (cloud);
 	pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
-	pass.setFilterLimits (-0.7, -0.6);  // (-0.7, -0.6)
+	pass.setFilterLimits (-0.3, -0.2);  // (-0.3, -0.2)
 	pass.filter (*laser_cloud);
 
 	for (int i = 0; i < laser_cloud->points.size(); i++)

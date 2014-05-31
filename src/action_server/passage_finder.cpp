@@ -22,7 +22,7 @@ void Passage_finder::add_passage (int id1, int id2, Line_param &line)
 {
 	Passage new_passage;
 
-	new_passage.width += pow(line.kin_inliers.at(id1).x - line.kin_inliers.at(id2).x, 2.0);
+	new_passage.width  = pow(line.kin_inliers.at(id1).x - line.kin_inliers.at(id2).x, 2.0);
 	new_passage.width += pow(line.kin_inliers.at(id1).y - line.kin_inliers.at(id2).y, 2.0);
 	new_passage.width =  sqrt(new_passage.width);
 
@@ -123,7 +123,7 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
 
     if ((cloud->points.at(max_id).z < 2.8) && (rght_ang <  25)) {
         ROS_ERROR("RA: %3f - %3f", rght_ang, cloud->points.at(max_id).z);
-        add_passage(cloud->points.at(max_id).x, cloud->points.at(max_id).z, NAN, NAN);
+        add_passage(NAN, NAN, cloud->points.at(max_id).x, cloud->points.at(max_id).z);
     }
 };
 

@@ -114,10 +114,21 @@ void callback(const sensor_msgs::Range floor_msg)
 
 
     if ((floor_msg.range < floor_msg.max_range) ||
-        (floor_msg.range > floor_msg.min_range))
+        (floor_msg.range > floor_msg.min_range)) {
         --fear_trigger;
-    else
+        char text[20];
+        sprintf(text, "Height = %f", floor_msg.range);
+        height_text.text = text;
+        pub_mrk.publish(height_text);
+    }
+    else {
+        height_text.text = "Height = Nan";
+        pub_mrk.publish(height_text);
         ++fear_trigger;
+    }
+
+
+
 
 
 
