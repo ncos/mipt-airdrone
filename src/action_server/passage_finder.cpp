@@ -281,8 +281,7 @@ void MotionServer::clear_cmd ()
 
 void MotionServer::set_ref_wall (Line_param *wall)
 {
-	this->tracking_on = true;
-    if (wall == NULL) {
+	if (wall == NULL) {
 		ROS_ERROR("MotionServer::set_ref_wall argument is NULL");
 		return;
 	}
@@ -292,6 +291,10 @@ void MotionServer::set_ref_wall (Line_param *wall)
 	if (!wall->found)
 		this->set_angles_current();
 };
+
+void MotionServer::track () {
+    this->tracking_on = true;
+}
 
 void MotionServer::untrack()
 {
@@ -351,7 +354,7 @@ bool MotionServer::move_perpendicular(double shift)
 
 void MotionServer::spin_once()
 {
-	if (this->tracking_on && this->ref_wall == NULL) {
+    if (this->tracking_on && this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::spin_once ref_wall == NULL");
 		return;
 	}
@@ -362,16 +365,15 @@ void MotionServer::spin_once()
 	}
 
 	if (this->tracking_on) {
-	    this->base_cmd.angular.z = 0;
-	    this->base_cmd.linear.x  += buf_cmd.linear.x;
-	    this->base_cmd.linear.y  += buf_cmd.linear.y;
-	}
-	else {
 	    this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
 
-	    double vel_k = - this->pid_vel.get_output(this->ref_dist, this->ref_wall->distance);
-	    this->base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + buf_cmd.linear.x;
-	    this->base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + buf_cmd.linear.y;
+        double vel_k = - this->pid_vel.get_output(this->ref_dist, this->ref_wall->distance);
+        this->base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + this->buf_cmd.linear.x;
+        this->base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + this->buf_cmd.linear.y;
+	}
+	else {
+	    this->base_cmd.linear.x  += this->buf_cmd.linear.x;
+	    this->base_cmd.linear.y  += this->buf_cmd.linear.y;
 	}
 };
 
@@ -383,26 +385,52 @@ void MotionServer::spin_once()
 // *****************************************
 MappingServer::MappingServer(ros::NodeHandle _nh, std::string inp_topic)
 {
-    position.x = 0;
-    position.y = 0;
+    init_flag =   false; // Look into class defenition
+    offset_cmd.x =    0;
+    offset_cmd.y =    0;
+    distance.x =      0;
+    distance.y =      0;
+    position_prev.x = 0;
+    position_prev.y = 0;
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     std::string topic = _nh.resolveName(inp_topic);
     sub = _nh.subscribe<geometry_msgs::PoseStamped> (topic, 1,  &MappingServer::callback, this);
 }
 
-void MappingServer::callback (geometry_msgs::PoseStamped pos_msg)
+void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
 {
     this->lock();
+
+    if (init_flag == false) {
+        position_prev.x = pos_msg.pose.position.x;
+        position_prev.y = pos_msg.pose.position.y;
+        init_flag = true;
+        this->unlock();
+        return;
+    }
+
+    pcl::PointXY position;
     position.x = pos_msg.pose.position.x;
     position.y = pos_msg.pose.position.y;
-    //ROS_INFO("x: %f\t y: %f", position.x, position.y);
+    double alpha = PI/2 - 2 * asin (fabs(pos_msg.pose.orientation.z)) - kinect_angl * PI / 180.0; // Fucking magic: sin(pi/4-a/2) and offset for kinect turn
+    pcl::PointXY offset; // Offset in gazebo
+    offset.x = (position.x - position_prev.x);
+    offset.y = (position.y - position_prev.y);
+    offset_cmd.x = offset.x * cos (alpha) - offset.y * sin (alpha);
+    offset_cmd.y = offset.x * sin (alpha) + offset.y * cos (alpha);
+    //ROS_INFO("Offset: %f\t %f\n alpha: %f", offset_cmd.x, offset_cmd.y, alpha);
+    distance.x += offset_cmd.x;
+    distance.y += offset_cmd.y;
+    position_prev.x = position.x;
+    position_prev.y = position.y;
+    //ROS_INFO("Offset: x: %f\t y: %f\n Distance: x: %f\t y: %f\n", offset_cmd.x, offset_cmd.x, distance.x, distance.y);
     this->unlock();
 };
 
 pcl::PointXY MappingServer::get_positon()
 {
     this->lock();
-    pcl::PointXY ret = position;
+    pcl::PointXY ret = distance;
     this->unlock();
-    return ret;
+    return distance;
 }

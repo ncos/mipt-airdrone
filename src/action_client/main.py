@@ -94,7 +94,7 @@ def main():
                                                            outcomes=['aborted', 'succeeded', 'wall_found']),
                                transitions={'aborted'   :'aborted',
                                             'succeeded' :'Switch wall',
-                                            'wall_found':'Pause'} )
+                                            'wall_found':'Approach door'} )
 
 
         smach.StateMachine.add('Switch wall',
@@ -111,7 +111,7 @@ def main():
                                                            result_cb = approach_door_result_cb,
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
-                                            'succeeded' :'Pass door'} )
+                                            'succeeded' :'Pause'} )
         smach.StateMachine.add('Pass door',
                                smach_ros.SimpleActionState('PassDoorAS',
                                                            PassDoorAction,

@@ -17,6 +17,9 @@
 #include "RANSAC.h"
 #include "pid_regulator.h"
 
+//TODO: Make a normal constant
+const double kinect_angl = 45;
+
 
 struct Passage
 {
@@ -138,6 +141,7 @@ public:
 	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
 	void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
 	void set_ref_wall (Line_param *wall);
+	void track ();
 	void untrack ();
 	void set_angles_current ();
 	bool rotate(double angle);
@@ -159,9 +163,9 @@ class MappingServer
 private:
     boost::shared_ptr<boost::mutex> mutex;
     ros::Subscriber sub;
-
-public:
-    pcl::PointXY position;
+    pcl::PointXY position_prev; // In gazebo
+    pcl::PointXY offset_cmd, distance; // Real copter
+    bool init_flag; // Need to fix bug with start position in gazebo
 
 
 public:

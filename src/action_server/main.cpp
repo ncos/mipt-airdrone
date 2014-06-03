@@ -50,6 +50,7 @@ double ang_P = 0.0, ang_I = 0.0, ang_D = 0.0;
 double target_dist = 0.0;
 double target_angl = 0.0;
 double movement_speed = 0.0;
+double move_epsilon = 0.1;
 
 visualization_msgs::Marker line_list;
 
@@ -175,6 +176,7 @@ public:
 
         while (true) {
             loc_srv->lock();
+            msn_srv->track();
             msn_srv->ref_ang = target_angl; // Face along the wall
 
             //
@@ -336,10 +338,41 @@ public:
         return true;
     }
 
+    void move(pcl::PointXY dir, double vel)
+    {
+        ros::Rate r(60);
+        pcl::PointXY pos = map_srv->get_positon();
+        pcl::PointXY end, vec;
+        end.x = pos.x + dir.x;
+        end.y = pos.y + dir.y;
+        //ROS_ERROR("Start: x: %f\t %f", pos.x, pos.y);
+        //ROS_ERROR("End: x: %f\t %f", end.x, end.y);
+        while (true)
+        {
+            msn_srv->lock();
+            pos = map_srv->get_positon();
+            vec.x = end.x - pos.x;
+            vec.y = end.y - pos.y;
+            double len = sqrt (vec.x * vec.x + vec.y * vec.y);
+            if (len < move_epsilon) {
+                msn_srv->unlock();
+                //ROS_ERROR("Move done");
+                break;
+            }
+            vec.x /= len;
+            vec.y /= len;
 
+            msn_srv->buf_cmd.linear.x = vec.x*0.1;
+            msn_srv->buf_cmd.linear.y = vec.y*0.1;
+            //ROS_INFO("Pos: x: %f\t %f\n  Vec: x: %f\t %f\n  End: x: %f\t %f", pos.x, pos.y, msn_srv->buf_cmd.linear.x, msn_srv->buf_cmd.linear.y, end.x, end.y);
+            msn_srv->unlock();
+            r.sleep();
+        }
+    }
 
     void approachDoorCB(const action_server::ApproachDoorGoalConstPtr  &goal)
     {
+        /*
         action_server::ApproachDoorResult   result_;
         ros::Rate r(60);
 
@@ -375,6 +408,16 @@ public:
             loc_srv->unlock();
             r.sleep();
         }
+        */
+        action_server::ApproachDoorResult   result_;
+        ros::Rate r(60);
+        pcl::PointXY vec;
+        vec.x = 0;
+        vec.y = 2;
+        msn_srv->untrack();
+        move (vec, 0.4);
+        as_approach_door.setSucceeded(result_);
+        return;
     }
 
 
