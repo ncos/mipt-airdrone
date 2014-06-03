@@ -117,12 +117,12 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
     //ROS_INFO("LA: %3f - %3f    %3f - %3f", left_ang, left_sqdist, rght_ang, rght_sqdist);
 
     if ((cloud->points.at(0).z < 2.8) && (left_ang > -25)) {
-        ROS_INFO("LA: %3f - %3f", left_ang, cloud->points.at(0).z);
+        //ROS_INFO("LA: %3f - %3f", left_ang, cloud->points.at(0).z);
         add_passage(cloud->points.at(0).x, cloud->points.at(0).z, NAN, NAN);
     }
 
     if ((cloud->points.at(max_id).z < 2.8) && (rght_ang <  25)) {
-        ROS_ERROR("RA: %3f - %3f", rght_ang, cloud->points.at(max_id).z);
+        //ROS_ERROR("RA: %3f - %3f", rght_ang, cloud->points.at(max_id).z);
         add_passage(NAN, NAN, cloud->points.at(max_id).x, cloud->points.at(max_id).z);
     }
 };
@@ -281,7 +281,8 @@ void MotionServer::clear_cmd ()
 
 void MotionServer::set_ref_wall (Line_param *wall)
 {
-	if (wall == NULL) {
+	this->tracking_on = true;
+    if (wall == NULL) {
 		ROS_ERROR("MotionServer::set_ref_wall argument is NULL");
 		return;
 	}
@@ -292,10 +293,15 @@ void MotionServer::set_ref_wall (Line_param *wall)
 		this->set_angles_current();
 };
 
+void MotionServer::untrack()
+{
+    tracking_on = false;
+    this->ref_wall = NULL;
+};
 
 void MotionServer::set_angles_current ()
 {
-	if (this->ref_wall == NULL) {
+	if (this->tracking_on && this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::set_angles_current ref_wall == NULL");
 		return;
 	}
@@ -307,7 +313,7 @@ void MotionServer::set_angles_current ()
 
 bool MotionServer::rotate(double angle)
 {
-	if (this->ref_wall == NULL) {
+	if (this->tracking_on && this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::rotate ref_wall == NULL");
 		return false;
 	}
@@ -319,7 +325,7 @@ bool MotionServer::rotate(double angle)
 
 bool MotionServer::move_parallel(double vel)
 {
-	if (this->ref_wall == NULL) {
+	if (this->tracking_on && this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::move_parallel ref_wall == NULL");
 		return false;
 	}
@@ -333,7 +339,7 @@ bool MotionServer::move_parallel(double vel)
 
 bool MotionServer::move_perpendicular(double shift)
 {
-    if (this->ref_wall == NULL) {
+    if (this->tracking_on && this->ref_wall == NULL) {
         ROS_ERROR("MotionServer::move_perpendicular ref_wall == NULL");
         return false;
     }
@@ -345,22 +351,58 @@ bool MotionServer::move_perpendicular(double shift)
 
 void MotionServer::spin_once()
 {
-	if (this->ref_wall == NULL) {
+	if (this->tracking_on && this->ref_wall == NULL) {
 		ROS_ERROR("MotionServer::spin_once ref_wall == NULL");
 		return;
 	}
 
-	if (this->ref_dist < 0.6) {
+	if (this->tracking_on && this->ref_dist < 0.6) {
     	ROS_WARN("Invalid ref_dist (%f)", this->ref_dist);
 		this->ref_dist = 0.6;
 	}
 
+	if (this->tracking_on) {
+	    this->base_cmd.angular.z = 0;
+	    this->base_cmd.linear.x  += buf_cmd.linear.x;
+	    this->base_cmd.linear.y  += buf_cmd.linear.y;
+	}
+	else {
+	    this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
 
-	this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
-
-	double vel_k = - this->pid_vel.get_output(ref_dist, this->ref_wall->distance);
-	base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + buf_cmd.linear.x;
-	base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + buf_cmd.linear.y;
+	    double vel_k = - this->pid_vel.get_output(this->ref_dist, this->ref_wall->distance);
+	    this->base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + buf_cmd.linear.x;
+	    this->base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + buf_cmd.linear.y;
+	}
 };
 
 
+
+
+// *****************************************
+//              Mapping server
+// *****************************************
+MappingServer::MappingServer(ros::NodeHandle _nh, std::string inp_topic)
+{
+    position.x = 0;
+    position.y = 0;
+    mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
+    std::string topic = _nh.resolveName(inp_topic);
+    sub = _nh.subscribe<geometry_msgs::PoseStamped> (topic, 1,  &MappingServer::callback, this);
+}
+
+void MappingServer::callback (geometry_msgs::PoseStamped pos_msg)
+{
+    this->lock();
+    position.x = pos_msg.pose.position.x;
+    position.y = pos_msg.pose.position.y;
+    //ROS_INFO("x: %f\t y: %f", position.x, position.y);
+    this->unlock();
+};
+
+pcl::PointXY MappingServer::get_positon()
+{
+    this->lock();
+    pcl::PointXY ret = position;
+    this->unlock();
+    return ret;
+}

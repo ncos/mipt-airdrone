@@ -5,6 +5,7 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <visualization_msgs/Marker.h>
 
 #include "pcl_ros/point_cloud.h"
@@ -32,6 +33,7 @@
 boost::shared_ptr<boost::mutex> mutex_ptr;
 boost::shared_ptr<LocationServer> loc_srv;
 boost::shared_ptr<MotionServer>   msn_srv;
+boost::shared_ptr<MappingServer>   map_srv;
 boost::shared_ptr<Advanced_Passage_finder> apf;
 
 std::string input_topic;
@@ -522,6 +524,7 @@ int main( int argc, char** argv )
   mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
   loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
   msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
+  map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer (nh, "/ground_truth_to_tf/pose"));
   apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
 
   msn_srv->set_pid_ang(ang_P, ang_I, ang_D);

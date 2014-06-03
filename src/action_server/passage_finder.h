@@ -5,6 +5,7 @@
 #include <pcl/point_cloud.h>
 #include <geometry_msgs/Twist.h>
 #include <boost/thread/mutex.hpp>
+#include <geometry_msgs/PoseStamped.h>
 
 
 #include <iostream>
@@ -121,6 +122,7 @@ private:
 	PID pid_vel;
 	Line_param *ref_wall;
 	boost::shared_ptr<boost::mutex> mutex;
+	bool tracking_on;
 
 public:
 	double ref_dist, ref_ang;
@@ -136,6 +138,7 @@ public:
 	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
 	void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
 	void set_ref_wall (Line_param *wall);
+	void untrack ();
 	void set_angles_current ();
 	bool rotate(double angle);
 	bool move_parallel(double vel);
@@ -151,6 +154,27 @@ private:
 };
 
 
+class MappingServer
+{
+private:
+    boost::shared_ptr<boost::mutex> mutex;
+    ros::Subscriber sub;
+
+public:
+    pcl::PointXY position;
+
+
+public:
+    MappingServer (ros::NodeHandle _nh, std::string inp_topic);
+
+    pcl::PointXY get_positon();
+
+    void lock() {this->mutex->lock(); }
+    void unlock() {this->mutex->unlock(); }
+
+private:
+    void callback (const geometry_msgs::PoseStamped pos_msg);
+};
 
 
 #endif
