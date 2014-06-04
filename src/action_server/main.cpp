@@ -51,6 +51,8 @@ double target_dist = 0.0;
 double target_angl = 0.0;
 double movement_speed = 0.0;
 double move_epsilon = 0.1;
+double angle_of_kinect = 0.0;
+
 
 visualization_msgs::Marker line_list;
 
@@ -345,8 +347,9 @@ public:
         pcl::PointXY end, vec;
         end.x = pos.x + dir.x;
         end.y = pos.y + dir.y;
-        //ROS_ERROR("Start: x: %f\t %f", pos.x, pos.y);
-        //ROS_ERROR("End: x: %f\t %f", end.x, end.y);
+        ROS_ERROR("Start: (cmd) %3f\t %3f", pos.x, pos.y);
+        ROS_ERROR("End:   (cmd) %3f\t %3f", end.x, end.y);
+        ROS_ERROR("--------------------------------");
         while (true)
         {
             msn_srv->lock();
@@ -411,11 +414,26 @@ public:
         */
         action_server::ApproachDoorResult   result_;
         ros::Rate r(60);
-        pcl::PointXY vec;
-        vec.x = 0;
-        vec.y = 2;
+
         msn_srv->untrack();
-        move (vec, 0.4);
+        pcl::PointXY vec ;
+        while(true) {
+            vec.x =  0.0;
+            vec.y =  0.5;
+            move (vec, 0.4);
+
+            vec.x = -0.5;
+            vec.y =  0.0;
+            move (vec, 0.4);
+
+            vec.x =  0.0;
+            vec.y = -0.5;
+            move (vec, 0.4);
+
+            vec.x =  0.5;
+            vec.y =  0.0;
+            move (vec, 0.4);
+        }
         as_approach_door.setSucceeded(result_);
         return;
     }
@@ -553,6 +571,7 @@ int main( int argc, char** argv )
   if (!nh.getParam("distance_to_wall", target_dist)) ROS_ERROR("Failed to get param 'distance_to_wall'");
   if (!nh.getParam("angle_to_wall", target_angl)) ROS_ERROR("Failed to get param 'angle_to_wall'");
   if (!nh.getParam("movement_speed", movement_speed)) ROS_ERROR("Failed to get param 'movement_speed'");
+  if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
 
 
 

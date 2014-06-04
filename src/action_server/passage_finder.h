@@ -7,40 +7,32 @@
 #include <boost/thread/mutex.hpp>
 #include <geometry_msgs/PoseStamped.h>
 
-
-#include <iostream>
-#include <cstdio>
 #include <vector>
 #include <cmath>
-#include <ctime>
 
 #include "RANSAC.h"
 #include "pid_regulator.h"
 
-//TODO: Make a normal constant
-const double kinect_angl = 45;
+// The angle of kinect sensor regarding to the red (front) arm
+extern double angle_of_kinect; // Set in main.cpp
 
 
 struct Passage
 {
 	double width;
-	pcl::PointXY kin_middle;
-	pcl::PointXY kin_left;
-	pcl::PointXY kin_rght;
+	pcl::PointXYZ kin_middle;
+	pcl::PointXYZ kin_left;
+	pcl::PointXYZ kin_rght;
+    pcl::PointXYZ cmd_middle;
+    pcl::PointXYZ cmd_left;
+    pcl::PointXYZ cmd_rght;
 	bool is_nan;
 	double mid_ang, left_ang, rght_ang;
 
-	Passage () : mid_ang(0), left_ang(0), rght_ang(0)
-	{
-		width = NAN;
-		kin_middle.x = NAN;
-		kin_middle.y = NAN;
-		kin_left.x   = NAN;
-		kin_left.y   = NAN;
-		kin_rght.x   = NAN;
-		kin_rght.y   = NAN;
-		is_nan = true;
-	}
+	Passage () : mid_ang(NAN), left_ang(NAN), rght_ang(NAN), width(NAN), is_nan(true),
+	        kin_middle(NAN, NAN, NAN), kin_left(NAN, NAN, NAN), kin_rght(NAN, NAN, NAN),
+	        cmd_middle(NAN, NAN, NAN), cmd_left(NAN, NAN, NAN), cmd_rght(NAN, NAN, NAN)
+	{}
 };
 
 
@@ -133,10 +125,8 @@ public:
 
 public:
 	MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
-															ref_wall(NULL),
-															ref_dist(0),
-															ref_ang(0)
-															{}
+        ref_wall(NULL), ref_dist(0), ref_ang(0)
+	{}
 
 	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
 	void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
@@ -170,15 +160,14 @@ private:
 
 public:
     MappingServer (ros::NodeHandle _nh, std::string inp_topic);
-
     pcl::PointXY get_positon();
 
+private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
-
-private:
     void callback (const geometry_msgs::PoseStamped pos_msg);
+    pcl::PointXY rotate(const pcl::PointXY vec, double angle);
 };
 
 
-#endif
+#endif // PASSAGEFINDER_H

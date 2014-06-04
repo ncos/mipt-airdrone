@@ -59,7 +59,7 @@
    <include file="$(find hector_quadrotor_controller)/launch/controller.launch" />
 
    <arg name="motors" default="robbe_2827-34_epp1045" />
-   <rosparam command="load" file="$(find hector_quadrotor_model)/param/quadrotor_aerodynamics.yaml" />
-   <rosparam command="load" file="$(find hector_quadrotor_model)/param/$(arg motors).yaml" />
+   <rosparam command="load" file="$(find airdrone_launch)/inherited_from_hector/param/quadrotor_aerodynamics.yaml" />
+   <rosparam command="load" file="$(find airdrone_launch)/inherited_from_hector/param/$(arg motors).yaml" />
 
 </launch>

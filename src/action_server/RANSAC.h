@@ -15,7 +15,6 @@
 #include <pcl/filters/extract_indices.h>
 
 #define MIN_POINTS_IN_LINE 300
-#define PI 3.14159265
 
 using std::cout;
 using std::cerr;
@@ -111,7 +110,7 @@ public:
 	    	if(this->ldir_vec.kin.y < 0) this->angle = -90; // 5 = forward, 3 - to the right
 	    	else this->angle = 90;
 	    }
-	    else this->angle = atan(this->ldir_vec.kin.y / fabs(this->ldir_vec.kin.x))*180.0/PI;
+	    else this->angle = atan(this->ldir_vec.kin.y / fabs(this->ldir_vec.kin.x))*180.0/M_PI;
 	    if (this->angle > 0 && this->ldir_vec.kin.x < 0) this->angle += 90;
 	    if (this->angle < 0 && this->ldir_vec.kin.x < 0) this->angle -= 90;
 
@@ -194,5 +193,5 @@ public:
 
 
 
-#endif
+#endif // RANSAC_H
 

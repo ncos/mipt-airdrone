@@ -7,10 +7,10 @@
 Passage_finder::Passage_finder (Line_param &line)
 {
 	const double critical_angle = 11.0;
-	double ref_angle = atan(line.kin_inliers.at(0).x/line.kin_inliers.at(0).y)*180/PI;
+	double ref_angle = atan(line.kin_inliers.at(0).x/line.kin_inliers.at(0).y)*180/M_PI;
 	for (int i = 1; i < line.kin_inliers.size(); ++i)
 	{
-		double current_angle = atan(line.kin_inliers.at(i).x/line.kin_inliers.at(i).y)*180/PI;
+		double current_angle = atan(line.kin_inliers.at(i).x/line.kin_inliers.at(i).y)*180/M_PI;
 		if (fabs(current_angle - ref_angle) > critical_angle) this->add_passage (i-1, i, line);
 		ref_angle = current_angle;
 	}
@@ -22,8 +22,8 @@ void Passage_finder::add_passage (int id1, int id2, Line_param &line)
 {
 	Passage new_passage;
 
-	new_passage.width  = pow(line.kin_inliers.at(id1).x - line.kin_inliers.at(id2).x, 2.0);
-	new_passage.width += pow(line.kin_inliers.at(id1).y - line.kin_inliers.at(id2).y, 2.0);
+	new_passage.width  = pow(line.kin_inliers.at(id1).x - line.kin_inliers.at(id2).x, 2.0) +
+	                     pow(line.kin_inliers.at(id1).y - line.kin_inliers.at(id2).y, 2.0);
 	new_passage.width =  sqrt(new_passage.width);
 
 	new_passage.kin_left.x = line.kin_inliers.at(id1).x;
@@ -34,9 +34,9 @@ void Passage_finder::add_passage (int id1, int id2, Line_param &line)
 	new_passage.kin_middle.x = (line.kin_inliers.at(id1).x + line.kin_inliers.at(id2).x)/2;
 	new_passage.kin_middle.y = (line.kin_inliers.at(id1).y + line.kin_inliers.at(id2).y)/2;
 
-	new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/PI;
-	new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/PI;
-	new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/PI;
+	new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/M_PI;
+	new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/M_PI;
+	new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/M_PI;
 
 	if (new_passage.width > 1.7)
 	    this->passage.push_back(new_passage);
@@ -47,9 +47,9 @@ void Passage_finder::check_boundary (Line_param &line)
 {
 	int max_id = line.kin_inliers.size() - 1;
 
-	double left_ref_angle = atan(line.kin_inliers.at(0).x/line.kin_inliers.at(0).y)*180/PI;
+	double left_ref_angle = atan(line.kin_inliers.at(0).x/line.kin_inliers.at(0).y)*180/M_PI;
 	double rght_ref_angle = atan(line.kin_inliers.at(max_id).x/
-								 line.kin_inliers.at(max_id).y)*180/PI;
+								 line.kin_inliers.at(max_id).y)*180/M_PI;
 	double lra_sq_distance = line.kin_inliers.at(0).x*line.kin_inliers.at(0).x +
 			                 line.kin_inliers.at(0).y*line.kin_inliers.at(0).y;
 	double rra_sq_distance = line.kin_inliers.at(max_id).x*line.kin_inliers.at(max_id).x +
@@ -69,9 +69,9 @@ void Passage_finder::check_boundary (Line_param &line)
 		new_passage.kin_middle.x = line.kin_inliers.at(0).x - (new_passage.width / 2.0)*line.ldir_vec.kin.x;
 		new_passage.kin_middle.y = line.kin_inliers.at(0).y - (new_passage.width / 2.0)*line.ldir_vec.kin.y;
 
-		new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/PI;
-		new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/PI;
-		new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/PI;
+		new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/M_PI;
+		new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/M_PI;
+		new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/M_PI;
 
 		this->passage.push_back(new_passage);
 	}
@@ -109,12 +109,10 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
     }
 
     // Check the leftmost point
-    double left_ang = atan(cloud->points.at(0).x/cloud->points.at(0).z)*180/PI;
-    double rght_ang = atan(cloud->points.at(max_id).x/cloud->points.at(max_id).z)*180/PI;
+    double left_ang = atan(cloud->points.at(0).x/cloud->points.at(0).z)*180/M_PI;
+    double rght_ang = atan(cloud->points.at(max_id).x/cloud->points.at(max_id).z)*180/M_PI;
     double left_sqdist = cloud->points.at(0).x*cloud->points.at(0).x + cloud->points.at(0).z*cloud->points.at(0).z;
     double rght_sqdist = cloud->points.at(max_id).x*cloud->points.at(max_id).x + cloud->points.at(max_id).z*cloud->points.at(max_id).z;
-
-    //ROS_INFO("LA: %3f - %3f    %3f - %3f", left_ang, left_sqdist, rght_ang, rght_sqdist);
 
     if ((cloud->points.at(0).z > 0.6) && (cloud->points.at(0).z < 2.8) && (left_ang > -25)) {
         //ROS_INFO("LA: %3f - %3f", left_ang, cloud->points.at(0).z);
@@ -147,9 +145,19 @@ void Advanced_Passage_finder::add_passage(double point1x, double point1y, double
     new_passage.kin_middle.x = (point1x + point2x)/2;
     new_passage.kin_middle.y = (point1y + point2y)/2;
 
-    new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/PI;
-    new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/PI;
-    new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/PI;
+    new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/M_PI;
+    new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/M_PI;
+    new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/M_PI;
+
+    // Convert kin to cmd coordinate system:
+    new_passage.cmd_left.x   =   new_passage.kin_left.y;
+    new_passage.cmd_left.y   = - new_passage.kin_left.x;
+
+    new_passage.cmd_middle.x =   new_passage.kin_middle.y;
+    new_passage.cmd_middle.y = - new_passage.kin_middle.x;
+
+    new_passage.cmd_rght.x   =   new_passage.kin_rght.y;
+    new_passage.cmd_rght.y   = - new_passage.kin_rght.x;
 
     this->passages.push_back(new_passage);
 };
@@ -395,7 +403,8 @@ MappingServer::MappingServer(ros::NodeHandle _nh, std::string inp_topic)
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     std::string topic = _nh.resolveName(inp_topic);
     sub = _nh.subscribe<geometry_msgs::PoseStamped> (topic, 1,  &MappingServer::callback, this);
-}
+};
+
 
 void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
 {
@@ -412,7 +421,7 @@ void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
     pcl::PointXY position;
     position.x = pos_msg.pose.position.x;
     position.y = pos_msg.pose.position.y;
-    double alpha = PI/2 - 2 * asin (fabs(pos_msg.pose.orientation.z)) - kinect_angl * PI / 180.0; // Fucking magic: sin(pi/4-a/2) and offset for kinect turn
+    double alpha = M_PI / 2 - 2 * asin (fabs(pos_msg.pose.orientation.z)) + angle_of_kinect * M_PI / 180.0; // Fucking magic: sin(pi/4-a/2) and offset for kinect turn
     pcl::PointXY offset; // Offset in gazebo
     offset.x = (position.x - position_prev.x);
     offset.y = (position.y - position_prev.y);
@@ -433,4 +442,15 @@ pcl::PointXY MappingServer::get_positon()
     pcl::PointXY ret = distance;
     this->unlock();
     return distance;
+};
+
+
+pcl::PointXY MappingServer::rotate(const pcl::PointXY vec, double angle)
+{
+    pcl::PointXY rotated;
+    rotated.x = vec.x * cos(angle * M_PI/180.0) - vec.y * sin(angle * M_PI/180.0);
+    rotated.y = vec.x * sin(angle * M_PI/180.0) + vec.y * cos(angle * M_PI/180.0);
+
+    return rotated;
 }
+

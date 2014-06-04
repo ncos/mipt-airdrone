@@ -1,5 +1,5 @@
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
@@ -8,7 +8,7 @@
 #include <std_srvs/Empty.h>
 #include <vel_cntrl/RC.h>
 
-#define TEST
+#define TEST_MODE  // Define whether to compile for a simulator or for a real hardware
 
 using std::cout;
 using std::cerr;
@@ -27,7 +27,6 @@ geometry_msgs::Twist vel_3;
 
 visualization_msgs::Marker height_text;
 
-#define PI 3.14159265
 
 double vel_to_pwr = 0.0;
 double angle_of_kinect = 0.0;
@@ -46,8 +45,8 @@ geometry_msgs::Vector3 rotate_z(const geometry_msgs::Vector3 linear_vel, double 
 {
     geometry_msgs::Vector3 rotated;
     rotated.z = linear_vel.z;
-    rotated.x = linear_vel.x * cos(angle*PI/180.0) - linear_vel.y * sin(angle*PI/180.0);
-    rotated.y = linear_vel.x * sin(angle*PI/180.0) + linear_vel.y * cos(angle*PI/180.0);
+    rotated.x = linear_vel.x * cos(angle * M_PI/180.0) - linear_vel.y * sin(angle * M_PI/180.0);
+    rotated.y = linear_vel.x * sin(angle * M_PI/180.0) + linear_vel.y * cos(angle * M_PI/180.0);
 
     return rotated;
 }
@@ -124,7 +123,7 @@ int main( int argc, char** argv )
   std::string input_topic_vel_3 = nh.resolveName("/cmd_vel_3");
   std::string output_topic_vel  = nh.resolveName("/cmd_vel"  );
   std::string output_topic_rc   = nh.resolveName("/send_rc"  );
-  std::string output_topic_mrk = nh.resolveName("visualization_marker");
+  std::string output_topic_mrk  = nh.resolveName("visualization_marker");
 
 
   sub_vel_1   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_1,  1, callback_1);
@@ -155,7 +154,7 @@ int main( int argc, char** argv )
   pub_mrk.publish(height_text);
 
 
-#ifndef TEST
+#ifndef TEST_MODE
   ros::service::waitForService("/arm");
 #endif
 
