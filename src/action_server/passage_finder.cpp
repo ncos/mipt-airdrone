@@ -116,12 +116,12 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
 
     //ROS_INFO("LA: %3f - %3f    %3f - %3f", left_ang, left_sqdist, rght_ang, rght_sqdist);
 
-    if ((cloud->points.at(0).z < 2.8) && (left_ang > -25)) {
+    if ((cloud->points.at(0).z > 0.6) && (cloud->points.at(0).z < 2.8) && (left_ang > -25)) {
         //ROS_INFO("LA: %3f - %3f", left_ang, cloud->points.at(0).z);
         add_passage(cloud->points.at(0).x, cloud->points.at(0).z, NAN, NAN);
     }
 
-    if ((cloud->points.at(max_id).z < 2.8) && (rght_ang <  25)) {
+    if ((cloud->points.at(0).z > 0.6) && (cloud->points.at(max_id).z < 2.8) && (rght_ang <  25)) {
         //ROS_ERROR("RA: %3f - %3f", rght_ang, cloud->points.at(max_id).z);
         add_passage(NAN, NAN, cloud->points.at(max_id).x, cloud->points.at(max_id).z);
     }
