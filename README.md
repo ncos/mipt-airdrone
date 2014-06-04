@@ -7,23 +7,23 @@ Multicopter autopilot system for CROC aerial robotics competition
 
 ### To build the project type:
 1. Manually. Go to project directory and enter:
-  - catkin_make                                          _(To just build the project)_
-  - catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8 *// To build project files for eclipse*
+  - catkin_make                                          *(To just build the project)*
+  - catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8 *(To build project files for eclipse)*
 
-2. Via bash scripts (need to manually edit bash scripts to configure paths). Go to *...//mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
-  - rebuild                                              *// To just build the project*
-  - rebuild_we                                           *// To build project files for eclipse*
+2. Via bash scripts (need to manually edit bash scripts to configure paths). Go to *.../mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
+  - rebuild                                              *(To just build the project)*
+  - rebuild_we                                           *(To build project files for eclipse)*
 
 ### To start copter type:
 1. Manually. Type in the terminal:
-  - roslaunch airdrone_launch airdrone.launch            *// To start core nodes for simulation*
-  - roslaunch airdrone_launch airdrone_real.launch       *// To start nodes for the real robot connected to the laptop*
-  - roslaunch airdrone_launch airdrone_simulator.launch  *// To open Rviz and Gazebo for simulation*
+  - roslaunch airdrone_launch airdrone.launch            *(To start core nodes for simulation)*
+  - roslaunch airdrone_launch airdrone_real.launch       *(To start nodes for the real robot connected to the laptop)*
+  - roslaunch airdrone_launch airdrone_simulator.launch  *(To open Rviz and Gazebo for simulation)*
 
-2. Via bash scripts (need to manually edit bash scripts to configure paths). Go to *...//mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
-  - airdrone_launch                                      *// To start core nodes for simulation*
-  - airdrone_real_launch                                 *// To start nodes for the real robot connected to the laptop*
-  - airdrone_test                                        *// To open Rviz and Gazebo for simulation*
+2. Via bash scripts (need to manually edit bash scripts to configure paths). Go to *.../mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
+  - airdrone_launch                                      *(To start core nodes for simulation)*
+  - airdrone_real_launch                                 *(To start nodes for the real robot connected to the laptop)*
+  - airdrone_test                                        *(To open Rviz and Gazebo for simulation)*
 
 ### To change the spawn point in Gazebo:
  1. Go to *.../mipt-airdrone/src/airdrone_launch/launch/airdrone_simulator.launch*
@@ -32,7 +32,7 @@ Multicopter autopilot system for CROC aerial robotics competition
 ### To change the default gazebo camera position:
  1. Go to *.../mipt-airdrone/src/airdrone_gazebo/worlds/<...>.world*
  2. Find the `<camera name='some_camera_name'>`
- 3. Change the <pose> tag 				*// There will be the `<pose>X Y Z R P Y</pose>` string, put in the correct numbers*
+ 3. Change the <pose> tag 				*(There will be the `<pose>X Y Z R P Y</pose>` string, put in the correct numbers)*
 
 ### To change map:
  1. **DO** it carefully!
