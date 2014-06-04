@@ -8,9 +8,8 @@ Multicopter autopilot system for CROC aerial robotics competition
 ###To build the project type:
  go to project directory and enter
  - catkin_make                                          *// To just build the project*
- + *To build project files for eclipse:*
- - catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8
- * **alternatively via bash scripts:**
+ - catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8 *// To build project files for eclipse*
+####alternatively via bash scripts:
  - rebuild                                              *// To just build the project*
  - rebuild_we                                           *// To build project files for eclipse*
 
@@ -18,7 +17,7 @@ Multicopter autopilot system for CROC aerial robotics competition
  - roslaunch airdrone_launch airdrone.launch            *// To start core nodes for simulation*
  - roslaunch airdrone_launch airdrone_real.launch       *// To start nodes for the real robot connected to the laptop*
  - roslaunch airdrone_launch airdrone_simulator.launch  *// To open Rviz and Gazebo for simulation*
- + **alternatively via bash scripts (need to manually configure paths):**
+####alternatively via bash scripts (need to manually configure paths)
  - airdrone_launch                                      *// To start core nodes for simulation*
  - airdrone_real_launch                                 *// To start nodes for the real robot connected to the laptop*
  - airdrone_test                                        *// To open Rviz and Gazebo for simulation*
@@ -33,7 +32,7 @@ Multicopter autopilot system for CROC aerial robotics competition
  3. Change the <pose> tag 				*// There will be the `<pose>X Y Z R P Y</pose>` string, put in the correct numbers*
 
 ###To change map:
- 1. **Do NOT** do it!
+ 1. **DO** it carefully!
  2. If you stil decided to add a custom map create a model in google Sketch Up (free to download)
  3. The model should have .dae extension and the altitude of the floor at the robot spawn point should be zero
  4. It is important that it would be zero!
