@@ -210,7 +210,7 @@ public:
                 return;
             }
 
-            if (this->locate_passage()) { // Found door in some wall
+            if (apf->passages.size() > 0) { // Found door in some wall
                 result_.found = true;
                 msn_srv->move_parallel(0); // Stop movement
                 msn_srv->set_angles_current(); // And rotation
@@ -329,17 +329,6 @@ public:
     }
 
 
-    bool locate_passage()
-    {
-        // WARNING! mutex lock/unlock should be handled outside the function!
-        Passage_finder pf(*(loc_srv->get_ref_wall()));
-
-        if(pf.passage.size() <= 0)
-            return false;
-
-        return true;
-    }
-
     void move(pcl::PointXY dir, double vel)
     {
         ros::Rate r(60);
@@ -418,6 +407,7 @@ public:
         msn_srv->untrack();
         pcl::PointXY vec ;
         while(true) {
+            ROS_WARN("Commensing square dance!");
             vec.x =  0.0;
             vec.y =  0.5;
             move (vec, 0.4);
@@ -554,65 +544,59 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
 int main( int argc, char** argv )
 {
-  ros::init(argc, argv, "action_server");
-  ros::NodeHandle nh;
+    ros::init(argc, argv, "action_server");
+    ros::NodeHandle nh;
 
 
-  if (!nh.getParam("PID_ang_P", ang_P)) ROS_ERROR("Failed to get param 'PID_ang_P'");
-  if (!nh.getParam("PID_ang_I", ang_I)) ROS_ERROR("Failed to get param 'PID_ang_I'");
-  if (!nh.getParam("PID_ang_D", ang_D)) ROS_ERROR("Failed to get param 'PID_ang_D'");
+    if (!nh.getParam("PID_ang_P", ang_P)) ROS_ERROR("Failed to get param 'PID_ang_P'");
+    if (!nh.getParam("PID_ang_I", ang_I)) ROS_ERROR("Failed to get param 'PID_ang_I'");
+    if (!nh.getParam("PID_ang_D", ang_D)) ROS_ERROR("Failed to get param 'PID_ang_D'");
 
 
-  if (!nh.getParam("PID_vel_P", vel_P)) ROS_ERROR("Failed to get param 'PID_vel_P'");
-  if (!nh.getParam("PID_vel_I", vel_I)) ROS_ERROR("Failed to get param 'PID_vel_I'");
-  if (!nh.getParam("PID_vel_D", vel_D)) ROS_ERROR("Failed to get param 'PID_vel_D'");
+    if (!nh.getParam("PID_vel_P", vel_P)) ROS_ERROR("Failed to get param 'PID_vel_P'");
+    if (!nh.getParam("PID_vel_I", vel_I)) ROS_ERROR("Failed to get param 'PID_vel_I'");
+    if (!nh.getParam("PID_vel_D", vel_D)) ROS_ERROR("Failed to get param 'PID_vel_D'");
 
 
-  if (!nh.getParam("distance_to_wall", target_dist)) ROS_ERROR("Failed to get param 'distance_to_wall'");
-  if (!nh.getParam("angle_to_wall", target_angl)) ROS_ERROR("Failed to get param 'angle_to_wall'");
-  if (!nh.getParam("movement_speed", movement_speed)) ROS_ERROR("Failed to get param 'movement_speed'");
-  if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
-
-
-
-  input_topic      = nh.resolveName("/shrinker/depth/laser_points");
-  output_topic_mrk = nh.resolveName("visualization_marker");
-  output_topic_vel = nh.resolveName("/cmd_vel_2");
-
-  sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,      1, callback);
-  pub_mrk = nh.advertise<visualization_msgs::Marker >     (output_topic_mrk, 5 );
-  pub_vel = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
-
-  mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
-  loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
-  msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
-  map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer (nh, "/ground_truth_to_tf/pose"));
-  apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
-
-  msn_srv->set_pid_ang(ang_P, ang_I, ang_D);
-  msn_srv->set_pid_vel(vel_P, vel_I, vel_D);
-
-  ActionServer action_server(nh);
+    if (!nh.getParam("distance_to_wall", target_dist)) ROS_ERROR("Failed to get param 'distance_to_wall'");
+    if (!nh.getParam("angle_to_wall", target_angl)) ROS_ERROR("Failed to get param 'angle_to_wall'");
+    if (!nh.getParam("movement_speed", movement_speed)) ROS_ERROR("Failed to get param 'movement_speed'");
+    if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
 
 
 
+    input_topic      = nh.resolveName("/shrinker/depth/laser_points");
+    output_topic_mrk = nh.resolveName("visualization_marker");
+    output_topic_vel = nh.resolveName("/cmd_vel_2");
 
+    sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,      1, callback);
+    pub_mrk = nh.advertise<visualization_msgs::Marker >     (output_topic_mrk, 5 );
+    pub_vel = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
 
-  line_list.header.frame_id = "/camera_link";
-  line_list.ns = "lines_ns";
-  line_list.action = visualization_msgs::Marker::ADD;
-  line_list.id = 0;
-  line_list.type = visualization_msgs::Marker::LINE_LIST;
-  line_list.scale.x = 0.03;
-  line_list.color.r = 0.0;
-  line_list.color.g = 0.0;
-  line_list.color.b = 1.0;
-  line_list.color.a = 0.3;
-  line_list.lifetime = ros::Duration(0.2);
+    mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
+    loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
+    msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
+    map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer (nh, "/ground_truth_to_tf/pose"));
+    apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
 
+    msn_srv->set_pid_ang(ang_P, ang_I, ang_D);
+    msn_srv->set_pid_vel(vel_P, vel_I, vel_D);
 
+    ActionServer action_server(nh);
 
-  ros::spin ();
+    line_list.header.frame_id = "/camera_link";
+    line_list.ns = "lines_ns";
+    line_list.action = visualization_msgs::Marker::ADD;
+    line_list.id = 0;
+    line_list.type = visualization_msgs::Marker::LINE_LIST;
+    line_list.scale.x = 0.03;
+    line_list.color.r = 0.0;
+    line_list.color.g = 0.0;
+    line_list.color.b = 1.0;
+    line_list.color.a = 0.3;
+    line_list.lifetime = ros::Duration(0.2);
 
-  return 0;
-}
+    ros::spin ();
+
+    return 0;
+};
