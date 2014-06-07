@@ -278,6 +278,14 @@ bool LocationServer::obstacle_detected_rght ()
 // *****************************************
 // 				Motion server
 // *****************************************
+MotionServer::~MotionServer ()
+{
+    this->lock(); // Location and motion servers are bound to the same mutex
+    this->move_parallel(0); // Stop movement
+    this->set_angles_current(); // And rotation
+    this->unlock();
+}
+
 void MotionServer::clear_cmd ()
 {
 	this->base_cmd.angular.x = this->base_cmd.angular.y = this->base_cmd.angular.z = 0;
@@ -382,6 +390,11 @@ void MotionServer::spin_once()
 	else {
 	    this->base_cmd.linear.x  += this->buf_cmd.linear.x;
 	    this->base_cmd.linear.y  += this->buf_cmd.linear.y;
+	    this->base_cmd.linear.z  += this->buf_cmd.linear.z;
+
+	    this->base_cmd.angular.x += this->buf_cmd.angular.x;
+	    this->base_cmd.angular.y += this->buf_cmd.angular.y;
+	    this->base_cmd.angular.z += this->buf_cmd.angular.z;
 	}
 };
 
@@ -394,17 +407,35 @@ void MotionServer::spin_once()
 MappingServer::MappingServer(ros::NodeHandle _nh, std::string inp_topic)
 {
     init_flag =   false; // Look into class defenition
-    offset_cmd.x =    0;
-    offset_cmd.y =    0;
-    distance.x =      0;
-    distance.y =      0;
+    offset_cmd.x    = 0;
+    offset_cmd.y    = 0;
+    distance.x      = 0;
+    distance.y      = 0;
     position_prev.x = 0;
     position_prev.y = 0;
+    delta_phi       = 0;
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     std::string topic = _nh.resolveName(inp_topic);
     sub = _nh.subscribe<geometry_msgs::PoseStamped> (topic, 1,  &MappingServer::callback, this);
 };
 
+double MappingServer::get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg)
+{
+    double vec_len = sqrt(pos_msg.pose.orientation.x * pos_msg.pose.orientation.x +
+                          pos_msg.pose.orientation.y * pos_msg.pose.orientation.y +
+                          pos_msg.pose.orientation.z * pos_msg.pose.orientation.z);
+    double angle = 0;
+
+    if (vec_len != 0 ) {
+            angle = 2.0 * atan2(pos_msg.pose.orientation.z, pos_msg.pose.orientation.w) * 180 / M_PI;
+    }
+    else {
+        angle = 0;
+    }
+    if (angle < 0)
+        angle += 360;
+    return angle;
+}
 
 void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
 {
@@ -413,6 +444,7 @@ void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
     if (init_flag == false) {
         position_prev.x = pos_msg.pose.position.x;
         position_prev.y = pos_msg.pose.position.y;
+        prev_phi = get_angl_from_quaternion (pos_msg);
         init_flag = true;
         this->unlock();
         return;
@@ -422,6 +454,15 @@ void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
     position.x = pos_msg.pose.position.x;
     position.y = pos_msg.pose.position.y;
     double alpha = M_PI / 2 - 2 * asin (fabs(pos_msg.pose.orientation.z)) + angle_of_kinect * M_PI / 180.0; // Fucking magic: sin(pi/4-a/2) and offset for kinect turn
+    delta_phi = get_angl_from_quaternion (pos_msg) - prev_phi;
+    if (delta_phi > 300)
+        delta_phi -= 360;
+    if(delta_phi < -300)
+        delta_phi += 360;
+    //ROS_ERROR("%f\t%f\t%f", prev_phi, get_angl_from_quaternion (pos_msg), delta_phi);
+    prev_phi = get_angl_from_quaternion (pos_msg);
+    //ROS_ERROR("Angl: %f", prev_phi);
+    //ROS_ERROR("DELTA_PHI: %f", delta_phi);
     pcl::PointXY offset; // Offset in gazebo
     offset.x = (position.x - position_prev.x);
     offset.y = (position.y - position_prev.y);
@@ -444,6 +485,9 @@ pcl::PointXY MappingServer::get_positon()
     return distance;
 };
 
+double MappingServer::get_delta_phi() {
+    return this->delta_phi;
+}
 
 pcl::PointXY MappingServer::rotate(const pcl::PointXY vec, double angle)
 {

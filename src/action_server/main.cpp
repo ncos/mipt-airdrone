@@ -52,7 +52,7 @@ double target_angl = 0.0;
 double movement_speed = 0.0;
 double move_epsilon = 0.1;
 double angle_of_kinect = 0.0;
-
+double passage_width = 1.8;
 
 visualization_msgs::Marker line_list;
 
@@ -328,10 +328,15 @@ public:
         loc_srv->unlock();
     }
 
-
-    void move(pcl::PointXY dir, double vel)
+    //TODO: Add cases for NAN input
+    bool move(pcl::PointXY dir, double vel)
     {
+        if (isnan(dir.x) || isnan(dir.y)) {
+            return false;
+        }
         ros::Rate r(60);
+        double delta_angl = NAN;
+        double sum_angl = 0;
         pcl::PointXY pos = map_srv->get_positon();
         pcl::PointXY end, vec;
         end.x = pos.x + dir.x;
@@ -342,13 +347,23 @@ public:
         while (true)
         {
             msn_srv->lock();
+            msn_srv->untrack();
+            delta_angl = map_srv->get_delta_phi();
+            sum_angl += delta_angl;
             pos = map_srv->get_positon();
+            //pcl::PointXY rotated_end;
+            ROS_INFO("Angl: %f\t%f", sum_angl, delta_angl);
+            pcl::PointXY tmp;
+            tmp.x = end.x * cos (delta_angl * M_PI / 180.0) - end.y * sin (delta_angl * M_PI / 180.0);
+            tmp.y = end.x * sin (delta_angl * M_PI / 180.0) + end.y * cos (delta_angl * M_PI / 180.0);
+            end = tmp;
+            //ROS_INFO("End: %f\t %f", end.x, end.y);
             vec.x = end.x - pos.x;
             vec.y = end.y - pos.y;
             double len = sqrt (vec.x * vec.x + vec.y * vec.y);
             if (len < move_epsilon) {
                 msn_srv->unlock();
-                //ROS_ERROR("Move done");
+                ROS_ERROR("Move done");
                 break;
             }
             vec.x /= len;
@@ -356,14 +371,66 @@ public:
 
             msn_srv->buf_cmd.linear.x = vec.x*0.1;
             msn_srv->buf_cmd.linear.y = vec.y*0.1;
-            //ROS_INFO("Pos: x: %f\t %f\n  Vec: x: %f\t %f\n  End: x: %f\t %f", pos.x, pos.y, msn_srv->buf_cmd.linear.x, msn_srv->buf_cmd.linear.y, end.x, end.y);
+            msn_srv->base_cmd.angular.z += 0.1;
+            draw_point(end.y, -end.x, 1024, BLUE);
+            ROS_INFO("Pos: x: %f\t %f\n  Vec: x: %f\t %f\n  End: x: %f\t %f", pos.x, pos.y, msn_srv->buf_cmd.linear.x, msn_srv->buf_cmd.linear.y, end.x, end.y);
             msn_srv->unlock();
             r.sleep();
         }
+        return true;
     }
 
     void approachDoorCB(const action_server::ApproachDoorGoalConstPtr  &goal)
     {
+        /*
+        action_server::ApproachDoorResult   result_;
+        ros::Rate r(60);
+
+        msn_srv->lock();
+        msn_srv->set_angles_current();
+
+        double alpha = loc_srv->get_ref_wall()->angle;
+        ROS_INFO ("Alpha: %f", alpha);
+        double pass_x = apf->passages.at(0).cmd_left.x;
+        double pass_y = apf->passages.at(0).cmd_left.y;
+        if (isnan(pass_x) || isnan(pass_y)){
+            as_approach_door.setAborted(result_);
+            return;
+        }
+        double pass_dist = sqrt (pass_x * pass_x + pass_y * pass_y);
+        ROS_INFO ("Pass: x %f\t y %f\t len %f", pass_x, pass_y, pass_dist);
+        double targ_len = pass_dist * cos ((90 - alpha - apf->passages.at(0).left_ang) * M_PI / 180) + passage_width / 2;
+        ROS_INFO("Angl: %f", 90 - alpha - apf->passages.at(0).left_ang);
+        double targ_x = targ_len * sin (alpha * M_PI / 180);
+        double targ_y = targ_len * cos (alpha * M_PI / 180);
+
+        ROS_INFO ("Targ: x %f\t y %f\t len %f", targ_x, targ_y, targ_len);
+
+
+
+        msn_srv->untrack();
+        pcl::PointXY vec ;
+        vec.x =  targ_x;
+        vec.y =  targ_y;
+        msn_srv->unlock();
+        if (move (vec, 0.4) == false) {
+            as_approach_door.setAborted(result_);
+            return;
+        }
+
+        ROS_ERROR("Approach done");
+
+        msn_srv->lock(); // Location and motion servers are bound to the same mutex
+        msn_srv->move_parallel(0); // Stop movement
+        msn_srv->set_angles_current(); // And rotation
+        msn_srv->unlock();
+
+        as_approach_door.setSucceeded(result_);
+        return;
+        */
+
+
+
         /*
         action_server::ApproachDoorResult   result_;
         ros::Rate r(60);
@@ -401,31 +468,38 @@ public:
             r.sleep();
         }
         */
+
         action_server::ApproachDoorResult   result_;
         ros::Rate r(60);
 
+        msn_srv->lock();
         msn_srv->untrack();
+        msn_srv->unlock();
+
         pcl::PointXY vec ;
         while(true) {
             ROS_WARN("Commensing square dance!");
             vec.x =  0.0;
-            vec.y =  0.5;
+            vec.y =  1;
             move (vec, 0.4);
-
+            /*
             vec.x = -0.5;
             vec.y =  0.0;
             move (vec, 0.4);
-
+            */
             vec.x =  0.0;
-            vec.y = -0.5;
+            vec.y = -1;
             move (vec, 0.4);
-
+            /*
             vec.x =  0.5;
             vec.y =  0.0;
             move (vec, 0.4);
+            */
+
         }
         as_approach_door.setSucceeded(result_);
         return;
+
     }
 
 

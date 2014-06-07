@@ -127,7 +127,7 @@ public:
 	MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
         ref_wall(NULL), ref_dist(0), ref_ang(0)
 	{}
-
+	~MotionServer ();
 	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
 	void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
 	void set_ref_wall (Line_param *wall);
@@ -155,18 +155,21 @@ private:
     ros::Subscriber sub;
     pcl::PointXY position_prev; // In gazebo
     pcl::PointXY offset_cmd, distance; // Real copter
+    double delta_phi, prev_phi;
     bool init_flag; // Need to fix bug with start position in gazebo
 
 
 public:
     MappingServer (ros::NodeHandle _nh, std::string inp_topic);
     pcl::PointXY get_positon();
+    double get_delta_phi();
 
 private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
     void callback (const geometry_msgs::PoseStamped pos_msg);
     pcl::PointXY rotate(const pcl::PointXY vec, double angle);
+    double get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg);
 };
 
 
