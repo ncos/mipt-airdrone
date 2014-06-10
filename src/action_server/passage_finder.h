@@ -53,18 +53,6 @@ struct stMemory
 };
 
 
-class Passage_finder // Da Passage findr! (looks for holes in walls)
-{
-public:
-	std::vector<Passage> passage;
-	Passage_finder(Line_param &line);
-private:
-	void add_passage(int id1, int id2, Line_param &line);
-	void check_boundary(Line_param &line);
-};
-
-
-
 class Advanced_Passage_finder // Da ADVANCED Passage findr! (looks for holes in walls and is better than Passage findr)
 {
 public:
@@ -134,7 +122,7 @@ public:
 
 public:
 	MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
-        ref_wall(NULL), ref_dist(0), ref_ang(0)
+        ref_wall(NULL), ref_dist(0), ref_ang(0), tracking_on(true)
 	{}
 	~MotionServer ();
 	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
