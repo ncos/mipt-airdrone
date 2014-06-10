@@ -5,15 +5,16 @@ Multicopter autopilot system for CROC aerial robotics competition
 
 ## BRIEF MANUAL:
 ### IMPORTANT!
-1. This manual assumes you have successfully installed the ROS Hydro on Ubuntu 12.04 (or other ROS Hydro supported Linux, but the code was tested under Ubuntu 12.04)
+1. This manual assumes you have successfully installed the ROS Hydro on Ubuntu (the code was tested on Ubuntu 12.04)
 2. Useful ROS HOWTO's: 
   - [ROS Hydro installation](http://wiki.ros.org/hydro/Installation/Ubuntu "Read this to install ROS on your system")
   - [ROS Tutorial](http://wiki.ros.org/ROS/Tutorials "This is a brief ROS tutorial. Helps to understand basic ROS concepts")
   - [Actionlib](http://wiki.ros.org/actionlib "Look into the actionlib tutorials if you want to deal with the code")
   - [Smach](http://wiki.ros.org/smach/Tutorials "The state mashine library that controls the drone's behavior")
   - [Hector quadrotor](http://wiki.ros.org/hector_quadrotor "We use this project for simulation")
-3. Some additional packages are to be installed to successfully compile the code. I'll maybe write about it one day, but at the moment you have to look at the compiler errors and set everything up yourself :)
-4. To use bash scripts launch *.../mipt-airdrone/contrib/INSTALL.py*. It will generate bash scripts for you and place them to *.../mipt-airdrone/contrib/launchers_gen*. It will also add these to your system PATH. IMPORTANT! your *~/.bashrc* will be modified! **Do NOT** move *mipt-airdrone* folder (or whatever you name it) to another location or it will spoil the paths added to *~/.bashrc* and you will have to clean it up manually and relaunch *.../mipt-airdrone/contrib/INSTALL.py*.
+3. Some additional packages are to be installed to successfully compile the code. I'll maybe write about it one day, but at the moment you have to look at the compiler errors and set everything up yourself ;)
+4. To use bash scripts launch *.../mipt-airdrone/contrib/INSTALL.py*. It will generate scripts for you and place them to *.../mipt-airdrone/contrib/launchers_gen*. It will also add these to your system PATH. Please take into account that your *~/.bashrc* will be modified! **Do NOT** move *mipt-airdrone* folder (or whatever you name it) to another location or it will spoil the paths added to *~/.bashrc*. If you did moved your *mipt-airdrone* folder that is not a big deal - just delete automatically generated strings from your *~/.bashrc* file and relaunch *.../mipt-airdrone/contrib/INSTALL.py*.
+5. *INSTALL.py* when launched also creates nice desktop shortcuts for your convenience. They are named *Ad...smth...* and are easily found via Unity search. (Press Dash Home button and type *'Ad'*) The config files are placed into *~/.local/share/applications* folder.
 
 ### To build the project type:
 1. Manually. Go to project directory and enter:
@@ -46,7 +47,7 @@ Multicopter autopilot system for CROC aerial robotics competition
 
 ### To change map:
  1. **DO** it carefully!
- 2. If you stil decided to add a custom map create a model in google Sketch Up (free to download)
+ 2. If you still decided to add a custom map create a model in Google Sketch Up (free to download)
  3. The model should have .dae extension and the altitude of the floor at the robot spawn point should be zero
  4. It is important that it would be zero!
  5. Rename the .dae file to "test_chamber0.dae". **Do NOT** rename the generated folder with images! (sometimes it will not be generated) But if you desperately want to rename, edit the .dae file so it can resolve all paths.
