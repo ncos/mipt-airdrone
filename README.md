@@ -4,13 +4,23 @@ mipt-airdrone
 Multicopter autopilot system for CROC aerial robotics competition
 
 ## BRIEF MANUAL:
+### IMPORTANT!
+1. This manual assumes you have successfully installed the ROS Hydro on Ubuntu 12.04 (or other ROS Hydro supported Linux, but the code was tested under Ubuntu 12.04)
+2. Useful ROS HOWTO's: 
+  - [ROS Hydro installation](http://wiki.ros.org/hydro/Installation/Ubuntu "Read this to install ROS on your system")
+  - [ROS Tutorial](http://wiki.ros.org/ROS/Tutorials "This is a brief ROS tutorial. Helps to understand basic ROS concepts")
+  - [Actionlib](http://wiki.ros.org/actionlib "Look into the actionlib tutorials if you want to deal with the code")
+  - [Smach](http://wiki.ros.org/smach/Tutorials "The state mashine library that controls the drone's behavior")
+  - [Hector quadrotor](http://wiki.ros.org/hector_quadrotor "We use this project for simulation")
+3. Some additional packages are to be installed to successfully compile the code. I'll maybe write about it one day, but at the moment you have to look at the compiler errors and set everything up yourself :)
+4. To use bash scripts launch *.../mipt-airdrone/contrib/INSTALL.py*. It will generate bash scripts for you and place them to *.../mipt-airdrone/contrib/launchers_gen*. It will also add these to your system PATH. IMPORTANT! your *~/.bashrc* will be modified! **Do NOT** move *mipt-airdrone* folder (or whatever you name it) to another location or it will spoil the paths added to *~/.bashrc* and you will have to clean it up manually and relaunch *.../mipt-airdrone/contrib/INSTALL.py*.
 
 ### To build the project type:
 1. Manually. Go to project directory and enter:
   - catkin_make                                          *(To just build the project)*
   - catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8 *(To build project files for eclipse)*
 
-2. Via bash scripts (need to manually edit bash scripts to configure paths). Go to *.../mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
+2. Via bash scripts (need to configure project with contrib/INSTALL.py). Go to *.../mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
   - rebuild                                              *(To just build the project)*
   - rebuild_we                                           *(To build project files for eclipse)*
 
@@ -20,7 +30,7 @@ Multicopter autopilot system for CROC aerial robotics competition
   - roslaunch airdrone_launch airdrone_real.launch       *(To start nodes for the real robot connected to the laptop)*
   - roslaunch airdrone_launch airdrone_simulator.launch  *(To open Rviz and Gazebo for simulation)*
 
-2. Via bash scripts (need to manually edit bash scripts to configure paths). Go to *.../mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
+2. Via bash scripts (need to configure project with contrib/INSTALL.py). Go to *.../mipt-airdrone/contrib/launchers* or add the launchers to your system PATH and enter:
   - airdrone_launch                                      *(To start core nodes for simulation)*
   - airdrone_real_launch                                 *(To start nodes for the real robot connected to the laptop)*
   - airdrone_test                                        *(To open Rviz and Gazebo for simulation)*
@@ -40,7 +50,7 @@ Multicopter autopilot system for CROC aerial robotics competition
  3. The model should have .dae extension and the altitude of the floor at the robot spawn point should be zero
  4. It is important that it would be zero!
  5. Rename the .dae file to "test_chamber0.dae". **Do NOT** rename the generated folder with images! (sometimes it will not be generated) But if you desperately want to rename, edit the .dae file so it can resolve all paths.
- 6. Put the files in .../mipt-airdrone/src/airdrone_gazebo/Media/models folder
+ 6. Put the files in *.../mipt-airdrone/src/airdrone_gazebo/Media/models* folder
  7. If the model jumps on its spawn point than you probably did not set the world floor altitude to zero. You can probably edit the *...mipt-airdrone/src/airdrone_gazebo/worlds/test_chamber0.world* to fix that.
 
 ### To edit the robot model:
