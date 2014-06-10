@@ -50,7 +50,7 @@ add_definitions(${PCL_DEFINITIONS})
 
 
 
-set(SOURCES main.cpp RANSAC.cpp RANSAC.h passage_finder.cpp passage_finder.h)
+set(SOURCES main.cpp RANSAC.cpp RANSAC.h passage_finder.cpp passage_finder.h da_vinci.cpp da_vinci.h)
 
 add_executable(action_server_nd ${SOURCES})
 target_link_libraries(action_server_nd	 	${catkin_LIBRARIES} 
