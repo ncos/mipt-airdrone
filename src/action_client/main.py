@@ -80,6 +80,22 @@ def main():
     sm0 = smach.StateMachine(outcomes=['succeeded', 'aborted', 'preempted'])
     with sm0:
         smach.StateMachine.add('Pause', PauseState (),
+                               transitions={'continue':'Approach door',
+                                            'abort'   :'aborted'})
+        
+        smach.StateMachine.add('Approach door',
+                               smach_ros.SimpleActionState('ApproachDoorAS',
+                                                           ApproachDoorAction,
+                                                           goal =  ApproachDoorGoal(),
+                                                           result_cb = approach_door_result_cb,
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Pause'} )
+        
+        
+        
+        """
+        smach.StateMachine.add('Pause', PauseState (),
                                transitions={'continue':'Move along',
                                             'abort'   :'aborted'})
         
@@ -119,15 +135,18 @@ def main():
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Move along'} )
+                                            
+    """
         
     # Create and start the introspection server
+    # This is for debug purpose
     sis = smach_ros.IntrospectionServer('introspection_server', sm0, '/STATE_MASHINE')
     sis.start()
 
 
     # Execute SMACH plan
     outcome = sm0.execute()
-    print("Stopped", outcome)
+    print("State mashine has finished with result ", outcome)
 
     rospy.spin()
     sis.stop()

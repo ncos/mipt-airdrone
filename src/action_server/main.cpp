@@ -44,15 +44,21 @@ ros::Subscriber sub;
 ros::Publisher  pub_mrk;
 ros::Publisher  pub_vel;
 
+// These parameters are configured in 'airdrone_launch/param.yaml':
 double vel_P = 0.0, vel_I = 0.0, vel_D = 0.0;
 double ang_P = 0.0, ang_I = 0.0, ang_D = 0.0;
 
-double target_dist = 0.0;
-double target_angl = 0.0;
-double movement_speed = 0.0;
-double move_epsilon = 0.1;
+double target_dist     = 0.0;
+double target_angl     = 0.0;
+double movement_speed  = 0.0;
 double angle_of_kinect = 0.0;
-double passage_width = 1.8;
+double apf_min_width   = 0.0;
+double apf_min_dist    = 0.0;
+double apf_max_dist    = 0.0;
+double apf_min_angl    = 0.0;
+double apf_max_angl    = 0.0;
+double apf_better_q    = 0.0;
+double move_epsilon    = 0.0;
 
 visualization_msgs::Marker line_list;
 
@@ -116,6 +122,8 @@ void draw_point(double x, double y, int id, POINT_COLOR color)
 
 void add_e(double x, double y)
 {
+    const double len = 1.0;
+
     geometry_msgs::Point p;
     p.y = 0;
     p.z = 0;
@@ -123,9 +131,11 @@ void add_e(double x, double y)
 
     line_list.points.push_back(p);
 
-    p.y = -x;
+    double vlen = sqrt(x * x + y * y);
+
+    p.y = -len * x / vlen;
     p.z =  0;
-    p.x =  y;
+    p.x =  len * y / vlen;
 
     line_list.points.push_back(p);
 };
@@ -350,14 +360,16 @@ public:
             msn_srv->untrack();
             delta_angl = map_srv->get_delta_phi();
             sum_angl += delta_angl;
+
             pos = map_srv->get_positon();
-            //pcl::PointXY rotated_end;
-            ROS_INFO("Angl: %f\t%f", sum_angl, delta_angl);
             pcl::PointXY tmp;
-            tmp.x = end.x * cos (delta_angl * M_PI / 180.0) - end.y * sin (delta_angl * M_PI / 180.0);
-            tmp.y = end.x * sin (delta_angl * M_PI / 180.0) + end.y * cos (delta_angl * M_PI / 180.0);
-            end = tmp;
-            //ROS_INFO("End: %f\t %f", end.x, end.y);
+
+            // "-" delta_angl here cuz we need to rotate target destination backwards, to the place it should have been
+            tmp.x = end.x * cos (- delta_angl * M_PI / 180.0) - end.y * sin (- delta_angl * M_PI / 180.0);
+            tmp.y = end.x * sin (- delta_angl * M_PI / 180.0) + end.y * cos (- delta_angl * M_PI / 180.0);
+            end = tmp; // TODO: The end in copter coordinates is like a carrot in front of donkey)
+
+            // WHAT?!
             vec.x = end.x - pos.x;
             vec.y = end.y - pos.y;
             double len = sqrt (vec.x * vec.x + vec.y * vec.y);
@@ -371,9 +383,13 @@ public:
 
             msn_srv->buf_cmd.linear.x = vec.x*0.1;
             msn_srv->buf_cmd.linear.y = vec.y*0.1;
-            msn_srv->base_cmd.angular.z += 0.1;
+
             draw_point(end.y, -end.x, 1024, BLUE);
-            ROS_INFO("Pos: x: %f\t %f\n  Vec: x: %f\t %f\n  End: x: %f\t %f", pos.x, pos.y, msn_srv->buf_cmd.linear.x, msn_srv->buf_cmd.linear.y, end.x, end.y);
+
+            //ROS_INFO("Angl: %f\t%f", sum_angl, delta_angl);
+            //ROS_WARN("pos(%2f, %2f) end(%2.2f, %2.2f) vec(%2.2f, %2.2f)", pos.x, pos.y, end.x, end.y, vec.x, vec.y);
+
+            //ROS_INFO("Pos: x: %f\t %f\n  Vec: x: %f\t %f\n  End: x: %f\t %f", pos.x, pos.y, msn_srv->buf_cmd.linear.x, msn_srv->buf_cmd.linear.y, end.x, end.y);
             msn_srv->unlock();
             r.sleep();
         }
@@ -469,7 +485,7 @@ public:
         }
         */
 
-        action_server::ApproachDoorResult   result_;
+        action_server::ApproachDoorResult result_;
         ros::Rate r(60);
 
         msn_srv->lock();
@@ -478,7 +494,7 @@ public:
 
         pcl::PointXY vec ;
         while(true) {
-            ROS_WARN("Commensing square dance!");
+            ROS_WARN("Commensing shape dance!");
             vec.x =  0.0;
             vec.y =  1;
             move (vec, 0.4);
@@ -599,13 +615,23 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
     for (int i = 0; i < apf->passages.size(); ++i) {
         draw_point(apf->passages.at(i).kin_left.x,   apf->passages.at(i).kin_left.y,   i*3 + 0, RED);
-        draw_point(apf->passages.at(i).kin_middle.x, apf->passages.at(i).kin_middle.y, i*3 + 0, GREEN);
-        draw_point(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 0, RED);
+        draw_point(apf->passages.at(i).kin_middle.x, apf->passages.at(i).kin_middle.y, i*3 + 1, GREEN);
+        draw_point(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 2, RED);
     }
 
 
 
     msn_srv->spin_once();
+
+
+    add_e(msn_srv->base_cmd.linear.y, -msn_srv->base_cmd.linear.x);
+
+    // !!
+    msn_srv->base_cmd.linear.x  = 0.0;
+    msn_srv->base_cmd.linear.y  = 0.0;
+    msn_srv->base_cmd.angular.z = 0.1;
+
+
     pub_vel.publish(msn_srv->base_cmd);
     pub_mrk.publish(line_list);
     msn_srv->clear_cmd();
@@ -633,10 +659,18 @@ int main( int argc, char** argv )
 
 
     if (!nh.getParam("distance_to_wall", target_dist)) ROS_ERROR("Failed to get param 'distance_to_wall'");
-    if (!nh.getParam("angle_to_wall", target_angl)) ROS_ERROR("Failed to get param 'angle_to_wall'");
-    if (!nh.getParam("movement_speed", movement_speed)) ROS_ERROR("Failed to get param 'movement_speed'");
-    if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
+    if (!nh.getParam("angle_to_wall",    target_angl)) ROS_ERROR("Failed to get param 'angle_to_wall'");
+    if (!nh.getParam("movement_speed",   movement_speed)) ROS_ERROR("Failed to get param 'movement_speed'");
+    if (!nh.getParam("angle_of_kinect",  angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
 
+
+    if (!nh.getParam("apf_min_width", apf_min_width)) ROS_ERROR("Failed to get param 'apf_min_width'");
+    if (!nh.getParam("apf_min_dist",  apf_min_dist))  ROS_ERROR("Failed to get param 'apf_min_dist'");
+    if (!nh.getParam("apf_max_dist",  apf_max_dist))  ROS_ERROR("Failed to get param 'apf_max_dist'");
+    if (!nh.getParam("apf_min_angl",  apf_min_angl))  ROS_ERROR("Failed to get param 'apf_min_angl'");
+    if (!nh.getParam("apf_max_angl",  apf_max_angl))  ROS_ERROR("Failed to get param 'apf_max_angl'");
+    if (!nh.getParam("apf_better_q",  apf_better_q))  ROS_ERROR("Failed to get param 'apf_better_q'");
+    if (!nh.getParam("move_epsilon",  move_epsilon))  ROS_ERROR("Failed to get param 'move_epsilon'");
 
 
     input_topic      = nh.resolveName("/shrinker/depth/laser_points");

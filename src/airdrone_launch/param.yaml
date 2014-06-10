@@ -1,18 +1,36 @@
 
+# Velocity PID (related to keeping the distance to wall)
 PID_vel_P: 1.0 #1.5
 PID_vel_I: 0.3 #0.5
 PID_vel_D: 0.3 #0.4
 
-# Tu = 2.97, Ku = 0.075
+# Rotation PID (related to keeping the specified angle to wall)
 PID_ang_P: 0.020 #0.020
 PID_ang_I: 0.000 #0.000
 PID_ang_D: 0.000 #0.000
 
+# Height of hovering
 base_height: 0.6
+
+# How to convert velocity to engine power
 vel_to_pwr: 10.0
+
+# The angle of kinect rotation relative to the red arm (negative means clockwise)
 angle_of_kinect: -45.0
 
+# The default movement speed, distance to reference wall and angle to this wall
 movement_speed: 0.5
 distance_to_wall: 2.0
 angle_to_wall: -45.0
 
+
+# Advanced passage finder related constants:
+apf_min_width: 1.4
+apf_min_dist:  0.6
+apf_max_dist:  2.8
+apf_min_angl: -25
+apf_max_angl:  25
+apf_better_q:  1   # 1 is more computationally demanding but gives less false alarms in door detection    
+
+# Move function euristic constants
+move_epsilon:  0.1

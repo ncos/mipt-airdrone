@@ -14,7 +14,14 @@
 #include "pid_regulator.h"
 
 // The angle of kinect sensor regarding to the red (front) arm
-extern double angle_of_kinect; // Set in main.cpp
+// Set in main.cpp:
+extern double angle_of_kinect;
+extern double apf_min_width;
+extern double apf_min_dist;
+extern double apf_max_dist;
+extern double apf_min_angl;
+extern double apf_max_angl;
+extern double apf_better_q;
 
 
 struct Passage
@@ -69,6 +76,8 @@ public:
 private:
     void add_passage(double point1x, double point1y, double point2x, double point2y);
     double sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    pcl::PointXYZ get_closest_left(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud, int point_id);
+    pcl::PointXYZ get_closest_rght(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud, int point_id);
 };
 
 

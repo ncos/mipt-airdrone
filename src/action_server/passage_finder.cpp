@@ -99,29 +99,69 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
     // cloud->points.at(0).x is "x" coordinate
     // cloud->points.at(0).z is "y" coordinate
     this->passages.clear();
-    const double min_width = 1.4;
+
     const int max_id = cloud->points.size() - 1;
+    const int min_id = 0;
+
     if (cloud->points.size() < 2) return;
+
+
     for (int i = 1; i < cloud->points.size(); ++i) {
-        if (this->sqrange(cloud->points.at(i-1), cloud->points.at(i)) > min_width) {
-            this->add_passage(cloud->points.at(i-1).x, cloud->points.at(i-1).z, cloud->points.at(i).x, cloud->points.at(i).z);
+        if (apf_better_q == 0) {
+            if (this->sqrange(cloud->points.at(i - 1), cloud->points.at(i)) > apf_min_width * apf_min_width) {
+                this->add_passage(cloud->points.at(i - 1).x, cloud->points.at(i - 1).z, cloud->points.at(i).x, cloud->points.at(i).z);
+            }
+        }
+
+        if (apf_better_q == 1) {
+            if (this->sqrange(cloud->points.at(i - 1), cloud->points.at(i)) > apf_min_width * apf_min_width) {
+                bool edge_left = ((cloud->points.at(i - 1).z > apf_min_dist) && (cloud->points.at(i - 1).z < apf_max_dist));
+                bool edge_rght = ((cloud->points.at(i).z     > apf_min_dist) && (cloud->points.at(i).z     < apf_max_dist));
+
+                if (edge_left &&  edge_rght) {
+                    this->add_passage(cloud->points.at(i - 1).x, cloud->points.at(i - 1).z, cloud->points.at(i).x, cloud->points.at(i).z);
+                }
+
+                if (edge_left && !edge_rght) {
+                    pcl::PointXYZ rght = this->get_closest_rght(cloud, i - 1);
+                    if (this->sqrange(cloud->points.at(i - 1), rght) > apf_min_width * apf_min_width) {
+                        this->add_passage(cloud->points.at(i - 1).x, cloud->points.at(i - 1).z, rght.x, rght.z);
+                    }
+                }
+
+                if (!edge_left && edge_rght) {
+                    pcl::PointXYZ left = this->get_closest_left(cloud, i);
+                    if (this->sqrange(left, cloud->points.at(i)) > apf_min_width * apf_min_width) {
+                        this->add_passage(left.x, left.z, cloud->points.at(i).x, cloud->points.at(i).z);
+                    }
+                }
+            }
+        }
+
+
+
+        if (apf_better_q != 0 && apf_better_q != 1) {
+            ROS_WARN("Invalid 'apf_better_q' param (...= %f). Assuming it is zero", apf_better_q);
+            apf_better_q = 0;
         }
     }
 
-    // Check the leftmost point
-    double left_ang = atan(cloud->points.at(0).x/cloud->points.at(0).z)*180/M_PI;
-    double rght_ang = atan(cloud->points.at(max_id).x/cloud->points.at(max_id).z)*180/M_PI;
-    double left_sqdist = cloud->points.at(0).x*cloud->points.at(0).x + cloud->points.at(0).z*cloud->points.at(0).z;
-    double rght_sqdist = cloud->points.at(max_id).x*cloud->points.at(max_id).x + cloud->points.at(max_id).z*cloud->points.at(max_id).z;
+    // Check the leftmost and rightmost point (this is in case only one side of the passage is seen)
+    double left_ang = atan(cloud->points.at(min_id).x / cloud->points.at(min_id).z) * 180 / M_PI;  // The angle of the leftmost point
+    double rght_ang = atan(cloud->points.at(max_id).x / cloud->points.at(max_id).z) * 180 / M_PI;  // The angle of the rightmost point
 
-    if ((cloud->points.at(0).z > 0.6) && (cloud->points.at(0).z < 2.8) && (left_ang > -25)) {
-        //ROS_INFO("LA: %3f - %3f", left_ang, cloud->points.at(0).z);
-        add_passage(cloud->points.at(0).x, cloud->points.at(0).z, NAN, NAN);
+
+    // RIGHT (!important!) passage point detection
+    if ((cloud->points.at(min_id).z > apf_min_dist) && (cloud->points.at(min_id).z < apf_max_dist) && (left_ang > apf_min_angl)) {
+        // If this is the leftmost point, the passage is possibly even more at the left, so this point is the (supposedly)
+        // RIGHT point of the passage (if rotate left and look directly at the passage this point will be on the right)
+        add_passage(NAN, NAN, cloud->points.at(min_id).x, cloud->points.at(min_id).z);
     }
 
-    if ((cloud->points.at(0).z > 0.6) && (cloud->points.at(max_id).z < 2.8) && (rght_ang <  25)) {
-        //ROS_ERROR("RA: %3f - %3f", rght_ang, cloud->points.at(max_id).z);
-        add_passage(NAN, NAN, cloud->points.at(max_id).x, cloud->points.at(max_id).z);
+    // LEFT (!important!) passage point detection
+    if ((cloud->points.at(max_id).z > apf_min_dist) && (cloud->points.at(max_id).z < apf_max_dist) && (rght_ang < apf_max_angl)) {
+        // This is similar to the RIGHT point detection
+        add_passage(cloud->points.at(max_id).x, cloud->points.at(max_id).z, NAN, NAN);
     }
 };
 
@@ -138,16 +178,14 @@ void Advanced_Passage_finder::add_passage(double point1x, double point1y, double
     new_passage.kin_rght.x = point2x;
     new_passage.kin_rght.y = point2y;
 
-    new_passage.width += pow(point1x - point2x, 2.0);
-    new_passage.width += pow(point1y - point2y, 2.0);
-    new_passage.width =  sqrt(new_passage.width);
+    new_passage.width = sqrt(pow(point1x - point2x, 2.0) + pow(point1y - point2y, 2.0));
 
-    new_passage.kin_middle.x = (point1x + point2x)/2;
-    new_passage.kin_middle.y = (point1y + point2y)/2;
+    new_passage.kin_middle.x = (point1x + point2x) / 2;
+    new_passage.kin_middle.y = (point1y + point2y) / 2;
 
-    new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y)*180/M_PI;
-    new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y)*180/M_PI;
-    new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y)*180/M_PI;
+    new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y) * 180 / M_PI;
+    new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y) * 180 / M_PI;
+    new_passage.mid_ang  = atan(new_passage.kin_middle.x/new_passage.kin_middle.y) * 180 / M_PI;
 
     // Convert kin to cmd coordinate system:
     new_passage.cmd_left.x   =   new_passage.kin_left.y;
@@ -195,8 +233,56 @@ Line_param* Advanced_Passage_finder::get_best_line(Passage &passage, Line_map &l
 };
 
 
+pcl::PointXYZ Advanced_Passage_finder::get_closest_left(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud, int point_id)
+{
+    // Return the geometrically closest point on the left from the given point. A given point is specified by its id in the cloud
+    if (point_id < 1 || cloud->points.size() < point_id + 1) { // There should be at least one point on the left
+        ROS_ERROR("Advanced_Passage_finder::get_closest_left: invalid arguments");
+        return pcl::PointXYZ(NAN, NAN, NAN);
+    }
+
+    double min_id   = 0;
+    double min_dist = this->sqrange(cloud->points.at(point_id), cloud->points.at(min_id));
+    for (int i = 1; i < point_id; ++i) {
+        double dist = this->sqrange(cloud->points.at(point_id), cloud->points.at(i));
+        if (dist < min_dist) {
+            min_dist = dist;
+            min_id = i;
+        }
+    }
+
+    return cloud->points.at(min_id);
+};
+
+
+pcl::PointXYZ Advanced_Passage_finder::get_closest_rght(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud, int point_id)
+{
+    // Return the geometrically closest point on the right from the given point. A given point is specified by its id in the cloud
+    if (point_id < 0 || cloud->points.size() < point_id + 2) { // There should be at least one point on the right
+        ROS_ERROR("Advanced_Passage_finder::get_closest_rght: invalid arguments");
+        return pcl::PointXYZ(NAN, NAN, NAN);
+    }
+
+    double min_id   = cloud->points.size() - 1;
+    double min_dist = this->sqrange(cloud->points.at(point_id), cloud->points.at(min_id));
+    for (int i = point_id + 1; i < cloud->points.size(); ++i) {
+        double dist = this->sqrange(cloud->points.at(point_id), cloud->points.at(i));
+        if (dist < min_dist) {
+            min_dist = dist;
+            min_id = i;
+        }
+    }
+
+    return cloud->points.at(min_id);
+};
+
+
 double Advanced_Passage_finder::sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2)
 {
+    if (isnan(p1.x) || isnan(p1.y) || isnan(p1.z) || isnan(p2.x) || isnan(p2.y) || isnan(p2.z)) {
+        ROS_ERROR("Advanced_Passage_finder::sqrange: getting distance from NAN!");
+    }
+
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
 };
 
@@ -435,7 +521,7 @@ double MappingServer::get_angl_from_quaternion (const geometry_msgs::PoseStamped
     if (angle < 0)
         angle += 360;
     return angle;
-}
+};
 
 void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
 {
@@ -496,5 +582,5 @@ pcl::PointXY MappingServer::rotate(const pcl::PointXY vec, double angle)
     rotated.y = vec.x * sin(angle * M_PI/180.0) + vec.y * cos(angle * M_PI/180.0);
 
     return rotated;
-}
+};
 
