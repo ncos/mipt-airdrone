@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # Author: Anton Mitrokhin, MIPT 2014
 
-import sys, os
+import sys, os, subprocess
 
 ROS_INSTALL_DIR = "/opt/ros/hydro"
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -162,8 +162,18 @@ def add_launcher(name, icon, command):
         print sys.exc_info()
         exit(1)
 
+try:
+    os.remove(ROOT_DIR + "/src/CMakeLists.txt")
+except:
+    pass
+
+print "\nInitializing ROS workspace at " + ROOT_DIR + "/src";
+if not subprocess.call("cd " + ROOT_DIR + "/src\n catkin_init_workspace", shell=True) == 0:
+    print "Unable to execute catkin_init_workspace. Have you installed ROS?!"
+    exit(1)
 
 
+cleanup_bashrc() #Remove obsolete config paths
 with open(HOME_DIR + "/.bashrc", 'r+') as fbashrc:
     contents = fbashrc.read()
     add_to_file(fbashrc, contents, "source /opt/ros/hydro/setup.bash")
@@ -171,7 +181,7 @@ with open(HOME_DIR + "/.bashrc", 'r+') as fbashrc:
     add_to_file(fbashrc, contents, "export PATH=" + LAUNCHER_DIR + ":$PATH")
 
 
-#cleanup_bashrc()
+
 
 print ""
 ensure_dir(LAUNCHER_DIR)
