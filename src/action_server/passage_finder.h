@@ -12,6 +12,7 @@
 
 #include "RANSAC.h"
 #include "pid_regulator.h"
+#include "da_vinci.h"  // Draw stuff in Rviz
 
 // The angle of kinect sensor regarding to the red (front) arm
 // Set in main.cpp:

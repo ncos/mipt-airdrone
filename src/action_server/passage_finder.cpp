@@ -12,6 +12,7 @@ void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstP
     // cloud->points.at(0).z is "y" coordinate
     this->passages.clear();
 
+
     const int max_id = cloud->points.size() - 1;
     const int min_id = 0;
 

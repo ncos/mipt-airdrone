@@ -1,14 +1,11 @@
-#include <cstdio>
-#include <iostream>
 #include <vector>
 #include <cmath>
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
-#include <visualization_msgs/Marker.h>
 
-#include "pcl_ros/point_cloud.h"
+#include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/common/common_headers.h>
@@ -28,20 +25,18 @@
 // cloud callback (or callback) is needed to renew information about point cloud and external sensors
 #include <boost/thread/mutex.hpp>
 
-
+boost::shared_ptr<DaVinci>  davinci;
 
 boost::shared_ptr<boost::mutex> mutex_ptr;
 boost::shared_ptr<LocationServer> loc_srv;
 boost::shared_ptr<MotionServer>   msn_srv;
-boost::shared_ptr<MappingServer>   map_srv;
+boost::shared_ptr<MappingServer>  map_srv;
 boost::shared_ptr<Advanced_Passage_finder> apf;
 
 std::string input_topic;
-std::string output_topic_mrk;
 std::string output_topic_vel;
 
 ros::Subscriber sub;
-ros::Publisher  pub_mrk;
 ros::Publisher  pub_vel;
 
 // These parameters are configured in 'airdrone_launch/param.yaml':
@@ -59,104 +54,6 @@ double apf_min_angl    = 0.0;
 double apf_max_angl    = 0.0;
 double apf_better_q    = 0.0;
 double move_epsilon    = 0.0;
-
-visualization_msgs::Marker line_list;
-
-
-
-
-// Draw in kinect coordinates
-enum POINT_COLOR {RED, GREEN, BLUE};
-void draw_point(double x, double y, int id, POINT_COLOR color)
-{
-    if (isnan(x) || isnan(y)) return;
-
-    visualization_msgs::Marker marker;
-
-    marker.header.frame_id = "/camera_link";
-    marker.ns = "basic_shapes";
-    marker.action = visualization_msgs::Marker::ADD;
-    marker.id = id;
-    marker.type = visualization_msgs::Marker::SPHERE;
-
-    marker.pose.position.x =  y;
-    marker.pose.position.y = -x;
-    marker.pose.position.z = 0;
-
-    // Set the scale of the marker -- 1x1x1 here means 1m on a side
-    marker.scale.x = 0.1;
-    marker.scale.y = 0.1;
-    marker.scale.z = 0.1;
-
-    // Set the color -- be sure to set alpha to something non-zero!
-    switch (color)
-    {
-    case RED:
-        marker.color.r = 1.0f;
-        marker.color.g = 0.0f;
-        marker.color.b = 0.0f;
-        break;
-    case GREEN:
-        marker.color.r = 0.0f;
-        marker.color.g = 1.0f;
-        marker.color.b = 0.0f;
-        break;
-    case BLUE:
-        marker.color.r = 0.0f;
-        marker.color.g = 0.0f;
-        marker.color.b = 1.0f;
-        break;
-    default:
-        marker.color.r = 1.0f;
-        marker.color.g = 0.0f;
-        marker.color.b = 0.0f;
-    }
-
-    marker.color.a = 0.6;
-    marker.lifetime = ros::Duration(0.1);
-    marker.header.stamp = ros::Time::now();
-    // Publish the marker
-    pub_mrk.publish(marker);
-};
-
-
-void add_e(double x, double y)
-{
-    const double len = 1.0;
-
-    geometry_msgs::Point p;
-    p.y = 0;
-    p.z = 0;
-    p.x = 0;
-
-    line_list.points.push_back(p);
-
-    double vlen = sqrt(x * x + y * y);
-
-    p.y = -len * x / vlen;
-    p.z =  0;
-    p.x =  len * y / vlen;
-
-    line_list.points.push_back(p);
-};
-
-
-void add_l(Line_param *lp)
-{
-    if(lp == NULL) return;
-
-    const int length = 40;
-    geometry_msgs::Point p;
-    p.y = -lp->fdir_vec.kin.x * lp->distance + lp->ldir_vec.kin.x * length / 2;
-    p.z =  0;
-    p.x =  lp->fdir_vec.kin.y * lp->distance - lp->ldir_vec.kin.y * length / 2;
-    line_list.points.push_back(p);
-    p.y =  p.y - lp->ldir_vec.kin.x * length;
-    p.z =  0;
-    p.x =  p.x + lp->ldir_vec.kin.y * length;
-    line_list.points.push_back(p);
-};
-
 
 
 
@@ -384,7 +281,7 @@ public:
             msn_srv->buf_cmd.linear.x = vec.x*0.1;
             msn_srv->buf_cmd.linear.y = vec.y*0.1;
 
-            draw_point(end.y, -end.x, 1024, BLUE);
+            //draw_point(end.y, -end.x, 1024, BLUE);
 
             //ROS_INFO("Angl: %f\t%f", sum_angl, delta_angl);
             //ROS_WARN("pos(%2f, %2f) end(%2.2f, %2.2f) vec(%2.2f, %2.2f)", pos.x, pos.y, end.x, end.y, vec.x, vec.y);
@@ -598,9 +495,6 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     // Take control upon location and motion servers
     loc_srv->lock();
 
-    line_list.header.stamp = ros::Time::now();
-    line_list.points.clear();
-
     if(cloud->points.size() < 10) {
         ROS_ERROR("AS: Cloud size = %lu", cloud->points.size());
     }
@@ -609,31 +503,31 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
     apf->renew(cloud);
 
-    add_l(loc_srv->get_ref_wall());
-    add_l(loc_srv->get_crn_wall_left());
-    add_l(loc_srv->get_crn_wall_rght());
+
+    davinci->draw_line(loc_srv->get_crn_wall_left(), 1, BLUE);
+    davinci->draw_line(loc_srv->get_ref_wall(),      0, GREEN);
+    davinci->draw_line(loc_srv->get_crn_wall_rght(), 2, BLUE);
 
     for (int i = 0; i < apf->passages.size(); ++i) {
-        draw_point(apf->passages.at(i).kin_left.x,   apf->passages.at(i).kin_left.y,   i*3 + 0, RED);
-        draw_point(apf->passages.at(i).kin_middle.x, apf->passages.at(i).kin_middle.y, i*3 + 1, GREEN);
-        draw_point(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 2, RED);
+        davinci->draw_point(apf->passages.at(i).kin_left.x,   apf->passages.at(i).kin_left.y,   i*3 + 0, RED);
+        davinci->draw_point(apf->passages.at(i).kin_middle.x, apf->passages.at(i).kin_middle.y, i*3 + 1, GREEN);
+        davinci->draw_point(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 2, RED);
+
+        davinci->draw_vec(apf->passages.at(i).kin_left.x,   apf->passages.at(i).kin_left.y,   i*3 + 0, RED);
+        davinci->draw_vec(apf->passages.at(i).kin_middle.x, apf->passages.at(i).kin_middle.y, i*3 + 1, GREEN);
+        davinci->draw_vec(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 2, RED);
     }
-
-
 
     msn_srv->spin_once();
 
-
-    add_e(msn_srv->base_cmd.linear.y, -msn_srv->base_cmd.linear.x);
-
-    // !!
+    // TODO: Remove when optical flow debug is done
     msn_srv->base_cmd.linear.x  = 0.0;
     msn_srv->base_cmd.linear.y  = 0.0;
     msn_srv->base_cmd.angular.z = 0.1;
+    // --------------------------------------------
 
-
+    davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
     pub_vel.publish(msn_srv->base_cmd);
-    pub_mrk.publish(line_list);
     msn_srv->clear_cmd();
 
     // Return control to task callback handlers
@@ -674,13 +568,13 @@ int main( int argc, char** argv )
 
 
     input_topic      = nh.resolveName("/shrinker/depth/laser_points");
-    output_topic_mrk = nh.resolveName("visualization_marker");
     output_topic_vel = nh.resolveName("/cmd_vel_2");
 
     sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,      1, callback);
-    pub_mrk = nh.advertise<visualization_msgs::Marker >     (output_topic_mrk, 5 );
     pub_vel = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
 
+
+    davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
     mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
     msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
@@ -692,17 +586,7 @@ int main( int argc, char** argv )
 
     ActionServer action_server(nh);
 
-    line_list.header.frame_id = "/camera_link";
-    line_list.ns = "lines_ns";
-    line_list.action = visualization_msgs::Marker::ADD;
-    line_list.id = 0;
-    line_list.type = visualization_msgs::Marker::LINE_LIST;
-    line_list.scale.x = 0.03;
-    line_list.color.r = 0.0;
-    line_list.color.g = 0.0;
-    line_list.color.b = 1.0;
-    line_list.color.a = 0.3;
-    line_list.lifetime = ros::Duration(0.2);
+
 
     ros::spin ();
 
