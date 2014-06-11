@@ -155,18 +155,21 @@ private:
     pcl::PointXY offset_cmd, distance; // Real copter
     double delta_phi, prev_phi;
     bool init_flag; // Need to fix bug with start position in gazebo
-
+    int rotation_cnt;
 
 public:
     MappingServer (ros::NodeHandle _nh, std::string inp_topic);
-    pcl::PointXY get_positon();
-    double get_delta_phi();
+    pcl::PointXY get_global_positon();
+    double get_global_angle();
+    double diff(double a, double b);
+    pcl::PointXY diff(pcl::PointXY a, pcl::PointXY b);
+
+    pcl::PointXY rotate(const pcl::PointXY vec, double angle);
 
 private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
     void callback (const geometry_msgs::PoseStamped pos_msg);
-    pcl::PointXY rotate(const pcl::PointXY vec, double angle);
     double get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg);
 };
 

@@ -33,4 +33,4 @@ apf_max_angl:  25
 apf_better_q:  1   # 1 is more computationally demanding but gives less false alarms in door detection    
 
 # Move function euristic constants
-move_epsilon:  0.1
+move_epsilon:  0.2

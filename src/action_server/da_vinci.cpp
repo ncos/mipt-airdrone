@@ -183,7 +183,13 @@ void DaVinci::draw_vec_cmd(geometry_msgs::Twist base_cmd, int id, POINT_COLOR co
 };
 
 
-void DaVinci::draw_pos_cmd(double x, double y, int id, POINT_COLOR color)
+void DaVinci::draw_vec_e_cmd(geometry_msgs::Twist base_cmd, int id, POINT_COLOR color)
+{
+    this->draw_e_vec(-base_cmd.linear.y, base_cmd.linear.x, id, color);
+};
+
+
+void DaVinci::draw_point_cmd(double x, double y, int id, POINT_COLOR color)
 {
     this->draw_point(-y, x, id, color);
 };

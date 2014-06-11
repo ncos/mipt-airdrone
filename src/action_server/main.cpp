@@ -242,51 +242,41 @@ public:
             return false;
         }
         ros::Rate r(60);
-        double delta_angl = NAN;
-        double sum_angl = 0;
-        pcl::PointXY pos = map_srv->get_positon();
-        pcl::PointXY end, vec;
-        end.x = pos.x + dir.x;
-        end.y = pos.y + dir.y;
-        ROS_ERROR("Start: (cmd) %3f\t %3f", pos.x, pos.y);
-        ROS_ERROR("End:   (cmd) %3f\t %3f", end.x, end.y);
-        ROS_ERROR("--------------------------------");
+        double prev_angl = map_srv->get_global_angle();
+        pcl::PointXY prev_pos = map_srv->get_global_positon();
+        pcl::PointXY target;
+        target.x = dir.x;
+        target.y = dir.y;
+
         while (true)
         {
             msn_srv->lock();
             msn_srv->untrack();
-            delta_angl = map_srv->get_delta_phi();
-            sum_angl += delta_angl;
 
-            pos = map_srv->get_positon();
-            pcl::PointXY tmp;
+            double current_angl      = map_srv->get_global_angle();
+            pcl::PointXY current_pos = map_srv->get_global_positon();
+            double delta_angl  = map_srv->diff(current_angl, prev_angl);
+            pcl::PointXY shift = map_srv->diff(current_pos, prev_pos);
+            prev_angl = current_angl;
+            prev_pos  = current_pos;
 
-            // "-" delta_angl here cuz we need to rotate target destination backwards, to the place it should have been
-            tmp.x = end.x * cos (- delta_angl * M_PI / 180.0) - end.y * sin (- delta_angl * M_PI / 180.0);
-            tmp.y = end.x * sin (- delta_angl * M_PI / 180.0) + end.y * cos (- delta_angl * M_PI / 180.0);
-            end = tmp; // TODO: The end in copter coordinates is like a carrot in front of donkey)
+            // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
+            target = map_srv->rotate(target, -delta_angl);
+            target.x = target.x - shift.x;
+            target.y = target.y - shift.y;
 
-            // WHAT?!
-            vec.x = end.x - pos.x;
-            vec.y = end.y - pos.y;
-            double len = sqrt (vec.x * vec.x + vec.y * vec.y);
+            double len = sqrt (target.x * target.x + target.y * target.y);
             if (len < move_epsilon) {
                 msn_srv->unlock();
-                ROS_ERROR("Move done");
                 break;
             }
-            vec.x /= len;
-            vec.y /= len;
 
-            msn_srv->buf_cmd.linear.x = vec.x*0.1;
-            msn_srv->buf_cmd.linear.y = vec.y*0.1;
 
-            //draw_point(end.y, -end.x, 1024, BLUE);
+            msn_srv->buf_cmd.linear.x = target.x * vel / len;
+            msn_srv->buf_cmd.linear.y = target.y * vel / len;
 
-            //ROS_INFO("Angl: %f\t%f", sum_angl, delta_angl);
-            //ROS_WARN("pos(%2f, %2f) end(%2.2f, %2.2f) vec(%2.2f, %2.2f)", pos.x, pos.y, end.x, end.y, vec.x, vec.y);
+            davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
 
-            //ROS_INFO("Pos: x: %f\t %f\n  Vec: x: %f\t %f\n  End: x: %f\t %f", pos.x, pos.y, msn_srv->buf_cmd.linear.x, msn_srv->buf_cmd.linear.y, end.x, end.y);
             msn_srv->unlock();
             r.sleep();
         }
@@ -392,23 +382,13 @@ public:
         pcl::PointXY vec ;
         while(true) {
             ROS_WARN("Commensing shape dance!");
-            vec.x =  0.0;
-            vec.y =  1;
-            move (vec, 0.4);
-            /*
-            vec.x = -0.5;
-            vec.y =  0.0;
-            move (vec, 0.4);
-            */
-            vec.x =  0.0;
-            vec.y = -1;
-            move (vec, 0.4);
-            /*
-            vec.x =  0.5;
-            vec.y =  0.0;
-            move (vec, 0.4);
-            */
+            vec.x =  1;
+            vec.y =  0;
+            move (vec, 0.2);
 
+            vec.x = -1;
+            vec.y = 0;
+            move (vec, 0.2);
         }
         as_approach_door.setSucceeded(result_);
         return;
@@ -519,13 +499,6 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     }
 
     msn_srv->spin_once();
-
-    // TODO: Remove when optical flow debug is done
-    msn_srv->base_cmd.linear.x  = 0.0;
-    msn_srv->base_cmd.linear.y  = 0.0;
-    msn_srv->base_cmd.angular.z = 0.1;
-    // --------------------------------------------
-
     davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
     pub_vel.publish(msn_srv->base_cmd);
     msn_srv->clear_cmd();

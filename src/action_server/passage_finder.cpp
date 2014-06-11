@@ -283,7 +283,8 @@ MotionServer::~MotionServer ()
     this->move_parallel(0); // Stop movement
     this->set_angles_current(); // And rotation
     this->unlock();
-}
+};
+
 
 void MotionServer::clear_cmd ()
 {
@@ -307,15 +308,18 @@ void MotionServer::set_ref_wall (Line_param *wall)
 		this->set_angles_current();
 };
 
+
 void MotionServer::track () {
     this->tracking_on = true;
-}
+};
+
 
 void MotionServer::untrack()
 {
     tracking_on = false;
     this->ref_wall = NULL;
 };
+
 
 void MotionServer::set_angles_current ()
 {
@@ -413,10 +417,12 @@ MappingServer::MappingServer(ros::NodeHandle _nh, std::string inp_topic)
     position_prev.x = 0;
     position_prev.y = 0;
     delta_phi       = 0;
+    rotation_cnt    = 0;
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     std::string topic = _nh.resolveName(inp_topic);
     sub = _nh.subscribe<geometry_msgs::PoseStamped> (topic, 1,  &MappingServer::callback, this);
 };
+
 
 double MappingServer::get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg)
 {
@@ -436,6 +442,7 @@ double MappingServer::get_angl_from_quaternion (const geometry_msgs::PoseStamped
     return angle;
 };
 
+
 void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
 {
     this->lock();
@@ -454,45 +461,70 @@ void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
     position.y = pos_msg.pose.position.y;
     double alpha = M_PI / 2 - 2 * asin (fabs(pos_msg.pose.orientation.z)) + angle_of_kinect * M_PI / 180.0; // Fucking magic: sin(pi/4-a/2) and offset for kinect turn
     delta_phi = get_angl_from_quaternion (pos_msg) - prev_phi;
-    if (delta_phi > 300)
+    if (delta_phi > 300) {
         delta_phi -= 360;
-    if(delta_phi < -300)
+        this->rotation_cnt --;
+    }
+
+    if(delta_phi < -300) {
         delta_phi += 360;
-    //ROS_ERROR("%f\t%f\t%f", prev_phi, get_angl_from_quaternion (pos_msg), delta_phi);
+        this->rotation_cnt ++;
+    }
+
     prev_phi = get_angl_from_quaternion (pos_msg);
-    //ROS_ERROR("Angl: %f", prev_phi);
-    //ROS_ERROR("DELTA_PHI: %f", delta_phi);
+
     pcl::PointXY offset; // Offset in gazebo
     offset.x = (position.x - position_prev.x);
     offset.y = (position.y - position_prev.y);
     offset_cmd.x = offset.x * cos (alpha) - offset.y * sin (alpha);
     offset_cmd.y = offset.x * sin (alpha) + offset.y * cos (alpha);
-    //ROS_INFO("Offset: %f\t %f\n alpha: %f", offset_cmd.x, offset_cmd.y, alpha);
-    distance.x += offset_cmd.x;
-    distance.y += offset_cmd.y;
+
+    distance.x += this->offset_cmd.x;
+    distance.y += this->offset_cmd.y;
     position_prev.x = position.x;
     position_prev.y = position.y;
-    //ROS_INFO("Offset: x: %f\t y: %f\n Distance: x: %f\t y: %f\n", offset_cmd.x, offset_cmd.x, distance.x, distance.y);
     this->unlock();
 };
 
-pcl::PointXY MappingServer::get_positon()
+
+pcl::PointXY MappingServer::get_global_positon()
 {
     this->lock();
-    pcl::PointXY ret = distance;
+    pcl::PointXY ret = this->distance;
     this->unlock();
-    return distance;
+    return ret;
 };
 
-double MappingServer::get_delta_phi() {
-    return this->delta_phi;
-}
+
+double MappingServer::get_global_angle()
+{
+    this->lock();
+    double ret = this->prev_phi;
+    this->unlock();
+    return ret;
+};
+
+
+double MappingServer::diff(double a, double b)
+{
+    return a - b;
+};
+
+
+pcl::PointXY MappingServer::diff(pcl::PointXY a, pcl::PointXY b)
+{
+    pcl::PointXY c;
+    c.x = a.x - b.x;
+    c.y = a.y - b.y;
+    return c;
+};
+
 
 pcl::PointXY MappingServer::rotate(const pcl::PointXY vec, double angle)
 {
     pcl::PointXY rotated;
-    rotated.x = vec.x * cos(angle * M_PI/180.0) - vec.y * sin(angle * M_PI/180.0);
-    rotated.y = vec.x * sin(angle * M_PI/180.0) + vec.y * cos(angle * M_PI/180.0);
+    rotated.x = vec.x * cos(angle * M_PI / 180.0) - vec.y * sin(angle * M_PI / 180.0);
+    rotated.y = vec.x * sin(angle * M_PI / 180.0) + vec.y * cos(angle * M_PI / 180.0);
 
     return rotated;
 };

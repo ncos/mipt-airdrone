@@ -26,7 +26,8 @@ public:
     void draw_e_vec  (double x, double y, int id, POINT_COLOR color);
     void draw_vec    (double x, double y, int id, POINT_COLOR color);
     void draw_vec_cmd(geometry_msgs::Twist base_cmd, int id, POINT_COLOR color);
-    void draw_pos_cmd(double x, double y, int id, POINT_COLOR color);
+    void draw_vec_e_cmd(geometry_msgs::Twist base_cmd, int id, POINT_COLOR color);
+    void draw_point_cmd(double x, double y, int id, POINT_COLOR color);
     void clear_inf();
     ~DaVinci();
 private:
