@@ -79,6 +79,7 @@ def main():
 
     sm0 = smach.StateMachine(outcomes=['succeeded', 'aborted', 'preempted'])
     with sm0:
+        """
         smach.StateMachine.add('Pause', PauseState (),
                                transitions={'continue':'Approach door',
                                             'abort'   :'aborted'})
@@ -91,10 +92,10 @@ def main():
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Pause'} )
-        
-        
-        
         """
+        
+        
+        
         smach.StateMachine.add('Pause', PauseState (),
                                transitions={'continue':'Move along',
                                             'abort'   :'aborted'})
@@ -136,7 +137,7 @@ def main():
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Move along'} )
                                             
-    """
+    
         
     # Create and start the introspection server
     # This is for debug purpose
