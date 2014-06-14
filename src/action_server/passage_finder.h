@@ -60,7 +60,7 @@ public:
     std::vector<Passage> passages;
     void renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud);
     bool passage_on_line(Line_param &line, Passage &passage);
-    Line_param *get_best_line(Passage &passage, Line_map &linemap);
+    Line_param *get_best_line(pcl::PointXYZ &point, Line_map &linemap);
 
 private:
     void add_passage(double point1x, double point1y, double point2x, double point2y);
@@ -139,8 +139,6 @@ public:
 	void clear_cmd();
 	void lock() {this->mutex->lock(); }
 	void unlock() {this->mutex->unlock(); }
-
-private:
 	void set_target_angle (double angle) {this->ref_ang  = angle; }
 	void set_target_dist  (double dist ) {this->ref_dist = dist;  }
 };
@@ -151,25 +149,29 @@ class MappingServer
 private:
     boost::shared_ptr<boost::mutex> mutex;
     ros::Subscriber sub;
-    pcl::PointXY position_prev; // In gazebo
-    pcl::PointXY offset_cmd, distance; // Real copter
+    pcl::PointXYZ position_prev; // In gazebo
+    pcl::PointXYZ offset_cmd, distance; // Real copter
     double delta_phi, prev_phi;
     bool init_flag; // Need to fix bug with start position in gazebo
     int rotation_cnt;
+    std::vector<pcl::PointXYZ> tracked_points;
+    std::vector<pcl::PointXYZ> visited_points;
+
 
 public:
     MappingServer (ros::NodeHandle _nh, std::string inp_topic);
-    pcl::PointXY get_global_positon();
+    pcl::PointXYZ get_global_positon();
     double get_global_angle();
     double diff(double a, double b);
-    pcl::PointXY diff(pcl::PointXY a, pcl::PointXY b);
-
-    pcl::PointXY rotate(const pcl::PointXY vec, double angle);
+    pcl::PointXYZ diff(pcl::PointXYZ a, pcl::PointXYZ b);
+    void track (pcl::PointXYZ p);
+    pcl::PointXYZ rotate(const pcl::PointXYZ vec, double angle);
 
 private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
     void callback (const geometry_msgs::PoseStamped pos_msg);
+    void add_visited ();
     double get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg);
 };
 

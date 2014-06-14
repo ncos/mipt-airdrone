@@ -77,7 +77,7 @@ public:
     ~ActionServer(void) {}
 
 
-    void moveAlongCB (const action_server::MoveAlongGoalConstPtr     &goal)
+    void moveAlongCB (const action_server::MoveAlongGoalConstPtr   &goal)
     {
         action_server::MoveAlongResult      result_;
         action_server::MoveAlongFeedback feedback_;
@@ -236,44 +236,46 @@ public:
     }
 
     //TODO: Add cases for NAN input
-    bool move(pcl::PointXY dir, double vel)
+    bool move(pcl::PointXYZ dir, double vel)
     {
         if (isnan(dir.x) || isnan(dir.y)) {
             return false;
         }
         ros::Rate r(60);
         double prev_angl = map_srv->get_global_angle();
-        pcl::PointXY prev_pos = map_srv->get_global_positon();
-        pcl::PointXY target;
-        target.x = dir.x;
-        target.y = dir.y;
+        pcl::PointXYZ prev_pos = map_srv->get_global_positon();
+        pcl::PointXYZ target (dir.x, dir.y, 0);
+
+        msn_srv->untrack();
+        msn_srv->unlock();
 
         while (true)
         {
             msn_srv->lock();
-            msn_srv->untrack();
+
 
             double current_angl      = map_srv->get_global_angle();
-            pcl::PointXY current_pos = map_srv->get_global_positon();
+            pcl::PointXYZ current_pos = map_srv->get_global_positon();
             double delta_angl  = map_srv->diff(current_angl, prev_angl);
-            pcl::PointXY shift = map_srv->diff(current_pos, prev_pos);
+            pcl::PointXYZ shift = map_srv->diff(current_pos, prev_pos);
             prev_angl = current_angl;
             prev_pos  = current_pos;
 
             // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
-            target = map_srv->rotate(target, -delta_angl);
             target.x = target.x - shift.x;
             target.y = target.y - shift.y;
+            target = map_srv->rotate(target, -delta_angl);
+
 
             double len = sqrt (target.x * target.x + target.y * target.y);
             if (len < move_epsilon) {
                 msn_srv->unlock();
                 break;
             }
-            /*
+
             msn_srv->buf_cmd.linear.x = target.x * vel / len;
             msn_srv->buf_cmd.linear.y = target.y * vel / len;
-            */
+
             davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
 
             msn_srv->unlock();
@@ -289,15 +291,8 @@ public:
         ros::Rate r(60);
 
         msn_srv->lock();
-        /*
-        msn_srv->unlock();
-        while (true){
-            msn_srv->lock();
-            msn_srv->move_parallel(0); // Stop movement
-            msn_srv->set_angles_current();
-            msn_srv->unlock();
-        };
-        */
+        msn_srv->set_target_angle(0);
+
         if (apf->passages.size() == 0) {
             ROS_ERROR("No passage");
             as_approach_door.setAborted(result_);
@@ -312,107 +307,41 @@ public:
             return;
         }
 
+
         double pass_dist = sqrt (pass_x * pass_x + pass_y * pass_y);
         ROS_INFO ("Pass: x %f\t y %f\t len %f", pass_x, pass_y, pass_dist);
-        Line_param *pass_line = apf->get_best_line(apf->passages.at(0), loc_srv->lm);
+
+        Line_param *pass_line = apf->get_best_line(apf->passages.at(0).kin_rght, loc_srv->lm);
+        davinci->draw_vec(pass_line->fdir_vec.kin.x, pass_line->fdir_vec.kin.y, 667, RED);
+
         if (pass_line == NULL) {
             ROS_ERROR("Pass_line wasn't found");
         }
-        double along_dist = sqrt (pass_dist * pass_dist - pass_line->distance * pass_line->distance) + apf_min_width / 2;
-        ROS_INFO("Wall: %f\t pass: %f", apf->get_best_line(apf->passages.at(0), loc_srv->lm)->distance, pass_dist);
-        pcl::PointXY vec;
-        ROS_INFO("ldir x: %f\t y: %f", loc_srv->get_ref_wall()->ldir_vec.cmd.x, loc_srv->get_ref_wall()->ldir_vec.cmd.y);
-        vec.x =  -pass_line->ldir_vec.cmd.x * along_dist;
-        vec.y =  -pass_line->ldir_vec.cmd.y * along_dist;
-        ROS_INFO("Vec x: %f\t y: %f", vec.x, vec.y);
-        msn_srv->unlock();
-        if (move (vec, 0.4) == false) {
+
+        double along_dist = sqrt (pass_dist * pass_dist - pass_line->distance * pass_line->distance) * 1.5;
+
+
+        pcl::PointXYZ vec (-pass_line->ldir_vec.cmd.x * along_dist, -pass_line->ldir_vec.cmd.y * along_dist, 0);
+
+
+        // New point tracking feature demo :)
+        map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x, apf->passages.at(0).cmd_rght.y, 0));
+        map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x + pass_line->ldir_vec.cmd.x,
+                                     apf->passages.at(0).cmd_rght.y + pass_line->ldir_vec.cmd.y, 0));
+        map_srv->track(vec);
+
+
+        if (this->move (vec, 0.3) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
         }
 
-        vec.x =   1.5 * target_dist;
-        vec.y =  -1.5 * target_dist;
-        msn_srv->unlock();
-        if (move (vec, 0.4) == false) {
-            ROS_ERROR("Move function caused error");
-            as_approach_door.setAborted(result_);
-            return;
-        }
-        /*
-        msn_srv->unlock();
-        while (true) {
-            msn_srv->lock();
-            davinci->draw_vec(-targ_y, targ_x, 555, RED);
-            davinci->draw_point(-targ_y, targ_x, 556, RED);
-            msn_srv->unlock();
-        }
-        msn_srv->lock();
-        */
 
+        msn_srv->unlock();
+        result_.success = true;
         as_approach_door.setSucceeded(result_);
         return;
-
-        /*
-        action_server::ApproachDoorResult   result_;
-        ros::Rate r(60);
-
-        while (true) {
-
-            if (as_approach_door.isPreemptRequested() || !ros::ok()) {
-                ROS_INFO("Full stop called at approach the wall callback");
-                msn_srv->lock(); // Location and motion servers are bound to the same mutex
-                msn_srv->move_parallel(0); // Stop movement
-                msn_srv->set_angles_current(); // And rotation
-                msn_srv->unlock();
-                as_approach_door.setPreempted();
-                return;
-            }
-
-            loc_srv->lock();
-
-            if (apf->passages.size() == 0) {
-                ROS_WARN("No passage here (mistaken or lost)! Continue searching...");
-                loc_srv->unlock();
-                result_.success = false;
-                as_approach_door.setAborted(result_);
-                return;
-            }
-            else {
-                // TODO: Always choosing the "0" passage. Maybe better the closest?
-
-                as_approach_door.setSucceeded(result_);
-                return;
-            }
-
-
-            loc_srv->unlock();
-            r.sleep();
-        }
-        */
-        /*
-        action_server::ApproachDoorResult result_;
-        ros::Rate r(60);
-
-        msn_srv->lock();
-        msn_srv->untrack();
-        msn_srv->unlock();
-
-        pcl::PointXY vec ;
-        while(true) {
-            ROS_WARN("Commensing shape dance!");
-            vec.x =  1;
-            vec.y =  0;
-            move (vec, 0.2);
-
-            vec.x = -1;
-            vec.y = 0;
-            move (vec, 0.2);
-        }
-        as_approach_door.setSucceeded(result_);
-        return;
-        */
     }
 
 
@@ -423,51 +352,7 @@ public:
 
         msn_srv->lock();
 
-        double door_width = target_dist;
 
-        if (loc_srv->obstacle_detected_rght() == false) {
-            msn_srv->unlock();
-            while (true) {
-                msn_srv->lock();
-                msn_srv->ref_ang  = 90;
-                if (loc_srv->obstacle_detected_rght()) {
-                    break;
-                }
-                msn_srv->unlock();
-            }
-        }
-        if (loc_srv->obstacle_detected_rght()) {
-            door_width = loc_srv->get_crn_wall_rght()->distance;
-            loc_srv->track_wall(loc_srv->get_crn_wall_rght());
-        }
-        else
-        {
-            ROS_ERROR("Pass Door failed: no right wall");
-            msn_srv->unlock();
-            result_.success = false;
-            as_pass_door.setAborted(result_);
-            return;
-        }
-
-        msn_srv->unlock();
-        while (true) {
-            msn_srv->lock();
-            msn_srv->ref_ang  = 15;
-            msn_srv->ref_dist = door_width;
-            if (fabs (loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 3) {
-                msn_srv->unlock();
-                break;
-            }
-            msn_srv->unlock();
-        }
-        while (true) {
-            msn_srv->lock();
-            msn_srv->move_parallel(goal->vel);
-            if (loc_srv->obstacle_detected_rght()) {
-                break;
-            }
-            msn_srv->unlock();
-        }
         msn_srv->unlock();
         result_.success = true;
         as_pass_door.setSucceeded(result_);
@@ -519,7 +404,15 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     }
 
     msn_srv->spin_once();
+
+    //map_srv->track(pcl::PointXYZ(0, 0, 0));
     davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
+    // ------------
+    //msn_srv->base_cmd.linear.x = 0;
+    //msn_srv->base_cmd.linear.y = 0;
+    //msn_srv->base_cmd.angular.z = 0.1;
+    // ------------
+
     pub_vel.publish(msn_srv->base_cmd);
     msn_srv->clear_cmd();
 

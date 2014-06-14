@@ -9,7 +9,7 @@
 
 
 // Draw in kinect coordinates
-enum POINT_COLOR {RED, GREEN, BLUE, GOLD};
+enum POINT_COLOR {RED, GREEN, BLUE, GOLD, CYAN};
 class DaVinci
 {
     ros::NodeHandle nh;
@@ -21,13 +21,15 @@ class DaVinci
 public:
     DaVinci(ros::NodeHandle nh_);
     void draw_point(double x, double y, int id, POINT_COLOR color);
+    void draw_point(double x, double y, double size, int id, POINT_COLOR color);
     void draw_point_inf(double x, double y);
-    void draw_line (Line_param *lp, int id, POINT_COLOR color);
+    void draw_line   (Line_param *lp, int id, POINT_COLOR color);
     void draw_e_vec  (double x, double y, int id, POINT_COLOR color);
     void draw_vec    (double x, double y, int id, POINT_COLOR color);
-    void draw_vec_cmd(geometry_msgs::Twist base_cmd, int id, POINT_COLOR color);
+    void draw_vec_cmd  (geometry_msgs::Twist base_cmd, int id, POINT_COLOR color);
     void draw_vec_e_cmd(geometry_msgs::Twist base_cmd, int id, POINT_COLOR color);
     void draw_point_cmd(double x, double y, int id, POINT_COLOR color);
+    void draw_point_cmd(double x, double y, double size, int id, POINT_COLOR color);
     void clear_inf();
     ~DaVinci();
 private:

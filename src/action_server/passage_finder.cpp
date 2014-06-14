@@ -126,14 +126,14 @@ bool Advanced_Passage_finder::passage_on_line(Line_param &line, Passage &passage
 };
 
 
-Line_param* Advanced_Passage_finder::get_best_line(Passage &passage, Line_map &linemap)
+Line_param* Advanced_Passage_finder::get_best_line(pcl::PointXYZ &point, Line_map &linemap)
 {
     const double eps = 0.1; // How close should be the passage border to the line
-    const int min_quality = 10;
+    const int min_quality = 1;
 
     int best_quality = 0, best_i = 0;
     for (int i = 0; i < linemap.lines.size(); ++i) {
-        if ((linemap.lines.at(i).distance_to_point(passage.kin_left.x, passage.kin_left.y) < eps)
+        if ((linemap.lines.at(i).distance_to_point(point.x, point.y) < eps)
            && (linemap.lines.at(i).quality > best_quality))
         {
             best_quality = linemap.lines.at(i).quality;
@@ -447,50 +447,100 @@ void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
 {
     this->lock();
 
-    if (init_flag == false) {
-        position_prev.x = pos_msg.pose.position.x;
-        position_prev.y = pos_msg.pose.position.y;
-        prev_phi = get_angl_from_quaternion (pos_msg);
-        init_flag = true;
+    if (this->init_flag == false) {
+        this->position_prev.x = pos_msg.pose.position.x;
+        this->position_prev.y = pos_msg.pose.position.y;
+        this->position_prev.z = 0;
+        this->prev_phi  = this->get_angl_from_quaternion (pos_msg);
+        this->init_flag = true;
         this->unlock();
         return;
     }
 
-    pcl::PointXY position;
-    position.x = pos_msg.pose.position.x;
-    position.y = pos_msg.pose.position.y;
-    double alpha = M_PI / 2 - 2 * asin (fabs(pos_msg.pose.orientation.z)) + angle_of_kinect * M_PI / 180.0; // Fucking magic: sin(pi/4-a/2) and offset for kinect turn
-    delta_phi = get_angl_from_quaternion (pos_msg) - prev_phi;
-    if (delta_phi > 300) {
-        delta_phi -= 360;
+
+    this->delta_phi = this->get_angl_from_quaternion (pos_msg) - this->prev_phi;
+    if (this->delta_phi > 300) {
+        this->delta_phi -= 360;
         this->rotation_cnt --;
     }
 
-    if(delta_phi < -300) {
-        delta_phi += 360;
+    if (this->delta_phi < -300) {
+        this->delta_phi += 360;
         this->rotation_cnt ++;
     }
+    this->prev_phi = this->get_angl_from_quaternion (pos_msg);
 
-    prev_phi = get_angl_from_quaternion (pos_msg);
 
-    pcl::PointXY offset; // Offset in gazebo
-    offset.x = (position.x - position_prev.x);
-    offset.y = (position.y - position_prev.y);
-    offset_cmd.x = offset.x * cos (alpha) - offset.y * sin (alpha);
-    offset_cmd.y = offset.x * sin (alpha) + offset.y * cos (alpha);
+    pcl::PointXYZ position (pos_msg.pose.position.x, pos_msg.pose.position.y, 0);
+    pcl::PointXYZ offset (position.x - this->position_prev.x, position.y - this->position_prev.y, 0);
 
-    distance.x += this->offset_cmd.x;
-    distance.y += this->offset_cmd.y;
-    position_prev.x = position.x;
-    position_prev.y = position.y;
+    this->offset_cmd = this->rotate(offset, -(this->get_angl_from_quaternion (pos_msg) + angle_of_kinect));
+
+    this->distance.x += this->offset_cmd.x;
+    this->distance.y += this->offset_cmd.y;
+    this->position_prev.x = position.x;
+    this->position_prev.y = position.y;
+
+
+    for (int i = 0; i < this->tracked_points.size(); ++i) {
+        this->tracked_points.at(i)   = this->rotate(this->tracked_points.at(i), -this->delta_phi);
+        this->tracked_points.at(i).x = this->tracked_points.at(i).x - this->offset_cmd.x;
+        this->tracked_points.at(i).y = this->tracked_points.at(i).y - this->offset_cmd.y;
+    }
+
+    for (int i = 0; i < this->visited_points.size(); ++i) {
+        this->visited_points.at(i)   = this->rotate(this->visited_points.at(i), -this->delta_phi);
+        this->visited_points.at(i).x = this->visited_points.at(i).x - this->offset_cmd.x;
+        this->visited_points.at(i).y = this->visited_points.at(i).y - this->offset_cmd.y;
+    }
+
+
+    for (int i = 0; i < this->visited_points.size(); ++i) {
+        davinci->draw_point_cmd(this->visited_points.at(i).x, this->visited_points.at(i).y, 0.04, 494 + i, GOLD);
+    }
+
+    for (int i = 0; i < this->tracked_points.size(); ++i) {
+        davinci->draw_point_cmd(this->tracked_points.at(i).x, this->tracked_points.at(i).y, 994 + i, CYAN);
+    }
+
+    this->add_visited();
     this->unlock();
 };
 
 
-pcl::PointXY MappingServer::get_global_positon()
+void MappingServer::track (pcl::PointXYZ p)
 {
     this->lock();
-    pcl::PointXY ret = this->distance;
+    this->tracked_points.push_back(p);
+    this->unlock();
+};
+
+
+void MappingServer::add_visited ()
+{
+    const unsigned int max_size_ = 30;
+    const double dist_ = 0.05;
+
+    if (this->visited_points.size() > 0) {
+        pcl::PointXYZ diff = this->visited_points.back();
+        if ((diff.x * diff.x + diff.y * diff.y) > dist_) {
+            this->visited_points.push_back(pcl::PointXYZ(0, 0, 0));
+        }
+    }
+    else {
+        this->visited_points.push_back(pcl::PointXYZ(0, 0, 0));
+    }
+
+    if (this->visited_points.size() > max_size_) {
+        this->visited_points.erase (this->visited_points.begin());
+    }
+};
+
+
+pcl::PointXYZ MappingServer::get_global_positon()
+{
+    this->lock();
+    pcl::PointXYZ ret = this->distance;
     this->unlock();
     return ret;
 };
@@ -511,20 +561,21 @@ double MappingServer::diff(double a, double b)
 };
 
 
-pcl::PointXY MappingServer::diff(pcl::PointXY a, pcl::PointXY b)
+pcl::PointXYZ MappingServer::diff(pcl::PointXYZ a, pcl::PointXYZ b)
 {
-    pcl::PointXY c;
+    pcl::PointXYZ c;
     c.x = a.x - b.x;
     c.y = a.y - b.y;
     return c;
 };
 
 
-pcl::PointXY MappingServer::rotate(const pcl::PointXY vec, double angle)
+pcl::PointXYZ MappingServer::rotate(const pcl::PointXYZ vec, double angle)
 {
-    pcl::PointXY rotated;
+    pcl::PointXYZ rotated;
     rotated.x = vec.x * cos(angle * M_PI / 180.0) - vec.y * sin(angle * M_PI / 180.0);
     rotated.y = vec.x * sin(angle * M_PI / 180.0) + vec.y * cos(angle * M_PI / 180.0);
+    rotated.z = vec.z;
 
     return rotated;
 };

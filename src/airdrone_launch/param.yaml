@@ -20,7 +20,7 @@ angle_of_kinect: -45.0
 
 # The default movement speed, distance to reference wall and angle to this wall
 movement_speed: 0.5
-distance_to_wall: 2.0
+distance_to_wall: 1.0
 angle_to_wall: -45.0
 
 

@@ -106,7 +106,7 @@ def main():
         smach.StateMachine.add('Move along',
                                smach_ros.SimpleActionState('MoveAlongAS',
                                                            MoveAlongAction,
-                                                           goal =  MoveAlongGoal(vel=0.8),
+                                                           goal =  MoveAlongGoal(vel=0.6),
                                                            result_cb = move_along_result_cb,
                                                            outcomes=['aborted', 'succeeded', 'wall_found']),
                                transitions={'aborted'   :'aborted',

@@ -15,7 +15,7 @@ DaVinci::DaVinci(ros::NodeHandle nh_)
 };
 
 
-void DaVinci::draw_point(double x, double y, int id, POINT_COLOR color)
+void DaVinci::draw_point(double x, double y, double size, int id, POINT_COLOR color)
 {
     if (isnan(x) || isnan(y)) return;
 
@@ -32,9 +32,9 @@ void DaVinci::draw_point(double x, double y, int id, POINT_COLOR color)
     marker.pose.position.z = 0;
 
     // Set the scale of the marker -- 1x1x1 here means 1m on a side
-    marker.scale.x = 0.1;
-    marker.scale.y = 0.1;
-    marker.scale.z = 0.1;
+    marker.scale.x = size;
+    marker.scale.y = size;
+    marker.scale.z = size;
 
     // Set the color -- be sure to set alpha to something non-zero!
     marker.color = this->choose_color(color);
@@ -44,6 +44,12 @@ void DaVinci::draw_point(double x, double y, int id, POINT_COLOR color)
     marker.header.stamp = ros::Time::now();
     // Publish the marker
     this->publisher.publish(marker);
+};
+
+
+void DaVinci::draw_point(double x, double y, int id, POINT_COLOR color)
+{
+    this->draw_point(x, y, 0.1, id, color);
 };
 
 
@@ -195,6 +201,12 @@ void DaVinci::draw_point_cmd(double x, double y, int id, POINT_COLOR color)
 };
 
 
+void DaVinci::draw_point_cmd(double x, double y, double size, int id, POINT_COLOR color)
+{
+    this->draw_point(-y, x, size, id, color);
+};
+
+
 void DaVinci::clear_inf()
 {
     visualization_msgs::Marker marker;
@@ -237,6 +249,11 @@ visualization_msgs::Marker::_color_type DaVinci::choose_color(POINT_COLOR color)
     case BLUE:
         col.r =   0;
         col.g =   0;
+        col.b = 255;
+        break;
+    case CYAN:
+        col.r =   0;
+        col.g = 255;
         col.b = 255;
         break;
     case GOLD:

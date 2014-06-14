@@ -1,4 +1,6 @@
 /build/*
 /devel/*
 /contrib/launchers_gen/*
+/src/viso*
+/src/fovis*
 *~
