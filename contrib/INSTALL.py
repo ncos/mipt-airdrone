@@ -167,8 +167,14 @@ try:
 except:
     pass
 
+
+
+
 print "\nInitializing ROS workspace at " + ROOT_DIR + "/src";
-if not subprocess.call("cd " + ROOT_DIR + "/src\n catkin_init_workspace", shell=True) == 0:
+if not subprocess.call("#!/bin/bash"\
+                       "source " + ROS_INSTALL_DIR + "/setup.bash"\
+                       "cd " + ROOT_DIR + "/src\n"\
+                       "catkin_init_workspace", shell=True) == 0:
     print "Unable to execute catkin_init_workspace. Have you installed ROS?!"
     exit(1)
 
@@ -176,7 +182,7 @@ if not subprocess.call("cd " + ROOT_DIR + "/src\n catkin_init_workspace", shell=
 cleanup_bashrc() #Remove obsolete config paths
 with open(HOME_DIR + "/.bashrc", 'r+') as fbashrc:
     contents = fbashrc.read()
-    add_to_file(fbashrc, contents, "source /opt/ros/hydro/setup.bash")
+    add_to_file(fbashrc, contents, "source " + ROS_INSTALL_DIR + "/setup.bash")
     add_to_file(fbashrc, contents, "source " + LOCAL_BASH_FILE)
     add_to_file(fbashrc, contents, "export PATH=" + LAUNCHER_DIR + ":$PATH")
 
