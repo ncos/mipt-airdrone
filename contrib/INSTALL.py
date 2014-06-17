@@ -17,6 +17,12 @@ print "Workspace root directory:", ROOT_DIR
 print "Launcher bash scripts directory:", LAUNCHER_DIR
 print ""
 
+'''
+Deps:
+ros-hydro-hector-quadrotor-gazebo
+ros-hydro-hector-quadrotor-description
+ros-hydro-hector-gazebo-worlds
+'''
 
 def ensure_dir(f):
     if not os.path.exists(f):
