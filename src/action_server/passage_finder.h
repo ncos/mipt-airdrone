@@ -154,9 +154,11 @@ private:
     double delta_phi, prev_phi;
     bool init_flag; // Need to fix bug with start position in gazebo
     int rotation_cnt;
-    std::vector<pcl::PointXYZ> tracked_points;
+
     std::vector<pcl::PointXYZ> visited_points;
 
+public:
+    std::vector<pcl::PointXYZ> tracked_points;
 
 public:
     MappingServer (ros::NodeHandle _nh, std::string inp_topic);
@@ -164,7 +166,7 @@ public:
     double get_global_angle();
     double diff(double a, double b);
     pcl::PointXYZ diff(pcl::PointXYZ a, pcl::PointXYZ b);
-    void track (pcl::PointXYZ p);
+    int track (pcl::PointXYZ p);
     pcl::PointXYZ rotate(const pcl::PointXYZ vec, double angle);
 
 private:

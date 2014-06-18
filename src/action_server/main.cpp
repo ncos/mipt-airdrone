@@ -275,6 +275,7 @@ public:
 
             msn_srv->buf_cmd.linear.x = target.x * vel / len;
             msn_srv->buf_cmd.linear.y = target.y * vel / len;
+            msn_srv->buf_cmd.angular.z = -0.25;
 
             davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
 
@@ -318,25 +319,73 @@ public:
             ROS_ERROR("Pass_line wasn't found");
         }
 
-        double along_dist = sqrt (pass_dist * pass_dist - pass_line->distance * pass_line->distance) * 1.5;
+        double along_dist = sqrt (pass_dist * pass_dist - pass_line->distance * pass_line->distance);
 
 
-        pcl::PointXYZ vec (-pass_line->ldir_vec.cmd.x * along_dist, -pass_line->ldir_vec.cmd.y * along_dist, 0);
+        pcl::PointXYZ vec ((-pass_line->ldir_vec.cmd.x * along_dist + apf->passages.at(0).cmd_rght.x - pass_line->fdir_vec.cmd.x) / 2,
+                           (-pass_line->ldir_vec.cmd.y * along_dist + apf->passages.at(0).cmd_rght.y - pass_line->fdir_vec.cmd.y) / 2, 0);
 
 
         // New point tracking feature demo :)
-        map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x, apf->passages.at(0).cmd_rght.y, 0));
-        map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x + pass_line->ldir_vec.cmd.x,
-                                     apf->passages.at(0).cmd_rght.y + pass_line->ldir_vec.cmd.y, 0));
-        map_srv->track(vec);
+        int pass_border_num = map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x, apf->passages.at(0).cmd_rght.y, 0)) - 1;
+        //map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x - pass_line->fdir_vec.cmd.x,
+        //                             apf->passages.at(0).cmd_rght.y - pass_line->ldir_vec.cmd.y, 0));
+        //map_srv->track(pcl::PointXYZ(-pass_line->ldir_vec.cmd.x * along_dist,
+        //                             -pass_line->ldir_vec.cmd.y * along_dist, 0));
 
+        //map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x + pass_line->ldir_vec.cmd.x,
+        //                              apf->passages.at(0).cmd_rght.y + pass_line->ldir_vec.cmd.y, 0));
+        int start_pos_num = map_srv->track(vec) - 1;
 
-        if (this->move (vec, 0.3) == false) {
+        if (this->move (vec, 0.4) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
         }
 
+        pcl::PointXYZ pass_border (map_srv->tracked_points.at(pass_border_num).x,
+                                   map_srv->tracked_points.at(pass_border_num).y, 0);
+        pcl::PointXYZ pass_vec (pass_border.x, pass_border.y, 0);
+
+        ROS_INFO("Brd: %f\t %f\n Pos: %f\t %f\n Vec: %f\t %f", pass_border.x, pass_border.y,
+                                                               vec.x, vec.y, pass_vec.x, pass_vec.y);
+
+        //double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
+        vec.x = (pass_vec.x - pass_vec.y) / sqrt(2);
+        vec.y = (pass_vec.y + pass_vec.x) / sqrt(2);
+
+        ROS_INFO("Vec: %f\t %f", vec.x, vec.y);
+
+        int cur_pos_num = map_srv->track(vec) - 1;
+
+        if (this->move (vec, 0.4) == false) {
+            ROS_ERROR("Move function caused error");
+            as_approach_door.setAborted(result_);
+            return;
+        }
+
+        pass_border = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x,
+                                     map_srv->tracked_points.at(pass_border_num).y, 0);
+        pass_vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x - map_srv->tracked_points.at(start_pos_num).x,
+                                  map_srv->tracked_points.at(pass_border_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
+
+        ROS_INFO("Brd: %f\t %f\n Pos: %f\t %f\n Vec: %f\t %f", pass_border.x, pass_border.y,
+                                                               map_srv->tracked_points.at(start_pos_num).x, map_srv->tracked_points.at(start_pos_num).y,
+                                                               pass_vec.x, pass_vec.y);
+
+        double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
+        vec.x = map_srv->tracked_points.at(cur_pos_num).x + pass_vec.x;
+        vec.y = map_srv->tracked_points.at(cur_pos_num).y + pass_vec.y;
+
+        ROS_INFO("Vec: %f\t %f", vec.x, vec.y);
+
+        map_srv->track(vec);
+
+        if (this->move (vec, 0.4) == false) {
+            ROS_ERROR("Move function caused error");
+            as_approach_door.setAborted(result_);
+            return;
+        }
 
         msn_srv->unlock();
         result_.success = true;

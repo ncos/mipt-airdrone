@@ -508,11 +508,12 @@ void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
 };
 
 
-void MappingServer::track (pcl::PointXYZ p)
+int MappingServer::track (pcl::PointXYZ p)
 {
     this->lock();
     this->tracked_points.push_back(p);
     this->unlock();
+    return this->tracked_points.size();
 };
 
 
