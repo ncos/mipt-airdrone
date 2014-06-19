@@ -3,83 +3,107 @@
 
 
 
-
-
 using namespace std;
 using namespace cv;
-
-/** Global variables */
-//String face_cascade_name = "/home/ncos/catkin_ws/src/marker_detector/cascades/haarcascade_frontalface_alt.xml";
-String face_cascade_name = "/home/ncos/catkin_ws/src/marker_detector/cascades/mycrossdetector__new_20st_20x20_nosim.xml";
-//String face_cascade_name = "/home/ncos/catkin_ws/src/marker_detector/cascades/mycrossdetector3.xml";
-
-CascadeClassifier face_cascade;
-string window_name = "Capture - Marker detection";
-string window_name_t1 = "Capture - Marker detection -t1";
-string window_name_t2 = "Capture - Marker detection -t2";
-
-RNG rng(12345);
+using namespace cv::gpu;
 
 
 
-int haar( int argc, char** argv )
+
+void drawOptFlowMap(const Mat& flowx, const Mat& flowy, Mat& cflowmap, int step, const Scalar& color)
 {
-  CvCapture* capture;
-  Mat frame;
-
-  if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-
-  capture = cvCaptureFromCAM( -1 );
-  if( !capture ) {
-	  ROS_ERROR("No camera found! Aborting...");
-	  return 0;
-  }
-
-  while( true )
-  {
-	  frame = cvQueryFrame( capture );
-
-      if( !frame.empty() ) {
-
-    	  Mat downsampled;
-    	  Mat tilted_1;
-    	  Mat tilted_2;
-
-    	  resize(frame, downsampled, Size(), 0.3, 0.3, INTER_CUBIC);
-    	  resize(frame, tilted_1,    Size(), 0.3, 0.7, INTER_CUBIC);
-
-    	  detectAndDisplay( tilted_1 );
-
-      }
-      else {
-    	  printf(" --(!) No captured frame -- Break!");
-    	  break;
-      }
-
-      int c = waitKey(1);
-      if( (char)c == 'c' ) { break; }
-     }
-
-  return 0;
+    for (int y = 0; y < cflowmap.rows; y += step)
+        for(int x = 0; x < cflowmap.cols; x += step)
+        {
+            Point2f fxy;
+            fxy.x = flowx.at<float>(y,x);
+            fxy.y = flowy.at<float>(y,x);
+            line(cflowmap, Point(x,y), Point(cvRound(x+fxy.x), cvRound(y+fxy.y)),
+                 color);
+            circle(cflowmap, Point(x,y), 2, color, -1);
+        }
 }
 
 
-void detectAndDisplay( Mat frame )
+int flow(int argc, char **argv)
 {
-	std::vector<Rect> faces;
-	Mat frame_gray;
+    DeviceInfo info = getDevice();
+    cout << info.name() << endl << endl;
+    ROS_INFO("%s", info.name().c_str());
+    ROS_INFO("%s\n", cv::getBuildInformation().c_str());
+    ROS_INFO("Using OpenCV %s", CV_VERSION);
 
-	cvtColor( frame, frame_gray, CV_BGR2GRAY );
-	equalizeHist( frame_gray, frame_gray );
+    VideoCapture cap(0);
+    if( !cap.isOpened() ) {
+    	ROS_ERROR("No optical flow camera found!");
+        return -1;
+    }
+
+    namedWindow("flow", 1);
 
 
-	face_cascade.detectMultiScale( frame_gray, faces, 1.05, 2, 0|CV_HAAR_SCALE_IMAGE, Size(10, 10) );
+    GpuMat d_frameL, d_frameR, d_flowx, d_flowy;
+    Mat    prevgray, gray,     flowx,   flowy,   frame, cflow, downsampled;
+    FarnebackOpticalFlow d_calc;
 
-	for( size_t i = 0; i < faces.size(); i++ )
-	{
-		Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
-		ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-	}
 
-	imshow( window_name, frame );
-}
+    double t0 = 0, t1 = 1;
+    stringstream s;
+
+    for(;;)
+    {
+        int64 t = getTickCount();
+
+        double tc2 = getTickCount();
+        cap >> frame;
+        resize(frame, downsampled, Size(), 0.5, 0.5, INTER_LINEAR);
+
+        cvtColor(downsampled, gray, COLOR_BGR2GRAY);
+        double tc3 = getTickCount();
+
+
+
+        if( prevgray.data )
+        {
+
+            double tc0 = getTickCount();
+            d_frameL.upload(prevgray);
+            d_frameR.upload(gray);
+            d_calc(d_frameL, d_frameR, d_flowx, d_flowy);
+            d_flowx.download(flowx);
+            d_flowy.download(flowy);
+            double tc1 = getTickCount();
+
+
+            cvtColor(prevgray, cflow, COLOR_GRAY2BGR);
+            drawOptFlowMap(flowx, flowy, cflow, 16, Scalar(0, 255, 255));
+
+
+            s.str("");
+            s << "opt. flow FPS: " << cvRound((getTickFrequency()/(tc1-tc0))) << ".    " << cvRound(    (tc1-tc0)/getTickFrequency() * 1000 ) << " ms.";
+            putText(cflow, s.str(), Point(5, 65), FONT_HERSHEY_SIMPLEX, 0.3, Scalar(255,0,255), 1);
+
+            s.str("");
+            s << "total FPS: " << cvRound((getTickFrequency()/(t1-t0))) << ".    " << cvRound(    (t1-t0)/getTickFrequency() * 1000 ) << " ms.";
+            putText(cflow, s.str(), Point(5, 75), FONT_HERSHEY_SIMPLEX, 0.3, Scalar(255,0,255), 1);
+
+            s.str("");
+            s << "Test flag time: " << cvRound(((tc3-tc2)/getTickFrequency()*1000)) << " ms.";
+            putText(cflow, s.str(), Point(5, 85), FONT_HERSHEY_SIMPLEX, 0.3, Scalar(255,0,255), 1);
+
+            imshow("flow", cflow);
+
+        }
+
+        if(waitKey(30)>=0)
+            break;
+
+
+        std::swap(prevgray, gray);
+
+        t0 = t;
+        t1 = getTickCount();
+    }
+
+    return 0;
+};

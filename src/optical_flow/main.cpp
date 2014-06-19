@@ -7,13 +7,13 @@
 
 int main (int argc, char** argv)
 {
-	ros::init (argc, argv, "marker_detector");
+	ros::init (argc, argv, "optical_flow_node");
 
 	ros::NodeHandle nh;
 
 
 
-	haar(argc, argv );
+	flow(argc, argv);
 
 	//ros::spin ();
 

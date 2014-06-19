@@ -55,6 +55,7 @@ def cleanup_bashrc():
 def gen_ad_rebuild_bash(file_path):
     format_str = '#!/bin/bash\n'\
     'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
+    'export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH\n'\
     'cd ' + ROOT_DIR + '\n\n'\
     'catkin_make\n\n'\
     'source ' + LOCAL_BASH_FILE + '\n'\
@@ -74,6 +75,7 @@ def gen_ad_rebuild_bash(file_path):
 def gen_ad_rebuild_eclipse_bash(file_path):
     format_str = '#!/bin/bash\n'\
     'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
+    'export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH\n'\
     'cd ' + ROOT_DIR + '\n\n'\
     'catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'\
     ' -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8\n\n'\
@@ -168,30 +170,54 @@ def add_launcher(name, icon, command):
         print sys.exc_info()
         exit(1)
 
-try:
-    os.remove(ROOT_DIR + "/src/CMakeLists.txt")
-except:
-    pass
+
+
+def init_workspace():
+    try:
+        os.remove(ROOT_DIR + "/src/CMakeLists.txt")
+    except:
+        pass
+
+
+    print "\nInitializing ROS workspace at " + ROOT_DIR + "/src";
+    if not subprocess.call("#!/bin/bash\n"\
+                           "source " + ROS_INSTALL_DIR + "/setup.bash\n"\
+                           "cd " + ROOT_DIR + "/src\n"\
+                           "catkin_init_workspace", shell=True) == 0:
+        print "Unable to execute catkin_init_workspace. Have you installed ROS?!"
+        exit(1)
+
+
+def gen_command_launcher(name, command):
+    format_str = '#!/bin/bash\n'\
+    'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
+    'source ' + LOCAL_BASH_FILE + '\n\n'\
+    '' + command + '\n\n'\
+    'sleep 0.2'
+
+    file_path = LAUNCHER_DIR + '/ad_' + name
+    try:
+        bash_scipt_file = open(file_path, 'w+')
+        bash_scipt_file.write(format_str)
+        os.chmod(file_path, 0744)
+        print "Written to", file_path
+    except:
+        print "Error creating ", file_path
+        print "Check the permissions"
+        exit(1)
+
+    add_launcher(name, ROOT_DIR + '/contrib/icons/AdSpare.png', file_path)
 
 
 
-
-print "\nInitializing ROS workspace at " + ROOT_DIR + "/src";
-if not subprocess.call("#!/bin/bash"\
-                       "source " + ROS_INSTALL_DIR + "/setup.bash"\
-                       "cd " + ROOT_DIR + "/src\n"\
-                       "catkin_init_workspace", shell=True) == 0:
-    print "Unable to execute catkin_init_workspace. Have you installed ROS?!"
-    exit(1)
-
-
+init_workspace() #Initialize catkin workspace
 cleanup_bashrc() #Remove obsolete config paths
 with open(HOME_DIR + "/.bashrc", 'r+') as fbashrc:
     contents = fbashrc.read()
     add_to_file(fbashrc, contents, "source " + ROS_INSTALL_DIR + "/setup.bash")
     add_to_file(fbashrc, contents, "source " + LOCAL_BASH_FILE)
     add_to_file(fbashrc, contents, "export PATH=" + LAUNCHER_DIR + ":$PATH")
-
+    add_to_file(fbashrc, contents, "export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH")
 
 
 
@@ -210,8 +236,7 @@ add_launcher('AdSimulator',       ROOT_DIR + '/contrib/icons/AdAirdroneTest.png'
 add_launcher('AdRunInSimulator',  ROOT_DIR + '/contrib/icons/AdAirdroneLaunch.png',     LAUNCHER_DIR + "/ad_airdrone_launch")
 add_launcher('AdRun4Real',        ROOT_DIR + '/contrib/icons/AdAirdroneRealLaunch.png', LAUNCHER_DIR + "/ad_airdrone_real_launch")
 
-
-
+gen_command_launcher('AdOpticalFlow', 'roslaunch optical_flow optical_flow.launch')
 
 
 
