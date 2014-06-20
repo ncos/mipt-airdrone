@@ -22,6 +22,8 @@ Deps:
 ros-hydro-hector-quadrotor-gazebo
 ros-hydro-hector-quadrotor-description
 ros-hydro-hector-gazebo-worlds
+ros-hydro-cmake_modules
+#sudo adduser second_user dialout
 '''
 
 def ensure_dir(f):
