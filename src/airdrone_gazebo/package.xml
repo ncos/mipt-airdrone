@@ -8,6 +8,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>gazebo_ros</run_depend>
+  <run_depend>hector_sensors_description</run_depend>
 
   <export>
     <gazebo_ros gazebo_media_path="${prefix}"/>

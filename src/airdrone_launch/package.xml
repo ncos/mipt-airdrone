@@ -6,5 +6,11 @@
   <maintainer email="anton.mitrokhin@phystech.edu">ncos</maintainer>
   <license>MIT</license>
 
+  <run_depend>hector-quadrotor-gazebo</run_depend>
+  <run_depend>hector-quadrotor-description</run_depend>
+  <run_depend>hector-gazebo-worlds</run_depend>
+
   <buildtool_depend>catkin</buildtool_depend>
 </package>
+
+

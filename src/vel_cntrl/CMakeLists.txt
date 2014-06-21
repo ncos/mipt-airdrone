@@ -40,7 +40,7 @@ catkin_package(CATKIN_DEPENDS message_runtime)
 ###########
 
 
-include_directories(	${catkin_INCLUDE_DIRS})
+include_directories(${catkin_INCLUDE_DIRS})
 
 
 
@@ -49,7 +49,7 @@ include_directories(	${catkin_INCLUDE_DIRS})
 set(SOURCES main.cpp)	  # Установка переменной со списком исходников
 
 add_executable(vel_cntrl_nd ${SOURCES})
-target_link_libraries(vel_cntrl_nd 	${catkin_LIBRARIES})
+target_link_libraries(vel_cntrl_nd ${catkin_LIBRARIES})
 add_dependencies(vel_cntrl_nd ${PROJECT_NAME}_gencpp)
 
 

@@ -56,8 +56,8 @@ Multicopter autopilot system for CROC aerial robotics competition
 
 ### To edit the robot model:
  1. Be careful here too)
- 2. Go to *.../mipt-airdrone/src/airdrone_launch/inherited_from_hector/urdf*
- 3. Edit the quadrotor_with_kinect.urdf.xacro file to set up kinect position and orientation
+ 2. Go to *.../mipt-airdrone/src/airdrone_gazebo/quadrotor_description*
+ 3. Edit the urdf/quadrotor_with_kinect.urdf.xacro file to set up kinect position and orientation
  4. Other features are coming soon...
 
 
