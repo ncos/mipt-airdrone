@@ -4,7 +4,8 @@ project(optical_flow)
 
 
 find_package(catkin REQUIRED COMPONENTS 
-				geometry_msgs 
+				geometry_msgs
+                                cv_bridge 
 				image_transport 
 				message_generation 
 				roscpp 
@@ -27,20 +28,55 @@ generate_messages(
 
 
 catkin_package(CATKIN_DEPENDS message_runtime)
-
-
 include_directories(${catkin_INCLUDE_DIRS})
 
+# This macro will list all folders in a directory
+MACRO(SUBDIRLIST result curdir)
+    FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+    SET(dirlist "")
+    FOREACH(child ${children})
+        IF(IS_DIRECTORY ${curdir}/${child})
+            SET(dirlist ${dirlist} ${child})
+        ENDIF()
+    ENDFOREACH()
+    SET(${result} ${dirlist})
+ENDMACRO()
 
-set(SOURCES main.cpp flow.cpp flow.h)
-add_executable(optical_flow_nd ${SOURCES})
+set(GPU_FLOW_MODULES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/optical_flow_drivers/gpu_based)
+set(CPU_FLOW_MODULES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/optical_flow_drivers/cpu_based)
 
-target_link_libraries(optical_flow_nd ${catkin_LIBRARIES} 
-			              ${OpenCV_LIBS})
+SUBDIRLIST(GPU_SUBDIRS ${GPU_FLOW_MODULES_PATH})
+SUBDIRLIST(CPU_SUBDIRS ${CPU_FLOW_MODULES_PATH})
 
 
-add_executable(px_flow_to_odom_nd px_flow_to_odom.cpp)
-target_link_libraries(px_flow_to_odom_nd ${catkin_LIBRARIES} )
+# Different realizations of optical flow algorithm
+# CPU based:
+MESSAGE("Parsing CPU optical flow directories: ${CPU_SUBDIRS}")
+FOREACH(subdir ${CPU_SUBDIRS})
+    set(ROOT ${CPU_FLOW_MODULES_PATH}/${subdir})
+    MESSAGE("\tCreating node 'of_cpu_${subdir}_nd'")
+    set(SOURCES ${ROOT}/main.cpp ${ROOT}/flow.cpp ${ROOT}/flow.h)
+    add_executable(of_cpu_${subdir}_nd ${SOURCES})
+    target_link_libraries(of_cpu_${subdir}_nd ${catkin_LIBRARIES} 
+    			                      ${OpenCV_LIBS})
+ENDFOREACH()
+
+
+# GPU based:
+MESSAGE("Parsing GPU optical flow directories: ${GPU_SUBDIRS}")
+FOREACH(subdir ${GPU_SUBDIRS})
+    set(ROOT ${GPU_FLOW_MODULES_PATH}/${subdir})
+    MESSAGE("\tCreating node 'of_gpu_${subdir}_nd'")
+    set(SOURCES ${ROOT}/main.cpp ${ROOT}/flow.cpp ${ROOT}/flow.h)
+    add_executable(of_gpu_${subdir}_nd ${SOURCES})
+    target_link_libraries(of_gpu_${subdir}_nd ${catkin_LIBRARIES} 
+    			                      ${OpenCV_LIBS})
+ENDFOREACH()
+
+
+# To convert from 'flow' message to '/odom' transform
+add_executable(raw_flow_to_odom_nd ${CMAKE_CURRENT_SOURCE_DIR}/optical_flow_drivers/raw_flow_to_odom.cpp)
+target_link_libraries(raw_flow_to_odom_nd ${catkin_LIBRARIES})
 
 
 

@@ -1,0 +1,12 @@
+<launch>
+    <node name="px4flow" pkg="px4flow" type="px4flow_node" output="screen" respawn="true" clear_params="true">
+        <rosparam file="$(find optical_flow)/launch/px4flow_parameters.yaml"/>
+        <remap from="/px4flow/opt_flow" to="/optical_flow/opt_flow"/>
+        <remap from="/px4flow/camera_image" to="/optical_flow/camera_image"/>
+    </node>
+
+    <node pkg="optical_flow"  name="raw_flow_to_odom" type="raw_flow_to_odom_nd"  output="screen" respawn="true" clear_params="true">
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find optical_flow)/rviz_cfg/of_test.rviz"/>
+</launch>

@@ -1,4 +1,0 @@
-<launch>
-    <!--<include file="$(find px4flow)/launch/px4flow.launch"/>-->
-    <node pkg="optical_flow"  name="optical_flow" type="optical_flow_nd"  output="screen" required="true"></node>
-</launch>

@@ -1,0 +1,10 @@
+<launch>
+    <node pkg="optical_flow" name="of_gpu_farneback_nd" type="of_gpu_farneback_nd" output="screen" respawn="true" clear_params="true">
+        <rosparam file="$(find optical_flow)/launch/farn_parameters.yaml" command="load" ns = "/" />
+    </node>
+
+    <node pkg="optical_flow"  name="raw_flow_to_odom" type="raw_flow_to_odom_nd"  output="screen" respawn="true" clear_params="true">
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find optical_flow)/rviz_cfg/of_test.rviz"/>
+</launch>
