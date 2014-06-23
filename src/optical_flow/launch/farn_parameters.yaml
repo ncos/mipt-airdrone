@@ -8,4 +8,5 @@ numIters: 10
 polyN: 5
 polySigma: 1.1
 flags: 0
-resize_scale: 0.3
+size_x: 200
+size_y: 150

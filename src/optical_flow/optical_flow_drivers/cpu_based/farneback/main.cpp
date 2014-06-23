@@ -16,7 +16,8 @@ int numIters = 10;
 int polyN = 5;
 double polySigma = 1.1;
 int flags = 0;
-double resize_scale = 0.5;
+int size_x = 640;
+int size_y = 480;
 
 
 image_transport::Publisher image_pub_;
@@ -43,16 +44,18 @@ int main (int argc, char** argv)
     if (!nh.getParam("polyN",        polyN))        ROS_ERROR("Failed to get param 'polyN'");
     if (!nh.getParam("polySigma",    polySigma))    ROS_ERROR("Failed to get param 'polySigma'");
     if (!nh.getParam("flags",        flags))        ROS_ERROR("Failed to get param 'flags'");
-    if (!nh.getParam("resize_scale", resize_scale)) ROS_ERROR("Failed to get param 'resize_scale'");
+    if (!nh.getParam("size_x",       size_x))       ROS_ERROR("Failed to get param 'size_x'");
+    if (!nh.getParam("size_y",       size_y))       ROS_ERROR("Failed to get param 'size_y'");
 
 
-	OpticalFlow of (camera_id);
+	OpticalFlow of (camera_id, size_x, size_y);
 
 
     while (ros::ok()) {
         of.renew();
 
-        of.cflow.copyTo(cv_ptr.image);
+        of.getOptFlowMap(8, cv::Scalar(0, 255, 255)).copyTo(cv_ptr.image);
+        //of.colorizeFlow().copyTo(cv_ptr.image);
 
         image_pub_.publish(cv_ptr.toImageMsg());
         ros::spinOnce();

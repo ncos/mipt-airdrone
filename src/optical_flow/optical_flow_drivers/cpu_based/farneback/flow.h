@@ -1,5 +1,5 @@
-#ifndef DETECTOR_H
-#define DETECTOR_H
+#ifndef FLOW_H
+#define FLOW_H
 
 
 #include <ros/ros.h>
@@ -18,27 +18,40 @@ extern int numIters;
 extern int polyN;
 extern double polySigma;
 extern int flags;
-extern double resize_scale;
 
+
+
+
+template <typename T>
+inline T mapVal(T x, T a, T b, T c, T d)
+{
+    x = ::cv::max(::cv::min(x, b), a);
+    return c + (d-c) * (x-a) / (b-a);
+};
 
 class OpticalFlow
 {
 private:
-    cv::Mat prevgray, gray, flowx, flowy;
+    cv::Mat prevgray, gray, downsampled;
     cv::VideoCapture cap;
 
-    double t0, t1;
+    std::vector<cv::Point2f> flowp1, flowp2;
+    int64 flow_time_0, flow_time_1, total_time_0, total_time_1;
     std::stringstream s;
+    int size_x, size_y;
+    int64 numpoints, step;
 
 public:
-    cv::Mat flowxy, cflow, frame, downsampled;
+    cv::Mat flowxy, frame;
 
 private:
-    void drawOptFlowMap (const cv::Mat& flowx, const cv::Mat& flowy, cv::Mat& out_flow, int step, const cv::Scalar& color);
-    void get_vectors (const cv::Mat& flowx, const cv::Mat& flowy, std::vector<cv::Point2f> &p0, std::vector<cv::Point2f> &p1, int step);
+    void renew_vectors ();
 
 public:
-    OpticalFlow (int video_source);
+    cv::Mat getOptFlowMap (int step, const cv::Scalar& color);
+    cv::Mat colorizeFlow ();
+
+    OpticalFlow (int video_source, int sx, int sy);
     void renew ();
 };
 
