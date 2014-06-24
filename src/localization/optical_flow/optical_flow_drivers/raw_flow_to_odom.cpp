@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
 
-    odom_pub = n.advertise<nav_msgs::Odometry>("/vo", 50);
+    odom_pub = n.advertise<nav_msgs::Odometry>("/to_ekf/vo", 50);
     flow_sub = n.subscribe("/optical_flow/opt_flow", 50, opticalflowCallback);
     odom_broadcaster = boost::shared_ptr<tf::TransformBroadcaster> (new tf::TransformBroadcaster);
 

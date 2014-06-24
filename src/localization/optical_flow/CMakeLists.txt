@@ -22,12 +22,11 @@ add_message_files(
 )
 
 generate_messages(   
-  DEPENDENCIES  
-  std_msgs  
+  DEPENDENCIES std_msgs sensor_msgs geometry_msgs
 )  
 
 
-catkin_package(CATKIN_DEPENDS message_runtime)
+catkin_package(CATKIN_DEPENDS message_runtime sensor_msgs std_msgs geometry_msgs)
 include_directories(${catkin_INCLUDE_DIRS})
 
 # This macro will list all folders in a directory
@@ -59,6 +58,7 @@ FOREACH(subdir ${CPU_SUBDIRS})
     add_executable(of_cpu_${subdir}_nd ${SOURCES})
     target_link_libraries(of_cpu_${subdir}_nd ${catkin_LIBRARIES} 
     			                      ${OpenCV_LIBS})
+    add_dependencies(of_cpu_${subdir}_nd ${PROJECT_NAME}_gencpp)
 ENDFOREACH()
 
 
@@ -71,12 +71,13 @@ FOREACH(subdir ${GPU_SUBDIRS})
     add_executable(of_gpu_${subdir}_nd ${SOURCES})
     target_link_libraries(of_gpu_${subdir}_nd ${catkin_LIBRARIES} 
     			                      ${OpenCV_LIBS})
+    add_dependencies(of_gpu_${subdir}_nd ${PROJECT_NAME}_gencpp)
 ENDFOREACH()
 
 
 # To convert from 'flow' message to '/odom' transform
 add_executable(raw_flow_to_odom_nd ${CMAKE_CURRENT_SOURCE_DIR}/optical_flow_drivers/raw_flow_to_odom.cpp)
 target_link_libraries(raw_flow_to_odom_nd ${catkin_LIBRARIES})
-
+add_dependencies(raw_flow_to_odom_nd ${PROJECT_NAME}_gencpp)
 
 

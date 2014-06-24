@@ -10,9 +10,6 @@
 
 #define TEST_MODE  // Define whether to compile for a simulator or for a real hardware
 
-using std::cout;
-using std::cerr;
-using std::endl;
 
 ros::Subscriber sub_vel_1;
 ros::Subscriber sub_vel_2;
@@ -113,81 +110,81 @@ void vel_to_RC(geometry_msgs::Twist vel)
 
 int main( int argc, char** argv )
 {
-  ros::init(argc, argv, "velocity_server");
-  ros::NodeHandle nh;
-  ros::Rate loop_rate(60);
+    ros::init(argc, argv, "velocity_server");
+    ros::NodeHandle nh;
+    ros::Rate loop_rate(60);
 
 
-  std::string input_topic_vel_1 = nh.resolveName("/cmd_vel_1");
-  std::string input_topic_vel_2 = nh.resolveName("/cmd_vel_2");
-  std::string input_topic_vel_3 = nh.resolveName("/cmd_vel_3");
-  std::string output_topic_vel  = nh.resolveName("/cmd_vel"  );
-  std::string output_topic_rc   = nh.resolveName("/send_rc"  );
-  std::string output_topic_mrk  = nh.resolveName("visualization_marker");
+    std::string input_topic_vel_1 = nh.resolveName("/cmd_vel_1");
+    std::string input_topic_vel_2 = nh.resolveName("/cmd_vel_2");
+    std::string input_topic_vel_3 = nh.resolveName("/cmd_vel_3");
+    std::string output_topic_vel  = nh.resolveName("/cmd_vel"  );
+    std::string output_topic_rc   = nh.resolveName("/send_rc"  );
+    std::string output_topic_mrk  = nh.resolveName("visualization_marker");
 
 
-  sub_vel_1   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_1,  1, callback_1);
-  sub_vel_2   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_2,  1, callback_2);
-  sub_vel_3   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_3,  1, callback_3);
+    sub_vel_1   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_1,  1, callback_1);
+    sub_vel_2   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_2,  1, callback_2);
+    sub_vel_3   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_3,  1, callback_3);
 
-  pub_vel     = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
-  pub_rc      = nh.advertise<vel_cntrl::RC        >           (output_topic_rc,  1 );
-  pub_mrk     = nh.advertise<visualization_msgs::Marker>      (output_topic_mrk, 5 );
-
-
-  if (!nh.getParam("vel_to_pwr", vel_to_pwr)) ROS_ERROR("Failed to get param 'vel_to_pwr'");
-  if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
+    pub_vel     = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
+    pub_rc      = nh.advertise<vel_cntrl::RC        >           (output_topic_rc,  1 );
+    pub_mrk     = nh.advertise<visualization_msgs::Marker>      (output_topic_mrk, 5 );
 
 
-  height_text.header.frame_id = "/camera_link";
-  height_text.ns = "text_ns";
-  height_text.action = visualization_msgs::Marker::ADD;
-  height_text.id = 101;
-  height_text.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
-  height_text.scale.z = 0.1;
-  height_text.pose.position.z = 0.4;
-  height_text.color.r = 0.0;
-  height_text.color.g = 1.0;
-  height_text.color.b = 0.0;
-  height_text.color.a = 0.3;
-  height_text.text    = "THROTTLE = [Nan]\nROLL = [Nan]\nPITCH = [Nan]\nYAW = [Nan]\n";
-  pub_mrk.publish(height_text);
+    if (!nh.getParam("vel_to_pwr", vel_to_pwr)) ROS_ERROR("Failed to get param 'vel_to_pwr'");
+    if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
+
+
+    height_text.header.frame_id = "/camera_link";
+    height_text.ns = "text_ns";
+    height_text.action = visualization_msgs::Marker::ADD;
+    height_text.id = 101;
+    height_text.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+    height_text.scale.z = 0.1;
+    height_text.pose.position.z = 0.4;
+    height_text.color.r = 0.0;
+    height_text.color.g = 1.0;
+    height_text.color.b = 0.0;
+    height_text.color.a = 0.3;
+    height_text.text    = "THROTTLE = [Nan]\nROLL = [Nan]\nPITCH = [Nan]\nYAW = [Nan]\n";
+    pub_mrk.publish(height_text);
 
 
 #ifndef TEST_MODE
-  ros::service::waitForService("/arm");
+    ros::service::waitForService("/arm");
 #endif
 
-  height_text.lifetime = ros::Duration(0.2);
-  while (ros::ok())
-  {
-      geometry_msgs::Twist vel_acc;
-      vel_acc.linear.x = vel_1.linear.x + vel_2.linear.x + vel_3.linear.x;
-      vel_acc.linear.y = vel_1.linear.y + vel_2.linear.y + vel_3.linear.y;
-      vel_acc.linear.z = vel_1.linear.z + vel_2.linear.z + vel_3.linear.z;
+    height_text.lifetime = ros::Duration(0.2);
+    while (ros::ok())
+    {
+        geometry_msgs::Twist vel_acc;
+        vel_acc.linear.x = vel_1.linear.x + vel_2.linear.x + vel_3.linear.x;
+        vel_acc.linear.y = vel_1.linear.y + vel_2.linear.y + vel_3.linear.y;
+        vel_acc.linear.z = vel_1.linear.z + vel_2.linear.z + vel_3.linear.z;
 
-      vel_acc.angular.x = vel_1.angular.x + vel_2.angular.x + vel_3.angular.x;
-      vel_acc.angular.y = vel_1.angular.y + vel_2.angular.y + vel_3.angular.y;
-      vel_acc.angular.z = vel_1.angular.z + vel_2.angular.z + vel_3.angular.z;
+        vel_acc.angular.x = vel_1.angular.x + vel_2.angular.x + vel_3.angular.x;
+        vel_acc.angular.y = vel_1.angular.y + vel_2.angular.y + vel_3.angular.y;
+        vel_acc.angular.z = vel_1.angular.z + vel_2.angular.z + vel_3.angular.z;
 
-      pub_vel.publish(vel_acc);
-
-
-      vel_to_RC(vel_acc);
-      pub_rc.publish(rc_msg);
+        pub_vel.publish(vel_acc);
 
 
-      char text[32];
-      sprintf(text, "THROTTLE = [%4.0f]\nROLL = [%4.0f]\nPITCH = [%4.0f]\nYAW = [%4.0f]\n", rc_acc[THROTTLE], rc_acc[ROLL], rc_acc[PITCH], rc_acc[YAW]);
-      height_text.text = text;
-      pub_mrk.publish(height_text);
+        vel_to_RC(vel_acc);
+        pub_rc.publish(rc_msg);
 
-      ros::spinOnce();
-      loop_rate.sleep();
-  }
 
-  return 0;
-}
+        char text[32];
+        sprintf(text, "THROTTLE = [%4.0f]\nROLL = [%4.0f]\nPITCH = [%4.0f]\nYAW = [%4.0f]\n", rc_acc[THROTTLE], rc_acc[ROLL], rc_acc[PITCH], rc_acc[YAW]);
+        height_text.text = text;
+        pub_mrk.publish(height_text);
+
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+
+    return 0;
+};
 
 
 
