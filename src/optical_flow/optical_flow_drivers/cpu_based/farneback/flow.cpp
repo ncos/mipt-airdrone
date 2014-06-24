@@ -65,7 +65,6 @@ cv::Mat OpticalFlow::getOptFlowMap(int step, const cv::Scalar& color)
 
 void OpticalFlow::renew_vectors()
 {
-
     int64 i = 0;
     for(int y = 0; y < this->flowxy.rows; y += this->step) {
         for(int x = 0; x < this->flowxy.cols; x += this->step) {
@@ -93,6 +92,7 @@ OpticalFlow::OpticalFlow (int video_source, int sx, int sy) : cap(video_source),
     this->total_time_1 = 1;
     this->flow_time_0  = 0;
     this->flow_time_1  = 0;
+    this->dt = 1;
     this->size_x = sx;
     this->size_y = sy;
     this->step   = 1;
@@ -128,33 +128,7 @@ void OpticalFlow::renew()
 
 
         this->renew_vectors();
-        /*
-        cv::Mat R = cv::estimateRigidTransform(this->flowp1, this->flowp2, false);
-
-        // extend rigid transformation to use perspectiveTransform:
-        cv::Mat H = cv::Mat(3, 3, R.type());
-
-        H.at<double>(0, 0) = R.at<double>(0, 0);
-        H.at<double>(0, 1) = R.at<double>(0, 1);
-        H.at<double>(0, 2) = R.at<double>(0, 2);
-
-        H.at<double>(1, 0) = R.at<double>(1, 0);
-        H.at<double>(1, 1) = R.at<double>(1, 1);
-        H.at<double>(1, 2) = R.at<double>(1, 2);
-
-        H.at<double>(2, 0) = 0.0;
-        H.at<double>(2, 1) = 0.0;
-        H.at<double>(2, 2) = 1.0;
-
-        // compute perspectiveTransform on p1
-        std::vector<cv::Point2f> to_transform;
-        to_transform.push_back(cv::Point2f(0, 1));
-        std::vector<cv::Point2f> result;
-        cv::perspectiveTransform(to_transform, result, H);
-
-        //ROS_INFO("(%f, %f)", result.at(0).x, result.at(0).y);
-        */
-
+        this->dt = (this->total_time_1 - this->total_time_0) / cv::getTickFrequency();
     }
 
 

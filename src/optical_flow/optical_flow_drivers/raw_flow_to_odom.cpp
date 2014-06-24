@@ -44,8 +44,9 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
     double delta_y = (vx * sin(th) + vy * cos(th)) * dt;
     double delta_th = vth * dt;
 
-    //delta_x = flow->flow_x / 1000;
-    //delta_y = flow->flow_y / 1000;
+    // FIXME:
+    delta_x = flow->offset_x / 50.0;
+    delta_y = flow->offset_y / 50.0;
 
     x += delta_x;
     y += delta_y;

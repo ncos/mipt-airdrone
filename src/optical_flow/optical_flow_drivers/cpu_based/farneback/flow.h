@@ -35,14 +35,15 @@ private:
     cv::Mat prevgray, gray, downsampled;
     cv::VideoCapture cap;
 
-    std::vector<cv::Point2f> flowp1, flowp2;
     int64 flow_time_0, flow_time_1, total_time_0, total_time_1;
     std::stringstream s;
     int size_x, size_y;
     int64 numpoints, step;
 
 public:
+    std::vector<cv::Point2f> flowp1, flowp2;
     cv::Mat flowxy, frame;
+    double dt;
 
 private:
     void renew_vectors ();
