@@ -15,9 +15,16 @@
     
     <!-- Kinect -->
     <xacro:include filename="$(find hector_sensors_description)/urdf/kinect_camera.urdf.xacro" />
-    <xacro:kinect_camera name="camera" parent="base_link">
+    <xacro:kinect_camera name="kinect" parent="base_link">
       <origin xyz="0.1 -0.1 -0.0" rpy="0.0 0.0 -0.785"/>
     </xacro:kinect_camera>
+
+
+    <!-- Downward facing camera -->
+    <xacro:include filename="$(find hector_sensors_description)/urdf/generic_camera.urdf.xacro" />
+    <xacro:generic_camera name="flow_camera" parent="base_link" ros_topic="flow_camera/image" cam_info_topic="flow_camera/camera_info" update_rate="15" res_x="320" res_y="240" image_format="L8" hfov="90">
+      <origin xyz="0.0 0.0 0.0" rpy="0 ${M_PI/2} 0"/>
+    </xacro:generic_camera>
     
 </robot>
   

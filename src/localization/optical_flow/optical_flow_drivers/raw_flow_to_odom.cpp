@@ -3,7 +3,7 @@
 #include <optical_flow/OpticalFlow.h>
 #include <nav_msgs/Odometry.h>
 
-#include <boost/assign/list_of.hpp> // for 'map_list_of()'
+#include <boost/assign/list_of.hpp> // for 'list_of()'
 
 
 // Check the http://wiki.ros.org/navigation/Tutorials/RobotSetup/Odom

@@ -19,16 +19,27 @@ find_package(catkin REQUIRED COMPONENTS
 				std_srvs)
 
 
+FILE(GLOB MSG_FILES RELATIVE ${CMAKE_CURRENT_LIST_DIR}/msg msg/*.msg)
+
 add_message_files(
-  FILES
-  Attitude.msg
-  Control.msg
-  Mavlink_RAW_IMU.msg
-  RC.msg
-  State.msg
-  VFR_HUD.msg)
+  #DIRECTORY action
+  FILES ${MSG_FILES}
+)
+
+FILE(GLOB SRV_FILES RELATIVE ${CMAKE_CURRENT_LIST_DIR}/srv srv/*.srv)
+
+add_service_files(
+  #DIRECTORY action
+  FILES ${SRV_FILES}
+)
+
 
 generate_messages(DEPENDENCIES std_msgs sensor_msgs geometry_msgs)
+
+
+
+
+
 
 
 

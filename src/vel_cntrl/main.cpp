@@ -119,7 +119,7 @@ int main( int argc, char** argv )
     std::string input_topic_vel_2 = nh.resolveName("/cmd_vel_2");
     std::string input_topic_vel_3 = nh.resolveName("/cmd_vel_3");
     std::string output_topic_vel  = nh.resolveName("/cmd_vel"  );
-    std::string output_topic_rc   = nh.resolveName("/send_rc"  );
+    std::string output_topic_rc   = nh.resolveName("/apm/send_rc"  );
     std::string output_topic_mrk  = nh.resolveName("visualization_marker");
 
 

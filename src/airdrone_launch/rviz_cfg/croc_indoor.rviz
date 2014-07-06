@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /RobotModel1
+        - /Camera1
         - /TF1/Frames1
       Splitter Ratio: 0.382937
     Tree Height: 424
@@ -68,24 +69,33 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_link:
+        flow_camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_rgb_frame:
+        flow_camera_optical_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        camera_rgb_optical_frame:
+        kinect_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinect_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinect_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        kinect_rgb_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinect_rgb_optical_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -103,7 +113,7 @@ Visualization Manager:
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
-      Image Topic: /camera/rgb/image_raw
+      Image Topic: /kinect/rgb/image_raw
       Name: Camera
       Overlay Alpha: 0.5
       Queue Size: 2
@@ -192,16 +202,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 32.2303
+      Distance: 1.67191
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.0065857
-        Y: -3.22838
-        Z: 0.692875
+        X: -0.453362
+        Y: -0.362346
+        Z: 0.692355
       Name: Current View
       Near Clip Distance: 0.01
       Pitch: 1.5698
@@ -227,5 +237,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1855
-  X: 58
+  X: 65
   Y: 24
