@@ -10,7 +10,7 @@ DaVinci::DaVinci(ros::NodeHandle nh_)
     this->topic_name = this->nh.resolveName("visualization_marker");
     this->publisher = this->nh.advertise<visualization_msgs::Marker> (this->topic_name, 5);
 
-    this->draw_link = "/camera_link";
+    this->draw_link = "/kinect_link";
     this->uid = 0;
 };
 

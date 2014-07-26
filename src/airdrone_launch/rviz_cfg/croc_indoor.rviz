@@ -1,6 +1,6 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 78
+    Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded:
@@ -9,7 +9,7 @@ Panels:
         - /Camera1
         - /TF1/Frames1
       Splitter Ratio: 0.382937
-    Tree Height: 424
+    Tree Height: 502
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -113,7 +113,7 @@ Visualization Manager:
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
-      Image Topic: /kinect/rgb/image_raw
+      Image Topic: /flow_camera/flow_camera/image
       Name: Camera
       Overlay Alpha: 0.5
       Queue Size: 2
@@ -237,5 +237,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1855
-  X: 65
+  X: 58
   Y: 24

@@ -178,7 +178,7 @@ int main (int argc, char** argv)
 
     if (!nh.getParam("base_height", target_height)) ROS_ERROR("Failed to get param 'base_height'");
 
-    height_text.header.frame_id = "/camera_link";
+    height_text.header.frame_id = "/kinect_link";
     height_text.ns = "text_ns";
     height_text.action = visualization_msgs::Marker::ADD;
     height_text.id = 100;

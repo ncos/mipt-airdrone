@@ -92,7 +92,7 @@ int main (int argc, char** argv)
 	ros::init (argc, argv, "rgbd_shrinker");
 
 	ros::NodeHandle nh;
-	std::string input_topic        = nh.resolveName("/camera/depth/points" );
+	std::string input_topic        = nh.resolveName("/kinect/depth/points" );
 	std::string output_laser_topic = nh.resolveName("/shrinker/depth/laser_points");
 	std::string output_floor_topic = nh.resolveName("/shrinker/depth/floor_points");
 
