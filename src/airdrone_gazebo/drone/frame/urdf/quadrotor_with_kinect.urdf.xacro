@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<robot
+  name="quadrotor"
+  xmlns:xacro="http://ros.org/wiki/xacro"
+>
+   
+    <xacro:property name="M_PI" value="3.1415926535897931" />
+    
+    <!-- Included URDF Files -->
+    <xacro:include filename="$(find airdrone_gazebo)/drone/frame/urdf/quadrotor_base.urdf.xacro" />
+    
+    <!-- Instantiate quadrotor_base_macro once (has no parameters atm) -->
+    <xacro:quadrotor_base_macro />
+    
+    <!-- Kinect -->
+    <xacro:include filename="$(find airdrone_gazebo)/drone/sensors/urdf/kinect_camera.urdf.xacro" />
+    <xacro:kinect_camera name="kinect" parent="base_link">
+      <origin xyz="0.1 -0.1 -0.0" rpy="0.0 0.0 -0.785"/>
+    </xacro:kinect_camera>
+
+
+    <!-- Downward facing camera -->
+    <xacro:include filename="$(find airdrone_gazebo)/drone/sensors/urdf/generic_camera.urdf.xacro" />
+    <xacro:generic_camera name="flow_camera" parent="base_link" ros_topic="flow_camera/image" cam_info_topic="flow_camera/camera_info" update_rate="15" res_x="320" res_y="240" image_format="L8" hfov="90">
+      <origin xyz="0.0 0.0 0.0" rpy="0 ${M_PI/2} 0"/>
+    </xacro:generic_camera>
+    
+</robot>
+  

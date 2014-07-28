@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<robot name="quadrotor" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find airdrone_gazebo)/drone/frame/urdf/quadrotor.urdf.xacro" />
+    <xacro:include filename="$(find airdrone_gazebo)/drone/plugins/urdf/quadrotor_plugins.gazebo.xacro" />
+</robot>
+
