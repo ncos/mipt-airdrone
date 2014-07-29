@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Start quadrotor simulator -->
+  <include file="$(find airdrone_launch)/launch/simulator.launch"></include>
+
+
+</launch>

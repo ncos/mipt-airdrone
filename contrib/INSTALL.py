@@ -6,7 +6,7 @@ import sys, os, subprocess
 ROS_INSTALL_DIR = "/opt/ros/hydro"
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 LOCAL_BASH_FILE = ROOT_DIR + "/devel/setup.bash"
-LAUNCHER_DIR = ROOT_DIR + "/contrib/launchers_gen"
+LAUNCHER_DIR = ROOT_DIR + "/contrib/launchers_gen/"
 HOME_DIR = os.path.expanduser("~")
 
 print "\nINSTALL SCRIPT FOR MIPT-AIRDRONE PROJECT"
@@ -38,7 +38,7 @@ def add_to_file(f, contents, string):
     else:
         print "OK: " + string
 
-def cleanup_bashrc():
+def cleanup():
     output = []
     cnt = 0
     with open(HOME_DIR + "/.bashrc", 'r') as fbashrc:
@@ -50,109 +50,36 @@ def cleanup_bashrc():
 
     with open(HOME_DIR + "/.bashrc", 'w') as fbashrc:
         fbashrc.writelines(output)
-
     print "Removed", cnt, "lines"
 
+    for name in os.listdir(HOME_DIR + '/.local/share/applications/'):
+        if '_ad_gen.desktop' in name:
+            print "removing " + name
+            os.remove(HOME_DIR + '/.local/share/applications/' + name)
 
-def gen_ad_rebuild_bash(file_path):
-    format_str = '#!/bin/bash\n'\
-    'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
-    'export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH\n'\
-    'cd ' + ROOT_DIR + '\n\n'\
-    'catkin_make\n\n'\
-    'source ' + LOCAL_BASH_FILE + '\n'\
-    'echo "Press any key to continue..."\nread'
-
+def init_workspace():
     try:
-        bash_scipt_file = open(file_path, 'w+')
-        bash_scipt_file.write(format_str)
-        os.chmod(file_path, 0744)
-        print "Written to", file_path
+        os.remove(ROOT_DIR + "/src/CMakeLists.txt")
     except:
-        print "Error creating ", file_path
-        print "Check the permissions"
-        exit(1)
+        pass
 
 
-def gen_ad_rebuild_eclipse_bash(file_path):
-    format_str = '#!/bin/bash\n'\
-    'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
-    'export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH\n'\
-    'cd ' + ROOT_DIR + '\n\n'\
-    'catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'\
-    ' -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8\n\n'\
-    'source ' + LOCAL_BASH_FILE + '\n'\
-    'echo "Press any key to continue..."\nread'
-
-    try:
-        bash_scipt_file = open(file_path, 'w+')
-        bash_scipt_file.write(format_str)
-        os.chmod(file_path, 0744)
-        print "Written to", file_path
-    except:
-        print "Error creating ", file_path
-        print "Check the permissions"
-        exit(1)
-
-
-def gen_ad_airdrone_test_bash(file_path):
-    format_str = '#!/bin/bash\n'\
-    'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
-    'source ' + LOCAL_BASH_FILE + '\n\n'\
-    'roslaunch airdrone_launch airdrone_simulator.launch\n\n'\
-    'sleep 1'
-
-    try:
-        bash_scipt_file = open(file_path, 'w+')
-        bash_scipt_file.write(format_str)
-        os.chmod(file_path, 0744)
-        print "Written to", file_path
-    except:
-        print "Error creating ", file_path
-        print "Check the permissions"
-        exit(1)
-
-
-def gen_ad_airdrone_launch_bash(file_path):
-    format_str = '#!/bin/bash\n'\
-    'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
-    'source ' + LOCAL_BASH_FILE + '\n\n'\
-    'roslaunch airdrone_launch airdrone.launch\n\n'\
-    'sleep 0.5'
-
-    try:
-        bash_scipt_file = open(file_path, 'w+')
-        bash_scipt_file.write(format_str)
-        os.chmod(file_path, 0744)
-        print "Written to", file_path
-    except:
-        print "Error creating ", file_path
-        print "Check the permissions"
-        exit(1)
-
-
-def gen_ad_airdrone_real_launch_bash(file_path):
-    format_str = '#!/bin/bash\n'\
-    'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
-    'source ' + LOCAL_BASH_FILE + '\n\n'\
-    'roslaunch airdrone_launch airdrone_real.launch\n\n'\
-    'sleep 0.5'
-
-    try:
-        bash_scipt_file = open(file_path, 'w+')
-        bash_scipt_file.write(format_str)
-        os.chmod(file_path, 0744)
-        print "Written to", file_path
-    except:
-        print "Error creating ", file_path
-        print "Check the permissions"
+    print "\nInitializing ROS workspace at " + ROOT_DIR + "/src";
+    if not subprocess.call("#!/bin/bash\n"\
+                           "source " + ROS_INSTALL_DIR + "/setup.bash\n"\
+                           "cd " + ROOT_DIR + "/src\n"\
+                           "catkin_init_workspace", shell=True) == 0:
+        print "Unable to execute catkin_init_workspace. Have you installed ROS?!"
         exit(1)
 
 
 
-
-def add_launcher(name, icon, command):
+def add_shortcut(name, icon, command):
     # The generation is done analogicaly to alacarte utilite
+    if not os.path.isfile(icon):
+        print "No such icon: " + icon
+        exit(1)
+
     file_path = HOME_DIR + '/.local/share/applications/' + name + '_ad_gen.desktop'
     format_str = '#!/usr/bin/env xdg-open\n\n'\
                  '[Desktop Entry]\n'\
@@ -174,30 +101,15 @@ def add_launcher(name, icon, command):
 
 
 
-def init_workspace():
-    try:
-        os.remove(ROOT_DIR + "/src/CMakeLists.txt")
-    except:
-        pass
-
-
-    print "\nInitializing ROS workspace at " + ROOT_DIR + "/src";
-    if not subprocess.call("#!/bin/bash\n"\
-                           "source " + ROS_INSTALL_DIR + "/setup.bash\n"\
-                           "cd " + ROOT_DIR + "/src\n"\
-                           "catkin_init_workspace", shell=True) == 0:
-        print "Unable to execute catkin_init_workspace. Have you installed ROS?!"
-        exit(1)
-
-
-def gen_command_launcher(name, command):
+def gen_launcher(bash_name, launcher_name, icon_name, command):
     format_str = '#!/bin/bash\n'\
     'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
-    'source ' + LOCAL_BASH_FILE + '\n\n'\
+    'source ' + LOCAL_BASH_FILE + '\n'\
+    'export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH\n\n'\
     '' + command + '\n\n'\
     'sleep 0.2'
 
-    file_path = LAUNCHER_DIR + '/ad_' + name
+    file_path = LAUNCHER_DIR + bash_name
     try:
         bash_scipt_file = open(file_path, 'w+')
         bash_scipt_file.write(format_str)
@@ -208,12 +120,11 @@ def gen_command_launcher(name, command):
         print "Check the permissions"
         exit(1)
 
-    add_launcher(name, ROOT_DIR + '/contrib/icons/AdSpare.png', file_path)
+    add_shortcut(launcher_name, ROOT_DIR + '/contrib/icons/' + icon_name, file_path)
 
 
-
+cleanup() #Remove obsolete config paths
 init_workspace() #Initialize catkin workspace
-cleanup_bashrc() #Remove obsolete config paths
 with open(HOME_DIR + "/.bashrc", 'r+') as fbashrc:
     contents = fbashrc.read()
     add_to_file(fbashrc, contents, "source " + ROS_INSTALL_DIR + "/setup.bash")
@@ -225,20 +136,21 @@ with open(HOME_DIR + "/.bashrc", 'r+') as fbashrc:
 
 print ""
 ensure_dir(LAUNCHER_DIR)
-gen_ad_rebuild_bash             (LAUNCHER_DIR + "/ad_rebuild")
-gen_ad_rebuild_eclipse_bash     (LAUNCHER_DIR + "/ad_rebuild_eclipse")
-gen_ad_airdrone_test_bash       (LAUNCHER_DIR + "/ad_airdrone_test")
-gen_ad_airdrone_launch_bash     (LAUNCHER_DIR + "/ad_airdrone_launch")
-gen_ad_airdrone_real_launch_bash(LAUNCHER_DIR + "/ad_airdrone_real_launch")
 
-print ""
-add_launcher('AdRebuild',         ROOT_DIR + '/contrib/icons/AdRebuild.png',            LAUNCHER_DIR + "/ad_rebuild")
-add_launcher('AdRebuild4Eclipse', ROOT_DIR + '/contrib/icons/AdRebuildEclipse.png',     LAUNCHER_DIR + "/ad_rebuild_eclipse")
-add_launcher('AdSimulator',       ROOT_DIR + '/contrib/icons/AdAirdroneTest.png',       LAUNCHER_DIR + "/ad_airdrone_test")
-add_launcher('AdRunInSimulator',  ROOT_DIR + '/contrib/icons/AdAirdroneLaunch.png',     LAUNCHER_DIR + "/ad_airdrone_launch")
-add_launcher('AdRun4Real',        ROOT_DIR + '/contrib/icons/AdAirdroneRealLaunch.png', LAUNCHER_DIR + "/ad_airdrone_real_launch")
-
-gen_command_launcher('AdOpticalFlow', 'roslaunch optical_flow optical_flow.launch')
+gen_launcher('ad_rebuild',                   'AdRebuild',         'AdRebuild.png', 'cd ' + ROOT_DIR + '\n\n'\
+                                                                                   'catkin_make\n\n'\
+                                                                                   'source ' + LOCAL_BASH_FILE + '\n'\
+                                                                                   'echo "Press any key to continue..."\nread')
+gen_launcher('ad_rebuild_eclipse',           'AdRebuild4Eclipse', 'AdRebuild4Eclipse.png', 'cd ' + ROOT_DIR + '\n'\
+                                                                                           'catkin_make --force-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug'\
+                                                                                           ' -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8\n'\
+                                                                                           'source ' + LOCAL_BASH_FILE + '\n'\
+                                                                                           'echo "Press any key to continue..."\nread')
+gen_launcher('ad_simulator', 'AdSimulator',                       'AdAirdroneTest.png',       'roslaunch airdrone_launch simulator.launch')
+gen_launcher('ad_airdrone_simulator_launch', 'AdRunInSimulator',  'AdAirdroneLaunch.png',     'roslaunch airdrone_launch airdrone_simulator.launch')
+gen_launcher('ad_airdrone_real_launch',      'AdRun4Real',        'AdAirdroneRealLaunch.png', 'roslaunch airdrone_launch airdrone.launch')
+gen_launcher('ad_optical_flow',              'AdOpticalFlow',     'AdSpare.png',              'roslaunch optical_flow test_cpu_farn.launch')
+gen_launcher('ad_localization',              'AdLocalization',    'AdSpare.png',              'roslaunch /home/ncos/mipt-airdrone/src/localization/launch/localization_simulator.launch')
 
 
 
