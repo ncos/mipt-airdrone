@@ -19,7 +19,7 @@
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://hector_sensors_description/meshes/asus_camera/asus_camera_simple.dae"/>
+            <mesh filename="package://airdrone_gazebo/drone/sensors/meshes/asus_camera/asus_camera_simple.dae"/>
           </geometry>
         </visual>
         <collision>

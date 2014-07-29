@@ -19,7 +19,7 @@
  *
  */
 
-#include <hector_gazebo_plugins/servo_plugin.h>
+#include "../include/servo_plugin.h"
 #include <gazebo/common/Events.hh>
 #include <gazebo/physics/physics.hh>
 

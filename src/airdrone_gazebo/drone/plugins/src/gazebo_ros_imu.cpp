@@ -26,7 +26,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#include <hector_gazebo_plugins/gazebo_ros_imu.h>
+#include "../include/gazebo_ros_imu.h"
 #include <gazebo/common/Events.hh>
 #include <gazebo/physics/physics.hh>
 

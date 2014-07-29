@@ -75,7 +75,7 @@
 #include <algorithm>
 #include <assert.h>
 
-#include <hector_gazebo_plugins/diffdrive_plugin_multi_wheel.h>
+#include "../include/diffdrive_plugin_multi_wheel.h"
 
 #include <gazebo/math/gzmath.hh>
 #include <sdf/sdf.hh>

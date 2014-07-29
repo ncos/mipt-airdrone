@@ -13,7 +13,6 @@
         <origin xyz="0 0 0" />
         <inertia ixx="0.01152" ixy="0.0" ixz="0.0" iyy="0.01152" iyz="0.0" izz="0.0218" />
       </inertial>
-
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -32,6 +31,8 @@
     <link name="base_link"/>
 
     <joint name="base_stabilized_to_base" type = "fixed">
+
+
       <parent link = "base_stabilized"/>
       <child  link = "base_link"/>
     </joint>

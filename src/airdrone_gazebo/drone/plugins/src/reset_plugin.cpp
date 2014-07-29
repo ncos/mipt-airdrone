@@ -26,7 +26,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#include <hector_gazebo_plugins/reset_plugin.h>
+#include "../include/reset_plugin.h"
 #include <gazebo/common/Events.hh>
 
 #include <std_msgs/String.h>

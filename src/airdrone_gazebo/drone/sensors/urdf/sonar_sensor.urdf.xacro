@@ -18,7 +18,7 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <!--<box size="0.01 0.01 0.01" /> -->
-          <mesh filename="package://hector_sensors_description/meshes/sonar_sensor/max_sonar_ez4.dae"/>
+          <mesh filename="package://airdrone_gazebo/drone/sensors/meshes/sonar_sensor/max_sonar_ez4.dae"/>
         </geometry>
       </visual>
       <collision>

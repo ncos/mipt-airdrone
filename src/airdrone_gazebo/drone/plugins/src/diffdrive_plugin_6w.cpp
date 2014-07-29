@@ -33,7 +33,7 @@
 #include <algorithm>
 #include <assert.h>
 
-#include <hector_gazebo_plugins/diffdrive_plugin_6w.h>
+#include "../include/diffdrive_plugin_6w.h"
 #include <gazebo/common/Events.hh>
 #include <gazebo/physics/physics.hh>
 

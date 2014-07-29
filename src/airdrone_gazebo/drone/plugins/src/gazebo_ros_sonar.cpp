@@ -26,7 +26,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#include <hector_gazebo_plugins/gazebo_ros_sonar.h>
+#include "../include/gazebo_ros_sonar.h"
 #include <gazebo/common/Events.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/sensors/RaySensor.hh>
