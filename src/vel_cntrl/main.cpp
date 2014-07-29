@@ -136,7 +136,7 @@ int main( int argc, char** argv )
     if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
 
 
-    height_text.header.frame_id = "/camera_link";
+    height_text.header.frame_id = "/kinect_link";
     height_text.ns = "text_ns";
     height_text.action = visualization_msgs::Marker::ADD;
     height_text.id = 101;
