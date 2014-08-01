@@ -1,5 +1,5 @@
 //=================================================================================================
-// Copyright (c) 2012, Johannes Meyer, TU Darmstadt
+// Copyright (c) 2013, Johannes Meyer and contributors, Technische Universitat Darmstadt
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without
@@ -26,59 +26,71 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#ifndef HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
-#define HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
+#ifndef HECTOR_QUADROTOR_MODEL_HELPERS_H
+#define HECTOR_QUADROTOR_MODEL_HELPERS_H
 
-#include <gazebo/common/Plugin.hh>
+#include <geometry_msgs/Wrench.h>
 
-#include <ros/ros.h>
-#include <geometry_msgs/Vector3Stamped.h>
-#include "sensor_model.h"
-#include "update_timer.h"
-
-namespace gazebo
+namespace hector_quadrotor_model
 {
 
-class GazeboRosMagnetic : public ModelPlugin
+template <typename T> static inline void checknan(T& value, const std::string& text = "") {
+  if (!(value == value)) {
+#ifndef NDEBUG
+    if (!text.empty()) std::cerr << text << " contains **!?* Nan values!" << std::endl;
+#endif
+    value = T();
+    return;
+  }
+}
+
+template <typename Message, typename Vector> static inline void toVector(const Message& msg, Vector& vector)
 {
-public:
-  GazeboRosMagnetic();
-  virtual ~GazeboRosMagnetic();
+  vector.x = msg.x;
+  vector.y = msg.y;
+  vector.z = msg.z;
+}
 
-protected:
-  virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
-  virtual void Reset();
-  virtual void Update();
+template <typename Message, typename Vector> static inline void fromVector(const Vector& vector, Message& msg)
+{
+  msg.x = vector.x;
+  msg.y = vector.y;
+  msg.z = vector.z;
+}
 
-private:
-  /// \brief The parent World
-  physics::WorldPtr world;
+template <typename Message, typename Quaternion> static inline void toQuaternion(const Message& msg, Quaternion& vector)
+{
+  vector.w = msg.w;
+  vector.x = msg.x;
+  vector.y = msg.y;
+  vector.z = msg.z;
+}
 
-  /// \brief The link referred to by this plugin
-  physics::LinkPtr link;
+template <typename Message, typename Quaternion> static inline void fromQuaternion(const Quaternion& vector, Message& msg)
+{
+  msg.w = vector.w;
+  msg.x = vector.x;
+  msg.y = vector.y;
+  msg.z = vector.z;
+}
 
-  ros::NodeHandle* node_handle_;
-  ros::Publisher publisher_;
+static inline geometry_msgs::Vector3 operator+(const geometry_msgs::Vector3& a, const geometry_msgs::Vector3& b)
+{
+  geometry_msgs::Vector3 result;
+  result.x = a.x + b.x;
+  result.y = a.y + b.y;
+  result.z = a.z + b.z;
+  return result;
+}
 
-  geometry_msgs::Vector3Stamped magnetic_field_;
-  gazebo::math::Vector3 magnetic_field_world_;
+static inline geometry_msgs::Wrench operator+(const geometry_msgs::Wrench& a, const geometry_msgs::Wrench& b)
+{
+  geometry_msgs::Wrench result;
+  result.force = a.force + b.force;
+  result.torque = a.torque + b.torque;
+  return result;
+}
 
-  std::string namespace_;
-  std::string topic_;
-  std::string link_name_;
-  std::string frame_id_;
+}
 
-  double magnitude_;
-  double reference_heading_;
-  double declination_;
-  double inclination_;
-
-  SensorModel3 sensor_model_;
-
-  UpdateTimer updateTimer;
-  event::ConnectionPtr updateConnection;
-};
-
-} // namespace gazebo
-
-#endif // HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
+#endif // HECTOR_QUADROTOR_MODEL_HELPERS_H

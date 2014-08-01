@@ -34,7 +34,7 @@
    </node>
 
    <!-- publish state and tf -->
-   <node name="ground_truth_to_tf" pkg="message_to_tf" type="message_to_tf" output="screen">
+   <node name="ground_truth_to_tf" pkg="airdrone_gazebo" type="message_to_tf" output="screen">
      <param name="odometry_topic" value="ground_truth/state" />
      <param name="frame_id" value="/world" />
      <param name="tf_prefix" value="$(arg tf_prefix)"/>

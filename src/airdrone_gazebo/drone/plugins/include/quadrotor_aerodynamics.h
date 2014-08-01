@@ -26,59 +26,52 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#ifndef HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
-#define HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
+#ifndef HECTOR_QUADROTOR_MODEL_QUADROTOR_AERODYNAMICS_H
+#define HECTOR_QUADROTOR_MODEL_QUADROTOR_AERODYNAMICS_H
 
-#include <gazebo/common/Plugin.hh>
+#include <geometry_msgs/Quaternion.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/Wrench.h>
 
-#include <ros/ros.h>
-#include <geometry_msgs/Vector3Stamped.h>
-#include "sensor_model.h"
-#include "update_timer.h"
+#include <ros/node_handle.h>
 
-namespace gazebo
+#include <boost/thread/mutex.hpp>
+
+namespace hector_quadrotor_model
 {
 
-class GazeboRosMagnetic : public ModelPlugin
-{
+class QuadrotorAerodynamics {
 public:
-  GazeboRosMagnetic();
-  virtual ~GazeboRosMagnetic();
+  QuadrotorAerodynamics();
+  ~QuadrotorAerodynamics();
 
-protected:
-  virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
-  virtual void Reset();
-  virtual void Update();
+  bool configure(const ros::NodeHandle &param = ros::NodeHandle("~"));
+  void reset();
+  void update(double dt);
+
+  void setOrientation(const geometry_msgs::Quaternion& orientation);
+  void setTwist(const geometry_msgs::Twist& twist);
+  void setBodyTwist(const geometry_msgs::Twist& twist);
+  void setWind(const geometry_msgs::Vector3& wind);
+
+  const geometry_msgs::Wrench& getWrench() const { return wrench_; }
+
+  void f(const double uin[6], double dt, double y[6]) const;
 
 private:
-  /// \brief The parent World
-  physics::WorldPtr world;
+  geometry_msgs::Quaternion orientation_;
+  geometry_msgs::Twist twist_;
+  geometry_msgs::Vector3 wind_;
 
-  /// \brief The link referred to by this plugin
-  physics::LinkPtr link;
+  geometry_msgs::Wrench wrench_;
 
-  ros::NodeHandle* node_handle_;
-  ros::Publisher publisher_;
+  boost::mutex mutex_;
 
-  geometry_msgs::Vector3Stamped magnetic_field_;
-  gazebo::math::Vector3 magnetic_field_world_;
-
-  std::string namespace_;
-  std::string topic_;
-  std::string link_name_;
-  std::string frame_id_;
-
-  double magnitude_;
-  double reference_heading_;
-  double declination_;
-  double inclination_;
-
-  SensorModel3 sensor_model_;
-
-  UpdateTimer updateTimer;
-  event::ConnectionPtr updateConnection;
+  class DragModel;
+  DragModel *drag_model_;
 };
 
-} // namespace gazebo
+}
 
-#endif // HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
+#endif // HECTOR_QUADROTOR_MODEL_QUADROTOR_AERODYNAMICS_H

@@ -4,7 +4,7 @@ project(airdrone_gazebo)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs std_srvs geometry_msgs nav_msgs tf)
+find_package(catkin REQUIRED COMPONENTS message_generation roscpp std_msgs std_srvs geometry_msgs nav_msgs tf topic_tools cmake_modules)
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Find gazebo
@@ -15,18 +15,18 @@ endif()
 include_directories(${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
-## Find Boost
+
+## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS thread)
 include_directories(${Boost_INCLUDE_DIRS})
+
+find_package(Eigen REQUIRED)
+include_directories(${EIGEN_INCLUDE_DIRS})
+
 
 #######################################
 ## Declare ROS messages and services ##
 #######################################
-
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-# )
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -34,9 +34,35 @@ add_service_files(
   SetBias.srv
 )
 
+## Generate messages in the 'msg' folder
+add_message_files(
+  FILES
+  Altimeter.msg
+  AttitudeCommand.msg
+  Compass.msg
+  ControllerState.msg
+  HeadingCommand.msg
+  HeightCommand.msg
+  MotorCommand.msg
+  MotorPWM.msg
+  MotorStatus.msg
+  PositionXYCommand.msg
+  RawImu.msg
+  RawMagnetic.msg
+  RawRC.msg
+  RC.msg
+  RuddersCommand.msg
+  ServoCommand.msg
+  Supply.msg
+  ThrustCommand.msg
+  VelocityXYCommand.msg
+  VelocityZCommand.msg
+  YawrateCommand.msg
+)
+
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-  DEPENDENCIES geometry_msgs
+  DEPENDENCIES std_msgs geometry_msgs
 )
 
 ###################################
@@ -49,16 +75,17 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-    DEPENDS gazebo
-    CATKIN_DEPENDS roscpp std_msgs geometry_msgs nav_msgs tf
+    DEPENDS gazebo Boost
+    LIBRARIES hector_quadrotor_propulsion hector_quadrotor_aerodynamics
+    CATKIN_DEPENDS roscpp std_msgs sensor_msgs geometry_msgs nav_msgs message_runtime tf topic_tools
     INCLUDE_DIRS
-    LIBRARIES
 )
 
 ###########
 ## Build ##
 ###########
 
+# simulator plugins
 add_library(diffdrive_plugin_6w drone/plugins/src/diffdrive_plugin_6w.cpp)
 target_link_libraries(diffdrive_plugin_6w ${Boost_LIBRARIES} ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
@@ -84,30 +111,29 @@ target_link_libraries(hector_gazebo_ros_sonar ${GAZEBO_LIBRARIES} ${catkin_LIBRA
 add_library(hector_servo_plugin drone/plugins/src/servo_plugin.cpp)
 target_link_libraries(hector_servo_plugin ${Boost_LIBRARIES} ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
+add_library(hector_gazebo_ros_baro drone/plugins/src/gazebo_ros_baro.cpp)
+target_link_libraries(hector_gazebo_ros_baro ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
+add_dependencies(hector_gazebo_ros_baro airdrone_gazebo_generate_messages_cpp)
 
-#############
-## Install ##
-#############
+add_library(hector_gazebo_quadrotor_simple_controller drone/plugins/src/gazebo_quadrotor_simple_controller.cpp)
+target_link_libraries(hector_gazebo_quadrotor_simple_controller ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+add_library(hector_gazebo_quadrotor_propulsion drone/plugins/src/gazebo_quadrotor_propulsion.cpp)
+target_link_libraries(hector_gazebo_quadrotor_propulsion ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
+add_dependencies(hector_gazebo_quadrotor_propulsion airdrone_gazebo_generate_messages_cpp)
 
-#install(DIRECTORY drone/plugins/include/${PROJECT_NAME}/
-#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#  FILES_MATCHING PATTERN "*.h"
-#  PATTERN ".svn" EXCLUDE
-#)
+add_library(hector_gazebo_quadrotor_aerodynamics drone/plugins/src/gazebo_quadrotor_aerodynamics.cpp)
+target_link_libraries(hector_gazebo_quadrotor_aerodynamics ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
-#install(TARGETS
-#  diffdrive_plugin_6w
-#diffdrive_plugin_multi_wheel
-#  hector_gazebo_reset_plugin
-#  hector_gazebo_ros_imu
-#  hector_gazebo_ros_magnetic
-#  hector_gazebo_ros_gps
-#  hector_gazebo_ros_sonar
-#  hector_servo_plugin
-#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-#)
+add_library(hector_quadrotor_propulsion drone/plugins/src/quadrotor_propulsion.cpp)
+add_dependencies(hector_quadrotor_propulsion airdrone_gazebo_generate_messages_cpp)
+target_link_libraries(hector_quadrotor_propulsion ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+
+add_library(hector_quadrotor_aerodynamics drone/plugins/src/quadrotor_aerodynamics.cpp)
+target_link_libraries(hector_quadrotor_aerodynamics ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+
+# helper nodes
+add_executable(message_to_tf src/message_to_tf.cpp)
+target_link_libraries(message_to_tf ${catkin_LIBRARIES})
+
+

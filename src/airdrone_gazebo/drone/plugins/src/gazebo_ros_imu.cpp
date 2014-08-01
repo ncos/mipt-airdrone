@@ -196,14 +196,14 @@ bool GazeboRosIMU::ServiceCallback(std_srvs::Empty::Request &req,
   return true;
 }
 
-bool GazeboRosIMU::SetAccelBiasCallback(hector_gazebo_plugins::SetBias::Request &req, hector_gazebo_plugins::SetBias::Response &res)
+bool GazeboRosIMU::SetAccelBiasCallback(airdrone_gazebo::SetBias::Request &req, airdrone_gazebo::SetBias::Response &res)
 {
   boost::mutex::scoped_lock scoped_lock(lock);
   accelModel.reset(math::Vector3(req.bias.x, req.bias.y, req.bias.z));
   return true;
 }
 
-bool GazeboRosIMU::SetRateBiasCallback(hector_gazebo_plugins::SetBias::Request &req, hector_gazebo_plugins::SetBias::Response &res)
+bool GazeboRosIMU::SetRateBiasCallback(airdrone_gazebo::SetBias::Request &req, airdrone_gazebo::SetBias::Response &res)
 {
   boost::mutex::scoped_lock scoped_lock(lock);
   rateModel.reset(math::Vector3(req.bias.x, req.bias.y, req.bias.z));

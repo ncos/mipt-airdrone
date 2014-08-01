@@ -3,7 +3,7 @@
 
 import sys, os, subprocess
 
-ROS_INSTALL_DIR = "/opt/ros/hydro"
+ROS_INSTALL_DIR = "/opt/ros/indigo"
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 LOCAL_BASH_FILE = ROOT_DIR + "/devel/setup.bash"
 LAUNCHER_DIR = ROOT_DIR + "/contrib/launchers_gen/"
@@ -11,7 +11,7 @@ HOME_DIR = os.path.expanduser("~")
 
 print "\nINSTALL SCRIPT FOR MIPT-AIRDRONE PROJECT"
 print "author: Anton Mitrokhin, 2014"
-print "Warning! This script assumes you had installed ROS Hydro to the", ROS_INSTALL_DIR
+print "Warning! This script assumes you had installed ROS Indigo to the", ROS_INSTALL_DIR
 print ""
 print "Workspace root directory:", ROOT_DIR
 print "Launcher bash scripts directory:", LAUNCHER_DIR
@@ -19,10 +19,6 @@ print ""
 
 '''
 Deps:
-ros-hydro-hector-quadrotor-gazebo
-ros-hydro-hector-quadrotor-description
-ros-hydro-hector-gazebo-worlds
-ros-hydro-cmake_modules
 #sudo adduser second_user dialout
 '''
 

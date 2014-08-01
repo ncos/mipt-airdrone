@@ -26,30 +26,34 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#ifndef HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_GPS_H
-#define HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_GPS_H
+#ifndef HECTOR_QUADROTOR_GAZEBO_PLUGINS_QUADROTOR_SIMPLE_CONTROLLER_H
+#define HECTOR_QUADROTOR_GAZEBO_PLUGINS_QUADROTOR_SIMPLE_CONTROLLER_H
 
 #include <gazebo/common/Plugin.hh>
 
+#include <ros/callback_queue.h>
 #include <ros/ros.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <geometry_msgs/Vector3Stamped.h>
-#include "sensor_model.h"
+
+#include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Imu.h>
+#include <nav_msgs/Odometry.h>
+#include <std_srvs/Empty.h>
+
 #include "update_timer.h"
 
 namespace gazebo
 {
 
-class GazeboRosGps : public ModelPlugin
+class GazeboQuadrotorSimpleController : public ModelPlugin
 {
 public:
-  GazeboRosGps();
-  virtual ~GazeboRosGps();
+  GazeboQuadrotorSimpleController();
+  virtual ~GazeboQuadrotorSimpleController();
 
 protected:
   virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
-  virtual void Reset();
   virtual void Update();
+  virtual void Reset();
 
 private:
   /// \brief The parent World
@@ -59,35 +63,81 @@ private:
   physics::LinkPtr link;
 
   ros::NodeHandle* node_handle_;
-  ros::Publisher fix_publisher_;
-  ros::Publisher velocity_publisher_;
+  ros::CallbackQueue callback_queue_;
+  ros::Subscriber velocity_subscriber_;
+  ros::Subscriber imu_subscriber_;
+  ros::Subscriber state_subscriber_;
+  ros::Publisher wrench_publisher_;
 
-  sensor_msgs::NavSatFix fix_;
-  geometry_msgs::Vector3Stamped velocity_;
+  ros::ServiceServer engage_service_server_;
+  ros::ServiceServer shutdown_service_server_;
 
-  std::string namespace_;
+  // void CallbackQueueThread();
+  // boost::mutex lock_;
+  // boost::thread callback_queue_thread_;
+
+  geometry_msgs::Twist velocity_command_;
+  void VelocityCallback(const geometry_msgs::TwistConstPtr&);
+  void ImuCallback(const sensor_msgs::ImuConstPtr&);
+  void StateCallback(const nav_msgs::OdometryConstPtr&);
+
+  bool EngageCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&);
+  bool ShutdownCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&);
+
+  ros::Time state_stamp;
+  math::Pose pose;
+  math::Vector3 euler, velocity, acceleration, angular_velocity;
+
   std::string link_name_;
-  std::string frame_id_;
-  std::string fix_topic_;
+  std::string namespace_;
   std::string velocity_topic_;
+  std::string imu_topic_;
+  std::string state_topic_;
+  std::string wrench_topic_;
+  double max_force_;
 
-  double reference_latitude_;
-  double reference_longitude_;
-  double reference_heading_;
-  double reference_altitude_;
-  sensor_msgs::NavSatStatus::_status_type status_;
-  sensor_msgs::NavSatStatus::_service_type service_;
+  bool running_;
+  bool auto_engage_;
 
-  double radius_north_;
-  double radius_east_;
+  class PIDController {
+  public:
+    PIDController();
+    virtual ~PIDController();
+    virtual void Load(sdf::ElementPtr _sdf, const std::string& prefix = "");
 
-  SensorModel3 position_error_model_;
-  SensorModel3 velocity_error_model_;
+    double gain_p;
+    double gain_i;
+    double gain_d;
+    double time_constant;
+    double limit;
 
-  UpdateTimer updateTimer;
+    double input;
+    double dinput;
+    double output;
+    double p, i, d;
+
+    double update(double input, double x, double dx, double dt);
+    void reset();
+  };
+
+  struct Controllers {
+    PIDController roll;
+    PIDController pitch;
+    PIDController yaw;
+    PIDController velocity_x;
+    PIDController velocity_y;
+    PIDController velocity_z;
+  } controllers_;
+
+  math::Vector3 inertia;
+  double mass;
+
+  math::Vector3 force, torque;
+
+  UpdateTimer controlTimer;
   event::ConnectionPtr updateConnection;
 };
 
-} // namespace gazebo
+}
 
-#endif // HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_GPS_H
+#endif // HECTOR_QUADROTOR_GAZEBO_PLUGINS_QUADROTOR_SIMPLE_CONTROLLER_H

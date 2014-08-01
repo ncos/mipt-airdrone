@@ -26,24 +26,28 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#ifndef HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
-#define HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
+#ifndef HECTOR_QUADROTOR_GAZEBO_PLUGINS_QUADROTOR_AERODYNAMICS_H
+#define HECTOR_QUADROTOR_GAZEBO_PLUGINS_QUADROTOR_AERODYNAMICS_H
 
 #include <gazebo/common/Plugin.hh>
+#include <gazebo/common/Time.hh>
+#include <gazebo/math/Vector3.hh>
 
+#include <ros/callback_queue.h>
 #include <ros/ros.h>
-#include <geometry_msgs/Vector3Stamped.h>
-#include "sensor_model.h"
-#include "update_timer.h"
+
+#include <boost/thread.hpp>
+
+#include "quadrotor_aerodynamics.h"
 
 namespace gazebo
 {
 
-class GazeboRosMagnetic : public ModelPlugin
+class GazeboQuadrotorAerodynamics : public ModelPlugin
 {
 public:
-  GazeboRosMagnetic();
-  virtual ~GazeboRosMagnetic();
+  GazeboQuadrotorAerodynamics();
+  virtual ~GazeboQuadrotorAerodynamics();
 
 protected:
   virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
@@ -57,28 +61,27 @@ private:
   /// \brief The link referred to by this plugin
   physics::LinkPtr link;
 
+  hector_quadrotor_model::QuadrotorAerodynamics model_;
+
   ros::NodeHandle* node_handle_;
-  ros::Publisher publisher_;
+  ros::CallbackQueue callback_queue_;
+  boost::thread callback_queue_thread_;
+  void QueueThread();
 
-  geometry_msgs::Vector3Stamped magnetic_field_;
-  gazebo::math::Vector3 magnetic_field_world_;
+  ros::Subscriber wind_subscriber_;
 
+  std::string body_name_;
   std::string namespace_;
-  std::string topic_;
-  std::string link_name_;
-  std::string frame_id_;
+  std::string param_namespace_;
+  double control_rate_;
+  std::string wind_topic_;
 
-  double magnitude_;
-  double reference_heading_;
-  double declination_;
-  double inclination_;
+  common::Time last_time_;
 
-  SensorModel3 sensor_model_;
-
-  UpdateTimer updateTimer;
+  // Pointer to the update event connection
   event::ConnectionPtr updateConnection;
 };
 
-} // namespace gazebo
+}
 
-#endif // HECTOR_GAZEBO_PLUGINS_GAZEBO_ROS_MAGNETIC_H
+#endif // HECTOR_QUADROTOR_GAZEBO_PLUGINS_QUADROTOR_AERODYNAMICS_H

@@ -41,9 +41,9 @@
 #include <boost/thread/mutex.hpp>
 #include <sensor_msgs/Imu.h>
 #include <std_srvs/Empty.h>
-#include <hector_gazebo_plugins/SetBias.h>
-#include <hector_gazebo_plugins/sensor_model.h>
-#include <hector_gazebo_plugins/update_timer.h>
+#include <airdrone_gazebo/SetBias.h>
+#include "sensor_model.h"
+#include "update_timer.h"
 
 namespace gazebo
 {
@@ -113,8 +113,8 @@ namespace gazebo
       std::string serviceName;
 
       /// \brief Bias service callbacks
-      bool SetAccelBiasCallback(hector_gazebo_plugins::SetBias::Request &req, hector_gazebo_plugins::SetBias::Response &res);
-      bool SetRateBiasCallback(hector_gazebo_plugins::SetBias::Request &req, hector_gazebo_plugins::SetBias::Response &res);
+      bool SetAccelBiasCallback(airdrone_gazebo::SetBias::Request &req, airdrone_gazebo::SetBias::Response &res);
+      bool SetRateBiasCallback(airdrone_gazebo::SetBias::Request &req, airdrone_gazebo::SetBias::Response &res);
       ros::ServiceServer accelBiasService;
       ros::ServiceServer rateBiasService;
 

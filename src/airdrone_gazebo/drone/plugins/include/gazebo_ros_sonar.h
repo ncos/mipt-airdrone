@@ -35,8 +35,8 @@
 #include <ros/ros.h>
 
 #include <sensor_msgs/Range.h>
-#include <hector_gazebo_plugins/sensor_model.h>
-#include <hector_gazebo_plugins/update_timer.h>
+#include "sensor_model.h"
+#include "update_timer.h"
 
 namespace gazebo
 {
