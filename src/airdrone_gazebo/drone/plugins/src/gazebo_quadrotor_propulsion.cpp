@@ -130,7 +130,7 @@ void GazeboQuadrotorPropulsion::Load(physics::ModelPtr _model, sdf::ElementPtr _
   {
     ros::SubscribeOptions ops;
     ops.callback_queue = &callback_queue_;
-    ops.init<hector_uav_msgs::MotorCommand>(command_topic_, 1, boost::bind(&QuadrotorPropulsion::addCommandToQueue, &model_, _1));
+    ops.init<airdrone_gazebo::MotorCommand>(command_topic_, 1, boost::bind(&QuadrotorPropulsion::addCommandToQueue, &model_, _1));
     command_subscriber_ = node_handle_->subscribe(ops);
   }
 
@@ -139,7 +139,7 @@ void GazeboQuadrotorPropulsion::Load(physics::ModelPtr _model, sdf::ElementPtr _
   {
     ros::SubscribeOptions ops;
     ops.callback_queue = &callback_queue_;
-    ops.init<hector_uav_msgs::MotorPWM>(pwm_topic_, 1, boost::bind(&QuadrotorPropulsion::addPWMToQueue, &model_, _1));
+    ops.init<airdrone_gazebo::MotorPWM>(pwm_topic_, 1, boost::bind(&QuadrotorPropulsion::addPWMToQueue, &model_, _1));
     pwm_subscriber_ = node_handle_->subscribe(ops);
   }
 
@@ -158,7 +158,7 @@ void GazeboQuadrotorPropulsion::Load(physics::ModelPtr _model, sdf::ElementPtr _
     ros::AdvertiseOptions ops;
     ops.callback_queue = &callback_queue_;
     ops.latch = true;
-    ops.init<hector_uav_msgs::Supply>(supply_topic_, 10);
+    ops.init<airdrone_gazebo::Supply>(supply_topic_, 10);
     supply_publisher_ = node_handle_->advertise(ops);
     supply_publisher_.publish(model_.getSupply());
   }
@@ -168,7 +168,7 @@ void GazeboQuadrotorPropulsion::Load(physics::ModelPtr _model, sdf::ElementPtr _
   {
     ros::AdvertiseOptions ops;
     ops.callback_queue = &callback_queue_;
-    ops.init<hector_uav_msgs::MotorStatus>(status_topic_, 10);
+    ops.init<airdrone_gazebo::MotorStatus>(status_topic_, 10);
     motor_status_publisher_ = node_handle_->advertise(ops);
   }
 
@@ -231,7 +231,7 @@ void GazeboQuadrotorPropulsion::Update()
 
   // publish motor status
   if (motor_status_publisher_ && motorStatusTimer.update() /* && current_time >= last_motor_status_time_ + control_period_ */) {
-    hector_uav_msgs::MotorStatus motor_status = model_.getMotorStatus();
+    airdrone_gazebo::MotorStatus motor_status = model_.getMotorStatus();
     motor_status.header.stamp = ros::Time(current_time.sec, current_time.nsec);
     motor_status_publisher_.publish(motor_status);
     last_motor_status_time_ = current_time;

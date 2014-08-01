@@ -64,7 +64,7 @@ private:
   ros::Publisher altimeter_publisher_;
 
   geometry_msgs::PointStamped height_;
-  hector_uav_msgs::Altimeter altimeter_;
+  airdrone_gazebo::Altimeter altimeter_;
 
   std::string namespace_;
   std::string height_topic_;

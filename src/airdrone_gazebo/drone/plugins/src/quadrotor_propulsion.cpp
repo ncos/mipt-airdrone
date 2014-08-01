@@ -291,21 +291,21 @@ void QuadrotorPropulsion::reset()
 
   wrench_ = geometry_msgs::Wrench();
 
-  motor_status_ = hector_uav_msgs::MotorStatus();
+  motor_status_ = airdrone_gazebo::MotorStatus();
   motor_status_.voltage.resize(4);
   motor_status_.frequency.resize(4);
   motor_status_.current.resize(4);
 
-  supply_ = hector_uav_msgs::Supply();
+  supply_ = airdrone_gazebo::Supply();
   supply_.voltage.resize(1);
   supply_.voltage[0] = initial_voltage_;
 
   last_command_time_ = ros::Time();
 
-  command_queue_ = std::queue<hector_uav_msgs::MotorPWMConstPtr>(); // .clear();
+  command_queue_ = std::queue<airdrone_gazebo::MotorPWMConstPtr>(); // .clear();
 }
 
-void QuadrotorPropulsion::setVoltage(const hector_uav_msgs::MotorPWM& voltage)
+void QuadrotorPropulsion::setVoltage(const airdrone_gazebo::MotorPWM& voltage)
 {
   boost::mutex::scoped_lock lock(mutex_);
   last_command_time_ = voltage.header.stamp;
@@ -334,9 +334,9 @@ void QuadrotorPropulsion::setTwist(const geometry_msgs::Twist &twist)
   propulsion_model_->u[5] = -twist.angular.z;
 }
 
-void QuadrotorPropulsion::addCommandToQueue(const hector_uav_msgs::MotorCommandConstPtr& command)
+void QuadrotorPropulsion::addCommandToQueue(const airdrone_gazebo::MotorCommandConstPtr& command)
 {
-  hector_uav_msgs::MotorPWMPtr pwm(new hector_uav_msgs::MotorPWM);
+  airdrone_gazebo::MotorPWMPtr pwm(new airdrone_gazebo::MotorPWM);
   pwm->header = command->header;
   pwm->pwm.resize(command->voltage.size());
   for(std::size_t i = 0; i < command->voltage.size(); ++i) {
@@ -351,7 +351,7 @@ void QuadrotorPropulsion::addCommandToQueue(const hector_uav_msgs::MotorCommandC
   addPWMToQueue(pwm);
 }
 
-void QuadrotorPropulsion::addPWMToQueue(const hector_uav_msgs::MotorPWMConstPtr& pwm)
+void QuadrotorPropulsion::addPWMToQueue(const airdrone_gazebo::MotorPWMConstPtr& pwm)
 {
   boost::mutex::scoped_lock lock(command_queue_mutex_);
 
@@ -381,7 +381,7 @@ bool QuadrotorPropulsion::processQueue(const ros::Time &timestamp, const ros::Du
   do {
 
     while(!command_queue_.empty()) {
-      hector_uav_msgs::MotorPWMConstPtr new_motor_voltage = command_queue_.front();
+      airdrone_gazebo::MotorPWMConstPtr new_motor_voltage = command_queue_.front();
       ros::Time new_time = new_motor_voltage->header.stamp;
 
       if (new_time.isZero() || (new_time >= min && new_time <= max)) {

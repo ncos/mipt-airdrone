@@ -36,7 +36,7 @@
 #include <ros/callback_queue.h>
 #include <ros/ros.h>
 
-#include <hector_quadrotor_model/quadrotor_propulsion.h>
+#include "quadrotor_propulsion.h"
 #include "update_timer.h"
 
 #include <boost/thread.hpp>

@@ -62,14 +62,14 @@ public:
   void shutdown();
 
   void setTwist(const geometry_msgs::Twist& twist);
-  void setVoltage(const hector_uav_msgs::MotorPWM& command);
+  void setVoltage(const airdrone_gazebo::MotorPWM& command);
 
   const geometry_msgs::Wrench& getWrench() const { return wrench_; }
-  const hector_uav_msgs::Supply& getSupply() const { return supply_; }
-  const hector_uav_msgs::MotorStatus& getMotorStatus() const { return motor_status_; }
+  const airdrone_gazebo::Supply& getSupply() const { return supply_; }
+  const airdrone_gazebo::MotorStatus& getMotorStatus() const { return motor_status_; }
 
-  void addCommandToQueue(const hector_uav_msgs::MotorCommandConstPtr& command);
-  void addPWMToQueue(const hector_uav_msgs::MotorPWMConstPtr& pwm);
+  void addCommandToQueue(const airdrone_gazebo::MotorCommandConstPtr& command);
+  void addPWMToQueue(const airdrone_gazebo::MotorPWMConstPtr& pwm);
   bool processQueue(const ros::Time& timestamp, const ros::Duration& tolerance = ros::Duration(), const ros::Duration& delay = ros::Duration(), const ros::WallDuration &wait = ros::WallDuration(), ros::CallbackQueue *callback_queue = 0);
 
   void f(const double xin[4], const double uin[10], double dt, double y[14], double xpred[4]) const;
@@ -78,13 +78,13 @@ public:
 
 private:
   geometry_msgs::Wrench wrench_;
-  hector_uav_msgs::Supply supply_;
-  hector_uav_msgs::MotorStatus motor_status_;
+  airdrone_gazebo::Supply supply_;
+  airdrone_gazebo::MotorStatus motor_status_;
   ros::Time last_command_time_;
 
   double initial_voltage_;
 
-  std::queue<hector_uav_msgs::MotorPWMConstPtr> command_queue_;
+  std::queue<airdrone_gazebo::MotorPWMConstPtr> command_queue_;
   boost::mutex command_queue_mutex_;
   boost::condition command_condition_;
 

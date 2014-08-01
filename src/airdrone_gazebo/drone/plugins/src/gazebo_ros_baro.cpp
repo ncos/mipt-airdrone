@@ -106,7 +106,7 @@ void GazeboRosBaro::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
   // advertise altimeter
   if (!altimeter_topic_.empty()) {
-    altimeter_publisher_ = node_handle_->advertise<hector_uav_msgs::Altimeter>(altimeter_topic_, 10);
+    altimeter_publisher_ = node_handle_->advertise<airdrone_gazebo::Altimeter>(altimeter_topic_, 10);
   }
 
   Reset();
