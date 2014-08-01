@@ -4,7 +4,7 @@ project(airdrone_gazebo)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS message_generation roscpp std_msgs std_srvs geometry_msgs nav_msgs tf topic_tools cmake_modules)
+find_package(catkin REQUIRED COMPONENTS message_generation roscpp std_msgs std_srvs geometry_msgs nav_msgs tf topic_tools cmake_modules gazebo_ros_control)
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Find gazebo
@@ -76,7 +76,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
     DEPENDS gazebo Boost
-    LIBRARIES hector_quadrotor_propulsion hector_quadrotor_aerodynamics
+    LIBRARIES hector_quadrotor_propulsion hector_quadrotor_aerodynamics hector_quadrotor_controller_gazebo
     CATKIN_DEPENDS roscpp std_msgs sensor_msgs geometry_msgs nav_msgs message_runtime tf topic_tools
     INCLUDE_DIRS
 )
@@ -113,27 +113,31 @@ target_link_libraries(hector_servo_plugin ${Boost_LIBRARIES} ${GAZEBO_LIBRARIES}
 
 add_library(hector_gazebo_ros_baro drone/plugins/src/gazebo_ros_baro.cpp)
 target_link_libraries(hector_gazebo_ros_baro ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
-add_dependencies(hector_gazebo_ros_baro airdrone_gazebo_generate_messages_cpp)
+add_dependencies(hector_gazebo_ros_baro ${PROJECT_NAME}_generate_messages_cpp)
 
 add_library(hector_gazebo_quadrotor_simple_controller drone/plugins/src/gazebo_quadrotor_simple_controller.cpp)
 target_link_libraries(hector_gazebo_quadrotor_simple_controller ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
 add_library(hector_gazebo_quadrotor_propulsion drone/plugins/src/gazebo_quadrotor_propulsion.cpp)
-target_link_libraries(hector_gazebo_quadrotor_propulsion ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
-add_dependencies(hector_gazebo_quadrotor_propulsion airdrone_gazebo_generate_messages_cpp)
+target_link_libraries(hector_gazebo_quadrotor_propulsion ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} hector_quadrotor_propulsion)
+add_dependencies(hector_gazebo_quadrotor_propulsion ${PROJECT_NAME}_generate_messages_cpp)
 
 add_library(hector_gazebo_quadrotor_aerodynamics drone/plugins/src/gazebo_quadrotor_aerodynamics.cpp)
-target_link_libraries(hector_gazebo_quadrotor_aerodynamics ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(hector_gazebo_quadrotor_aerodynamics ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} hector_quadrotor_aerodynamics)
 
 add_library(hector_quadrotor_propulsion drone/plugins/src/quadrotor_propulsion.cpp)
-add_dependencies(hector_quadrotor_propulsion airdrone_gazebo_generate_messages_cpp)
 target_link_libraries(hector_quadrotor_propulsion ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(hector_quadrotor_propulsion ${PROJECT_NAME}_generate_messages_cpp)
 
 add_library(hector_quadrotor_aerodynamics drone/plugins/src/quadrotor_aerodynamics.cpp)
 target_link_libraries(hector_quadrotor_aerodynamics ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
+add_library(hector_quadrotor_controller_gazebo drone/plugins/src/quadrotor_hardware_gazebo.cpp)
+target_link_libraries(hector_quadrotor_controller_gazebo ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_dependencies(hector_quadrotor_controller_gazebo ${PROJECT_NAME}_generate_messages_cpp)
+
 # helper nodes
-add_executable(message_to_tf src/message_to_tf.cpp)
+add_executable(message_to_tf drone/plugins/src/message_to_tf.cpp)
 target_link_libraries(message_to_tf ${catkin_LIBRARIES})
 
 

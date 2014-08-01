@@ -33,9 +33,11 @@
   <run_depend>tf</run_depend>
   <run_depend>topic_tools</run_depend>
   <run_depend>controller_manager</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
 
   <export>
-    <gazebo_ros gazebo_media_path="${prefix}"/>
+    <gazebo_ros gazebo_media_path="${prefix}/worlds"/>
+    <gazebo_ros_control plugin="${prefix}/drone/plugins/quadrotor_controller_gazebo.xml"/>
   </export>
 
 </package>
