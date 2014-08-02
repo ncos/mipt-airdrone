@@ -34,6 +34,19 @@ def add_to_file(f, contents, string):
     else:
         print "OK: " + string
 
+
+def exec_command(cmd_):
+    command = ['bash', '-c', cmd_]
+    proc = subprocess.Popen(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    for line in proc.stdout:
+      (key, _, value) = line.partition("=")
+      os.environ[key] = value
+    (stdout, stderr) = proc.communicate()
+    if len(stderr) == 0:
+        return 0
+    print stderr
+    return 1
+
 def cleanup():
     output = []
     cnt = 0
@@ -61,10 +74,9 @@ def init_workspace():
 
 
     print "\nInitializing ROS workspace at " + ROOT_DIR + "/src";
-    if not subprocess.call("#!/bin/bash\n"\
-                           "source " + ROS_INSTALL_DIR + "/setup.bash\n"\
+    if not exec_command("source " + ROS_INSTALL_DIR + "/setup.bash\n"\
                            "cd " + ROOT_DIR + "/src\n"\
-                           "catkin_init_workspace", shell=True) == 0:
+                           "catkin_init_workspace") == 0:
         print "Unable to execute catkin_init_workspace. Have you installed ROS?!"
         exit(1)
 
