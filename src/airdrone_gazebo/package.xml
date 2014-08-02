@@ -2,7 +2,7 @@
 <package>
   <name>airdrone_gazebo</name>
   <version>0.1.0</version>
-  <description>This node provides some custom maps for croc aerial robotics competition</description>
+  <description>This package provides the simulated quadrotor model</description>
   <maintainer email="anton.mitrokhin@phystech.edu">ncos</maintainer>
   <license>MIT</license>
 
@@ -20,6 +20,8 @@
   <build_depend>nav_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>topic_tools</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>controller_interface</build_depend>
 
   <!-- Dependencies needed after this package is compiled. -->
   <run_depend>message_runtime</run_depend>
@@ -34,10 +36,17 @@
   <run_depend>topic_tools</run_depend>
   <run_depend>controller_manager</run_depend>
   <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>controller_interface</run_depend>
+ 
+  
+
+  
 
   <export>
     <gazebo_ros gazebo_media_path="${prefix}/worlds"/>
-    <gazebo_ros_control plugin="${prefix}/drone/plugins/quadrotor_controller_gazebo.xml"/>
+    <gazebo_ros_control plugin="${prefix}/drone/plugins/plugin.xml"/>
+    <controller_interface plugin="${prefix}/drone/plugins/plugin.xml"/>
   </export>
 
 </package>
