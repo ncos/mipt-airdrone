@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 
 #SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wcpp" )
-#SET( CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} -Wcpp" ) #Флаги компилятора
-SET(COMPILE_FLAGS "-Wno-deprecated")   #Флаги компилятора
+#SET( CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} -Wcpp" ) #Compiler flags
+SET(COMPILE_FLAGS "-Wno-deprecated")   #Compiler flags
 add_definitions(${COMPILE_FLAGS})
 
 project(rgbd_shrinker)

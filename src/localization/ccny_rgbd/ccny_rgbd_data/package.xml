@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <name>ccny_rgbd_data</name>
+  <version>0.1.0</version>
+  <description>Auxiliary data files for ccny_rgbd: calibration files, test sequences, etc</description>
+  <author>Ivan Dryanovski, Anton Mitrokhin</author>
+  <maintainer email="anton.mitrokhin@phystech.edu">Anton Mitrokhin</maintainer>
+  <license>GPL</license>
+  <url>http://ros.org/wiki/ccny_rgbd_data</url>
+
+  <!-- Dependencies which this package needs to build itself. -->
+  <buildtool_depend>catkin</buildtool_depend>
+</package>
+
+

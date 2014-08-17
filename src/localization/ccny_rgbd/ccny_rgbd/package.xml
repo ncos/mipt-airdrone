@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<package>
+  <name>ccny_rgbd</name>
+  <version>0.1.0</version>
+  <description>Ros applications for fast visual odometry and mapping from RGB-D data, built on top of the rgbdtools library</description>
+  <author>Ivan Dryanovski, Anton Mitrokhin</author>
+  <maintainer email="anton.mitrokhin@phystech.edu">Anton Mitrokhin</maintainer>
+  <license>GPL</license>
+  <url>http://ros.org/wiki/ccny_rgbd</url>
+
+
+  <!-- Dependencies which this package needs to build itself. -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Dependencies needed to compile this package. -->
+  <build_depend>message_generation</build_depend>
+  <build_depend>pcl_ros</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>image_geometry</build_depend>
+  <build_depend>nodelet</build_depend>
+  <build_depend>lib_rgbdtools</build_depend>
+  <build_depend>octomap</build_depend>
+  <build_depend>libg2o</build_depend>
+
+  <!-- Dependencies needed after this package is compiled. -->
+  <run_depend>message_runtime</run_depend>
+  <run_depend>pcl_ros</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>std_srvs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>visualization_msgs</run_depend>
+  <run_depend>image_transport</run_depend>
+  <run_depend>image_geometry</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>lib_rgbdtools</run_depend>
+  <run_depend>octomap</run_depend>
+  <run_depend>libg2o</run_depend>
+ 
+</package>
+
+

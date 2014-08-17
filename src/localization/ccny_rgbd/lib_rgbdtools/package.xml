@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package>
+  <name>lib_rgbdtools</name>
+  <version>0.1.0</version>
+  <description>Local install of rgbdtools library</description>
+  <author>Ivan Dryanovski, Anton Mitrokhin</author>
+  <maintainer email="anton.mitrokhin@phystech.edu">Anton Mitrokhin</maintainer>
+  <license>GPL</license>
+  <url>http://ros.org/wiki/lib_rgbdtools</url>
+
+  <!-- Dependencies which this package needs to build itself. -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Dependencies needed to compile this package. -->
+  <build_depend>roscpp</build_depend>
+  <build_depend>OpenCV</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>pcl_conversions</build_depend>
+  <build_depend>pcl_ros</build_depend>
+  <build_depend>libpcl-all-dev</build_depend>
+  <build_depend>suitesparse</build_depend>  
+  <build_depend>libg2o</build_depend>
+
+  <!-- Dependencies needed after this package is compiled. -->
+  <run_depend>>roscpp</run_depend>
+  <run_depend>OpenCV</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>pcl_conversions</run_depend>
+  <run_depend>pcl_ros</run_depend>
+  <run_depend>libpcl-all-dev</run_depend>
+  <run_depend>suitesparse</run_depend>
+  <run_depend>libg2o</run_depend>
+</package>
+
