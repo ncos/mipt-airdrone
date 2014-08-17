@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-<name>ccny_openni_launch</name>
+<name>ccny_launch</name>
   <version>0.1.0</version>
   <description>Helper launch files for OpenNI devices, including data processing, recording, and playback</description>
   <author>Ivan Dryanovski, Anton Mitrokhin</author>
