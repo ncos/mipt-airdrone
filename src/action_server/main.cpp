@@ -56,6 +56,8 @@ double apf_better_q    = 0.0;
 double move_epsilon    = 0.0;
 
 
+double rot_epsilon = 0.3;
+double wall_ang_eps = 5;
 
 
 
@@ -117,13 +119,22 @@ public:
                 return;
             }
 
-            if (apf->passages.size() > 0) { // Found door in some wall
-                result_.found = true;
-                msn_srv->move_parallel(0); // Stop movement
-                msn_srv->set_angles_current(); // And rotation
-                loc_srv->unlock();         // Releasing mutex
-                as_move_along.setSucceeded(result_); // Instantly leave the function
-                return;
+            if (apf->passages.size() > 0) {
+                if (!isnan(apf->passages.at(0).cmd_left.x) &&
+                    !isnan(apf->passages.at(0).cmd_left.y)) { // Found door in some wall
+                    result_.found = true;
+                    msn_srv->move_parallel(0); // Stop movement
+                    msn_srv->set_angles_current(); // And rotation
+                    loc_srv->unlock();         // Releasing mutex
+                    as_move_along.setSucceeded(result_); // Instantly leave the function
+                    return;
+                }
+                if (!isnan(apf->passages.at(0).cmd_rght.x) &&
+                    !isnan(apf->passages.at(0).cmd_rght.y)) {
+                    msn_srv->ref_ang  = target_angl;
+                    msn_srv->ref_dist = target_dist;
+                    msn_srv->move_parallel(goal->vel);
+                }
             }
 
             if (as_move_along.isPreemptRequested() || !ros::ok()) {
@@ -190,6 +201,7 @@ public:
             else
             {
                 result_.success = false;
+                ROS_ERROR("DEBUG leave left");
                 as_switch_wall.setAborted(result_);
                 return;
             }
@@ -205,6 +217,7 @@ public:
             else
             {
                 result_.success = false;
+                ROS_ERROR("DEBUG leave rght");
                 as_switch_wall.setAborted(result_);
                 return;
             }
@@ -227,6 +240,7 @@ public:
             else
             {
                 result_.success = false;
+                ROS_ERROR("DEBUG leave any");
                 as_switch_wall.setAborted(result_);
                 return;
             }
@@ -236,15 +250,16 @@ public:
     }
 
     //TODO: Add cases for NAN input
-    bool move(pcl::PointXYZ dir, double vel)
+    bool move(pcl::PointXYZ target, double vel, double phi, double rot_vel)
     {
-        if (isnan(dir.x) || isnan(dir.y)) {
+        if (isnan(target.x) || isnan(target.y) || isnan(phi)) {
             return false;
         }
+        bool move_done = false, rot_done = false;
         ros::Rate r(60);
         double prev_angl = map_srv->get_global_angle();
         pcl::PointXYZ prev_pos = map_srv->get_global_positon();
-        pcl::PointXYZ target (dir.x, dir.y, 0);
+        //pcl::PointXYZ target (dir.x, dir.y, 0);
 
         msn_srv->untrack();
         msn_srv->unlock();
@@ -269,15 +284,28 @@ public:
 
             double len = sqrt (target.x * target.x + target.y * target.y);
             if (len < move_epsilon) {
+                move_done = true;
+            }
+            else {
+                msn_srv->buf_cmd.linear.x = target.x * vel / len;
+                msn_srv->buf_cmd.linear.y = target.y * vel / len;
+                msn_srv->buf_cmd.angular.z = 0;
+                davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
+            }
+            //TODO: conform sign of phi and rot_vel
+            if (phi < rot_epsilon) {
+                rot_done = true;
+            }
+            else {
+                ROS_INFO("Delta_angl %f", delta_angl);
+                phi -= delta_angl;
+                msn_srv->buf_cmd.angular.z = rot_vel;
+            }
+
+            if (rot_done && move_done) {
                 msn_srv->unlock();
                 break;
             }
-
-            msn_srv->buf_cmd.linear.x = target.x * vel / len;
-            msn_srv->buf_cmd.linear.y = target.y * vel / len;
-            msn_srv->buf_cmd.angular.z = -0.25;
-
-            davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
 
             msn_srv->unlock();
             r.sleep();
@@ -300,8 +328,8 @@ public:
                 return;
         }
 
-        double pass_x = apf->passages.at(0).cmd_rght.x;
-        double pass_y = apf->passages.at(0).cmd_rght.y;
+        double pass_x = apf->passages.at(0).cmd_left.x;
+        double pass_y = apf->passages.at(0).cmd_left.y;
         if (isnan(pass_x) || isnan(pass_y)){
             ROS_ERROR("Wrong pass dist");
             as_approach_door.setAborted(result_);
@@ -312,7 +340,7 @@ public:
         double pass_dist = sqrt (pass_x * pass_x + pass_y * pass_y);
         ROS_INFO ("Pass: x %f\t y %f\t len %f", pass_x, pass_y, pass_dist);
 
-        Line_param *pass_line = apf->get_best_line(apf->passages.at(0).kin_rght, loc_srv->lm);
+        Line_param *pass_line = apf->get_best_line(apf->passages.at(0).kin_left, loc_srv->lm);
         davinci->draw_vec(pass_line->fdir_vec.kin.x, pass_line->fdir_vec.kin.y, 667, RED);
 
         if (pass_line == NULL) {
@@ -322,12 +350,13 @@ public:
         double along_dist = sqrt (pass_dist * pass_dist - pass_line->distance * pass_line->distance);
 
 
-        pcl::PointXYZ vec ((-pass_line->ldir_vec.cmd.x * along_dist + apf->passages.at(0).cmd_rght.x - pass_line->fdir_vec.cmd.x) / 2,
-                           (-pass_line->ldir_vec.cmd.y * along_dist + apf->passages.at(0).cmd_rght.y - pass_line->fdir_vec.cmd.y) / 2, 0);
+        pcl::PointXYZ vec ((pass_line->ldir_vec.cmd.x * along_dist + apf->passages.at(0).cmd_left.x - pass_line->fdir_vec.cmd.x) / 2,
+                           (pass_line->ldir_vec.cmd.y * along_dist + apf->passages.at(0).cmd_left.y - pass_line->fdir_vec.cmd.y) / 2, 0);
 
 
         // New point tracking feature demo :)
-        int pass_border_num = map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x, apf->passages.at(0).cmd_rght.y, 0)) - 1;
+        int pass_border_num = map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_left.x, apf->passages.at(0).cmd_left.y, 0)) - 1;
+
         //map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x - pass_line->fdir_vec.cmd.x,
         //                             apf->passages.at(0).cmd_rght.y - pass_line->ldir_vec.cmd.y, 0));
         //map_srv->track(pcl::PointXYZ(-pass_line->ldir_vec.cmd.x * along_dist,
@@ -337,40 +366,85 @@ public:
         //                              apf->passages.at(0).cmd_rght.y + pass_line->ldir_vec.cmd.y, 0));
         int start_pos_num = map_srv->track(vec) - 1;
 
+
+        msn_srv->unlock();
+        while (true) {
+            msn_srv->lock();
+            msn_srv->track();
+            if (apf->passages.size() > 0 &&
+               fabs(apf->passages.at(0).left_ang) < wall_ang_eps) {
+                msn_srv->unlock();
+                break;
+            }
+            if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < wall_ang_eps ) {
+                    msn_srv->ref_ang  = 0;
+                    if (loc_srv->get_ref_wall()->distance <= target_dist) {
+                        msn_srv->ref_dist = target_dist;
+                        msn_srv->move_parallel(-0.6);
+                    }
+                    else {
+                        msn_srv->ref_dist = target_dist;
+                        msn_srv->move_parallel(0);
+                    }
+            }
+            else {
+                msn_srv->buf_cmd.angular.z += -0.5;
+            }
+            msn_srv->unlock();
+        }
+        msn_srv->lock();
+        /*
         if (this->move (vec, 0.4) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
         }
+        */
+        //pcl::PointXYZ pass_border (map_srv->tracked_points.at(pass_border_num).x,
+        //                           map_srv->tracked_points.at(pass_border_num).y, 0);
+        pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_border_num).x,
+                                map_srv->tracked_points.at(pass_border_num).y, 0);
+        if (apf->passages.size() > 0) {
+            pass_x = apf->passages.at(0).cmd_left.x;
+            pass_y = apf->passages.at(0).cmd_left.y;
+            if (!isnan(pass_x) || !isnan(pass_y)){
+                pass_vec = pcl::PointXYZ (pass_x, pass_y, 0);
+            }
+        }
 
-        pcl::PointXYZ pass_border (map_srv->tracked_points.at(pass_border_num).x,
-                                   map_srv->tracked_points.at(pass_border_num).y, 0);
-        pcl::PointXYZ pass_vec (pass_border.x, pass_border.y, 0);
+        //apf->passages.at(0).cmd_left.x;
 
-        ROS_INFO("Brd: %f\t %f\n Pos: %f\t %f\n Vec: %f\t %f", pass_border.x, pass_border.y,
-                                                               vec.x, vec.y, pass_vec.x, pass_vec.y);
+        ROS_INFO("Pos: %f\t %f\n Vec: %f\t %f", vec.x, vec.y, pass_vec.x, pass_vec.y);
 
         //double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
-        vec.x = (pass_vec.x - pass_vec.y) / sqrt(2);
-        vec.y = (pass_vec.y + pass_vec.x) / sqrt(2);
+        vec.x = (pass_vec.x + pass_vec.y) / sqrt(2);
+        vec.y = (-pass_vec.x + pass_vec.y) / sqrt(2); // WTF? why '-'
 
         ROS_INFO("Vec: %f\t %f", vec.x, vec.y);
 
         int cur_pos_num = map_srv->track(vec) - 1;
 
-        if (this->move (vec, 0.4) == false) {
+        if (this->move (vec, 0.4, 50, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
         }
 
-        pass_border = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x,
-                                     map_srv->tracked_points.at(pass_border_num).y, 0);
+        //pass_border = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x,
+        //                             map_srv->tracked_points.at(pass_border_num).y, 0);
         pass_vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x - map_srv->tracked_points.at(start_pos_num).x,
                                   map_srv->tracked_points.at(pass_border_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
 
-        ROS_INFO("Brd: %f\t %f\n Pos: %f\t %f\n Vec: %f\t %f", pass_border.x, pass_border.y,
-                                                               map_srv->tracked_points.at(start_pos_num).x, map_srv->tracked_points.at(start_pos_num).y,
+        if (apf->passages.size() > 0) {
+            pass_x = apf->passages.at(0).cmd_left.x;
+            pass_y = apf->passages.at(0).cmd_left.y;
+            if (!isnan(pass_x) || !isnan(pass_y)){
+                pass_vec = pcl::PointXYZ (pass_x - map_srv->tracked_points.at(start_pos_num).x,
+                                          pass_y - map_srv->tracked_points.at(start_pos_num).y, 0);
+            }
+        }
+
+        ROS_INFO("Pos: %f\t %f\n Vec: %f\t %f", map_srv->tracked_points.at(start_pos_num).x, map_srv->tracked_points.at(start_pos_num).y,
                                                                pass_vec.x, pass_vec.y);
 
         double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
@@ -381,7 +455,7 @@ public:
 
         map_srv->track(vec);
 
-        if (this->move (vec, 0.4) == false) {
+        if (this->move (vec, 0.5, 20, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
