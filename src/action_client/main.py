@@ -106,7 +106,7 @@ def main():
         smach.StateMachine.add('Move along',
                                smach_ros.SimpleActionState('MoveAlongAS',
                                                            MoveAlongAction,
-                                                           goal =  MoveAlongGoal(vel=0.6),
+                                                           goal =  MoveAlongGoal(vel=-0.6),
                                                            result_cb = move_along_result_cb,
                                                            outcomes=['aborted', 'succeeded', 'wall_found']),
                                transitions={'aborted'   :'aborted',
@@ -116,7 +116,7 @@ def main():
 
         smach.StateMachine.add('Switch wall',
                                smach_ros.SimpleActionState('SwitchWallAS', SwitchWallAction,
-                                                           goal =  SwitchWallGoal(left=1),
+                                                           goal =  SwitchWallGoal(rght=1),
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'  :'aborted',
                                             'succeeded':'Move along'} )
@@ -128,11 +128,11 @@ def main():
                                                            result_cb = approach_door_result_cb,
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
-                                            'succeeded' :'Pause'} )
+                                            'succeeded' :'Move along'} )
         smach.StateMachine.add('Pass door',
                                smach_ros.SimpleActionState('PassDoorAS',
                                                            PassDoorAction,
-                                                           goal =  PassDoorGoal(vel=0.8),
+                                                           goal =  PassDoorGoal(vel=-0.8),
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Move along'} )

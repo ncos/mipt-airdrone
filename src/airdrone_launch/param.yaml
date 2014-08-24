@@ -19,9 +19,9 @@ vel_to_pwr: 10.0
 angle_of_kinect: -45.0
 
 # The default movement speed, distance to reference wall and angle to this wall
-movement_speed: 0.5
+movement_speed: -0.5
 distance_to_wall: 1.0
-angle_to_wall: -45.0
+angle_to_wall: 45.0
 
 
 # Advanced passage finder related constants:
