@@ -216,6 +216,14 @@ Visualization Manager:
       Queue Size: 2
       Transport Hint: raw
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /feature/covariances
+      Name: Marker
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 0; 0; 56
@@ -240,22 +248,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.68633
+      Distance: 5.72286
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.80307
-        Y: 1.3642
-        Z: 0.751242
+        X: 0.615057
+        Y: 0.255594
+        Z: 2.42589
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.340398
+      Pitch: 0.680399
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.57039
+      Yaw: 2.41539
     Saved: ~
 Window Geometry:
   Displays:
@@ -275,5 +283,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1769
-  X: 105
+  X: 95
   Y: 14
