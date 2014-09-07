@@ -23,7 +23,7 @@
   <node pkg="smach_viewer"  name="smach_viewer"       type="smach_viewer.py"  output="screen"></node>
 
   <!-- Start rviz visualization with preset config -->
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find airdrone_launch)/rviz_cfg/croc_real.rviz"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find airdrone_launch)/rviz_cfg/croc_real.rviz"/>
 </launch>
 
 

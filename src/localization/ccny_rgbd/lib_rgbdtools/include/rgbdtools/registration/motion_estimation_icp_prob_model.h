@@ -84,7 +84,8 @@ class MotionEstimationICPProbModel: public MotionEstimation
     void setTfEpsilonAngular(double tf_epsilon_angular);     
     void setMaxAssociationDistMahalanobis(double max_assoc_dist_mah);
     void setMaxCorrespondenceDistEuclidean(double max_corresp_dist_eucl);
-    
+    void set_f2b_(AffineTransform t);
+
   private:
 
     // **** params
@@ -141,6 +142,7 @@ class MotionEstimationICPProbModel: public MotionEstimation
     
     // ***** funtions
   
+
     /** @brief Performs ICP alignment using the Euclidean distance for corresopndences
      * @param data_means a vector of 3x1 matrices, repesenting the 3D positions of the features
      * @param correction reference to the resulting transformation

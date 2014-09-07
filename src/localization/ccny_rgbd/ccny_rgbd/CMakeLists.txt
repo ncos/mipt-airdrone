@@ -10,7 +10,7 @@ set(CMAKE_BUILD_TYPE Release)
 find_package(catkin REQUIRED COMPONENTS message_generation message_runtime pcl_ros nav_msgs std_srvs tf dynamic_reconfigure cv_bridge sensor_msgs geometry_msgs visualization_msgs image_transport image_geometry nodelet lib_rgbdtools)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${lib_rgbdtools_INCLUDE_DIRS} )
-
+add_definitions( "-O3" )
 
 #######################################
 ## Declare ROS messages and services ##

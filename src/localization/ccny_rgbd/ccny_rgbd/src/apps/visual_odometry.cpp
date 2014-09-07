@@ -22,6 +22,7 @@
  */
 
 #include "ccny_rgbd/apps/visual_odometry.h"
+#include <boost/assign/list_of.hpp> // for 'list_of()'
 
 namespace ccny_rgbd {
   
@@ -316,6 +317,7 @@ void VisualOdometry::RGBDCallback(
   AffineTransform m = motion_estimation_.getMotionEstimation(frame);
   tf::Transform motion = tfFromEigenAffine(m);
   f2b_ = motion * f2b_;
+
   ros::WallTime end_reg = ros::WallTime::now();
 
   // **** publish outputs **********************************************
@@ -331,6 +333,7 @@ void VisualOdometry::RGBDCallback(
   if (publish_model_cloud_) publishModelCloud();
   if (publish_model_cov_)   publishModelCovariances();
 
+  this->refine_f2b_();
   // **** print diagnostics *******************************************
 
   ros::WallTime end = ros::WallTime::now();
@@ -350,10 +353,15 @@ void VisualOdometry::RGBDCallback(
               d_frame, d_features, d_reg, d_total);
 }
 
+void VisualOdometry::refine_f2b_()
+{
+	//this->motion_estimation_.set_f2b_(this->f2b_);
+
+}
+
 void VisualOdometry::publishTf(const std_msgs::Header& header)
 {
-  tf::StampedTransform transform_msg(
-   f2b_, header.stamp, fixed_frame_, base_frame_);
+  tf::StampedTransform transform_msg(f2b_, header.stamp, fixed_frame_, base_frame_);
   tf_broadcaster_.sendTransform (transform_msg);
 }
 
@@ -363,6 +371,13 @@ void VisualOdometry::publishOdom(const std_msgs::Header& header)
   odom.header.stamp = header.stamp;
   odom.header.frame_id = fixed_frame_;
   tf::poseTFToMsg(f2b_, odom.pose.pose);
+
+  odom.pose.covariance = boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
+                                               (0) (1e-3)  (0)  (0)  (0)  (0)
+                                               (0)   (0)  (1e-3) (0)  (0)  (0)
+                                               (0)   (0)   (0) (1e-3) (0)  (0)
+                                               (0)   (0)   (0)  (0) (1e-3) (0)
+                                               (0)   (0)   (0)  (0)  (0)  (1e-3);
   odom_publisher_.publish(odom);
 }
 
@@ -375,7 +390,6 @@ void VisualOdometry::publishPoseStamped(const std_msgs::Header& header)
   tf::poseTFToMsg(f2b_, pose_stamped_msg->pose);
   pose_stamped_publisher_.publish(pose_stamped_msg);
 }
-
 
 void VisualOdometry::publishPath(const std_msgs::Header& header)
 {

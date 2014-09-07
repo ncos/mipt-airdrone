@@ -1,0 +1,7 @@
+<launch>
+  <!-- Start mavlink communication -->
+  <node pkg="roscopter" name="roscopter" type="roscopter_node.py" output="screen" respawn="true"></node>
+
+</launch>
+
+

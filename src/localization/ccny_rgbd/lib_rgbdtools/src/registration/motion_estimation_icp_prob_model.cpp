@@ -146,6 +146,11 @@ bool MotionEstimationICPProbModel::getMotionEstimationImpl(
   return result;
 }
 
+void MotionEstimationICPProbModel::set_f2b_(AffineTransform t)
+{
+	this->f2b_ = t;
+}
+
 bool MotionEstimationICPProbModel::alignICPEuclidean(
   const Vector3fVector& data_means,
   AffineTransform& correction)

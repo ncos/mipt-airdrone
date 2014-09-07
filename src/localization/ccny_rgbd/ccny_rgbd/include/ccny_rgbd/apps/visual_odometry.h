@@ -179,6 +179,8 @@ class VisualOdometry
                       const ImageMsg::ConstPtr& depth_msg,
                       const CameraInfoMsg::ConstPtr& info_msg);
 
+    void refine_f2b_();
+
     /** @brief Initializes all the parameters from the ROS param server
      */
     void initParams();
