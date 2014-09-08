@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="2341", ACTION=="add", ATTRS{manufacturer}=="Arduino (www.arduino.cc)", MODE="666", SYMLINK+="sensors/apm%n", GROUP="dialout"

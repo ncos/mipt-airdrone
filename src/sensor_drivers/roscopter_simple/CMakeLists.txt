@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(roscopter_simple)
+
+find_package(catkin REQUIRED COMPONENTS
+    rospy
+    message_generation
+    std_msgs
+    sensor_msgs
+    geometry_msgs
+)
+
+add_message_files(
+  FILES
+  Attitude.msg
+  Control.msg
+  Mavlink_RAW_IMU.msg
+  RC.msg
+  State.msg
+  VFR_HUD.msg)
+
+generate_messages(DEPENDENCIES std_msgs sensor_msgs geometry_msgs)
+
+catkin_package()

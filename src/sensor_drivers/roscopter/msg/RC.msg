@@ -1,3 +1,3 @@
 # rc channels
 
-int32[8] channel
+uint32[8] channel

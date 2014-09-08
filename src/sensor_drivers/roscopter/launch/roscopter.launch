@@ -1,0 +1,5 @@
+<launch>
+  <node ns="apm" pkg="roscopter" type="driver.py" name="roscopter_driver" respawn="true" output="screen" args="--device=/dev/ttyACM0 --baudrate=115200 --enable-rc-control=true --mavlink-rate=25"></node>
+  <node ns="apm" pkg="roscopter" type="imu_transform_publish.py" name="roscopter_imu_transform" respawn="true" output="screen"></node>
+</launch>
+

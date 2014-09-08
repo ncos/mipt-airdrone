@@ -1,0 +1,15 @@
+uint8 command
+uint8 CMD_LAUNCH = 1
+uint8 CMD_LAND = 2
+uint8 CMD_ARM = 3
+uint8 CMD_DISARM = 4
+uint8 CMD_SET_MANUAL = 5
+uint8 CMD_SET_HOLD = 6
+uint8 CMD_SET_STABILIZE = 7
+uint8 CMD_SET_ALT_HOLD = 8
+uint8 CMD_SET_AUTO = 9
+uint8 CMD_SET_LOITER = 10
+uint8 CMD_SET_LAND = 11
+uint8 RETURN_RC_CONTROL = 12
+---
+bool result
