@@ -1,9 +1,10 @@
 <launch>
 
   <include file="$(find ccny_launch)/launch/ccny_rgbd.launch"></include>
+  <include file="$(find roscopter)/launch/roscopter.launch"></include>
 
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
-    <param name="output_frame" value="odom_ekf"/>
+    <param name="output_frame" value="world"/>
     <param name="freq" value="30.0"/>
     <param name="sensor_timeout" value="1.0"/>
     <param name="publish_tf" value="true" />
@@ -12,7 +13,11 @@
     <param name="vo_used" value="true"/>
     <param name="debug" value="false"/>
     <param name="self_diagnose" value="false"/>
-  
-	<!--<remap from="/vo" to="/ekf_vo" />-->
+
+    <remap from="/vo" to="/ekf_vo" />
+    <remap from="/imu_data" to="/apm/imu" />
   </node>
+
+
+
 </launch>

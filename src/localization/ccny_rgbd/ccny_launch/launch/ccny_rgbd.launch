@@ -20,7 +20,7 @@
     <remap from="/rgbd/depth" to="/camera/depth_registered/image_rect"/>
     <remap from="/rgbd/rgb"   to="/camera/rgb/image_rect_color"/>
     <remap from="/rgbd/info"  to="/camera/rgb/camera_info"/>
-    <!--<remap from="/vo" to="/ekf_vo" />-->
+    <remap from="/vo" to="/ekf_vo" />
 
     #### diagnostics ##################################
         
