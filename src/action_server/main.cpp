@@ -70,7 +70,7 @@ public:
         as_switch_wall  (nh_, "SwitchWallAS",   boost::bind(&ActionServer::switchWallCB,   this, _1), false),
         as_approach_door(nh_, "ApproachDoorAS", boost::bind(&ActionServer::approachDoorCB, this, _1), false),
         as_pass_door    (nh_, "PassDoorAS",     boost::bind(&ActionServer::passDoorCB,     this, _1), false),
-        as_switch_side  (nh_, "SwitchSigthAS",  boost::bind(&ActionServer::switchSideCB,   this, _1), false),
+        as_switch_side  (nh_, "SwitchSideAS",  boost::bind(&ActionServer::switchSideCB,   this, _1), false),
 		on_left_side (true)
     {
         as_move_along   .start();
@@ -89,6 +89,13 @@ public:
         action_server::MoveAlongFeedback feedback_;
         ros::Rate r(60);
 
+        float vel = 0;
+
+        if (this->on_left_side)
+        	vel = -fabs(goal->vel);
+        else
+        	vel = fabs(goal->vel);
+
         while (true) {
             loc_srv->lock();
             msn_srv->track();
@@ -97,7 +104,7 @@ public:
             //
             // Stop cases:
             //
-            if (goal->vel == 0) {
+            if (vel == 0) {
                 // No velocity no movement. This is actually a misuse case
                 result_.error = true;
                 msn_srv->move_parallel(0); // Stop movement
@@ -106,7 +113,7 @@ public:
                 return;
             }
 
-            if (loc_srv->obstacle_detected_left() && goal->vel > 0) {
+            if (loc_srv->obstacle_detected_left() && vel > 0) {
                 // Found wall on the left and moving towards
                 result_.left = true;
                 msn_srv->move_parallel(0); // Stop movement
@@ -115,7 +122,7 @@ public:
                 return;
             }
 
-            if (loc_srv->obstacle_detected_rght() && goal->vel < 0) { // Found wall on the left and moving towards
+            if (loc_srv->obstacle_detected_rght() && vel < 0) { // Found wall on the left and moving towards
                 result_.rght = true;
                 msn_srv->move_parallel(0); // Stop movement
                 loc_srv->unlock();         // Releasing mutex
@@ -137,7 +144,7 @@ public:
                     !isnan(apf->passages.at(0).cmd_rght.y)) {
                     msn_srv->ref_ang  = target_angl;
                     msn_srv->ref_dist = target_dist;
-                    msn_srv->move_parallel(goal->vel);
+                    msn_srv->move_parallel(vel);
                 }
             }
 
@@ -154,7 +161,7 @@ public:
             if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < 10 ) {
                 msn_srv->ref_ang  = target_angl;
                 msn_srv->ref_dist = target_dist;
-                msn_srv->move_parallel(goal->vel);
+                msn_srv->move_parallel(vel);
             }/*
             else if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) > 30) {
                 double A = loc_srv->get_ref_wall()->A;
@@ -183,7 +190,7 @@ public:
 
             loc_srv->unlock();
 
-            feedback_.vel = goal->vel; // TODO: Publish current velocity (from sensors), not input
+            feedback_.vel = vel; // TODO: Publish current velocity (from sensors), not input
             as_move_along.publishFeedback(feedback_);
             r.sleep();
         }
@@ -397,15 +404,7 @@ public:
             msn_srv->unlock();
         }
         msn_srv->lock();
-        /*
-        if (this->move (vec, 0.4) == false) {
-            ROS_ERROR("Move function caused error");
-            as_approach_door.setAborted(result_);
-            return;
-        }
-        */
-        //pcl::PointXYZ pass_border (map_srv->tracked_points.at(pass_border_num).x,
-        //                           map_srv->tracked_points.at(pass_border_num).y, 0);
+
         pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_border_num).x,
                                 map_srv->tracked_points.at(pass_border_num).y, 0);
         if (apf->passages.size() > 0) {
@@ -488,10 +487,15 @@ public:
 
     void switchSideCB(const action_server::SwitchSideGoalConstPtr  &goal){
     	action_server::SwitchSideResult result_;
+    	msn_srv->lock();
 
-    	this->on_left_side = ~this->on_left_side;
-    	msn_srv->ref_ang *= -1;
 
+    	this->on_left_side = !this->on_left_side;
+    	target_angl *= -1;
+    	//msn_srv->ref_ang = target_angl;
+
+    	ROS_INFO("%d | %f | %f", this->on_left_side, msn_srv->ref_ang, target_angl);
+    	msn_srv->unlock();
     	result_.success = true;
 		as_switch_side.setSucceeded(result_);
 		return;
