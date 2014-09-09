@@ -1,12 +1,8 @@
 #goal definition
-float32 x
-float32 y
+
 ---
 #result definition
 bool success
-bool full_pass
-float32 x
-float32 y
 ---
 #feedback
 float32 x

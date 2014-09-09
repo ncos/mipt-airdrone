@@ -20,6 +20,7 @@
 #include <action_server/SwitchWallAction.h>
 #include <action_server/ApproachDoorAction.h>
 #include <action_server/PassDoorAction.h>
+#include <action_server/SwitchSideAction.h>
 
 // Mutex is necessary to avoid control races between task handlers and cloud callback
 // cloud callback (or callback) is needed to renew information about point cloud and external sensors
@@ -65,15 +66,18 @@ class ActionServer
 {
 public:
     ActionServer(ros::NodeHandle nh_) :
-        as_move_along   (nh_, "MoveAlongAS",     boost::bind(&ActionServer::moveAlongCB,    this, _1), false),
-        as_switch_wall  (nh_, "SwitchWallAS",    boost::bind(&ActionServer::switchWallCB,   this, _1), false),
-        as_approach_door(nh_, "ApproachDoorAS",  boost::bind(&ActionServer::approachDoorCB, this, _1), false),
-        as_pass_door    (nh_, "PassDoorAS",      boost::bind(&ActionServer::passDoorCB,     this, _1), false)
+        as_move_along   (nh_, "MoveAlongAS",    boost::bind(&ActionServer::moveAlongCB,    this, _1), false),
+        as_switch_wall  (nh_, "SwitchWallAS",   boost::bind(&ActionServer::switchWallCB,   this, _1), false),
+        as_approach_door(nh_, "ApproachDoorAS", boost::bind(&ActionServer::approachDoorCB, this, _1), false),
+        as_pass_door    (nh_, "PassDoorAS",     boost::bind(&ActionServer::passDoorCB,     this, _1), false),
+        as_switch_side  (nh_, "SwitchSigthAS",  boost::bind(&ActionServer::switchSideCB,   this, _1), false),
+		on_left_side (true)
     {
         as_move_along   .start();
         as_switch_wall  .start();
         as_approach_door.start();
         as_pass_door    .start();
+        as_switch_side .start();
     }
 
     ~ActionServer(void) {}
@@ -297,7 +301,6 @@ public:
                 rot_done = true;
             }
             else {
-                ROS_INFO("Delta_angl %f", delta_angl);
                 phi -= delta_angl;
                 msn_srv->buf_cmd.angular.z = rot_vel;
             }
@@ -328,6 +331,20 @@ public:
                 return;
         }
 
+        if (!isnan(apf->passages.at(0).cmd_middle.x) && !isnan(apf->passages.at(0).cmd_middle.y)) {
+        	pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x, apf->passages.at(0).cmd_middle.y, 0);
+        	int tmp = map_srv->track(vec) - 1;
+        	if (this->move (vec, 0.4, 0, 0) == false) {
+				ROS_ERROR("Move function caused error");
+				as_approach_door.setAborted(result_);
+				return;
+			}
+        	msn_srv->unlock();
+			result_.success = true;
+			as_approach_door.setSucceeded(result_);
+			return;
+        }
+
         double pass_x = apf->passages.at(0).cmd_left.x;
         double pass_y = apf->passages.at(0).cmd_left.y;
         if (isnan(pass_x) || isnan(pass_y)){
@@ -356,14 +373,6 @@ public:
 
         // New point tracking feature demo :)
         int pass_border_num = map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_left.x, apf->passages.at(0).cmd_left.y, 0)) - 1;
-
-        //map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x - pass_line->fdir_vec.cmd.x,
-        //                             apf->passages.at(0).cmd_rght.y - pass_line->ldir_vec.cmd.y, 0));
-        //map_srv->track(pcl::PointXYZ(-pass_line->ldir_vec.cmd.x * along_dist,
-        //                             -pass_line->ldir_vec.cmd.y * along_dist, 0));
-
-        //map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_rght.x + pass_line->ldir_vec.cmd.x,
-        //                              apf->passages.at(0).cmd_rght.y + pass_line->ldir_vec.cmd.y, 0));
         int start_pos_num = map_srv->track(vec) - 1;
 
 
@@ -376,19 +385,14 @@ public:
                 msn_srv->unlock();
                 break;
             }
+            msn_srv->ref_ang  = -10;
             if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < wall_ang_eps ) {
-                    msn_srv->ref_ang  = 0;
-                    if (loc_srv->get_ref_wall()->distance <= target_dist) {
-                        msn_srv->ref_dist = target_dist;
-                        msn_srv->move_parallel(-0.6);
-                    }
-                    else {
-                        msn_srv->ref_dist = target_dist;
+
+                    msn_srv->ref_dist = target_dist;
+                    msn_srv->move_parallel(-0.6);
+                    if (loc_srv->get_ref_wall()->distance > target_dist) {
                         msn_srv->move_parallel(0);
                     }
-            }
-            else {
-                msn_srv->buf_cmd.angular.z += -0.5;
             }
             msn_srv->unlock();
         }
@@ -417,14 +421,14 @@ public:
         ROS_INFO("Pos: %f\t %f\n Vec: %f\t %f", vec.x, vec.y, pass_vec.x, pass_vec.y);
 
         //double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
-        vec.x = (pass_vec.x + pass_vec.y) / sqrt(2);
-        vec.y = (-pass_vec.x + pass_vec.y) / sqrt(2); // WTF? why '-'
+        vec.x = (pass_vec.x + pass_vec.y) / sqrt(1.7);
+        vec.y = (-pass_vec.x + pass_vec.y) / sqrt(1.7); // WTF? why '-'
 
         ROS_INFO("Vec: %f\t %f", vec.x, vec.y);
 
         int cur_pos_num = map_srv->track(vec) - 1;
 
-        if (this->move (vec, 0.4, 50, 0.5) == false) {
+        if (this->move (vec, 0.4, 60, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
@@ -455,7 +459,7 @@ public:
 
         map_srv->track(vec);
 
-        if (this->move (vec, 0.5, 20, 0.5) == false) {
+        if (this->move (vec, 0.5, 30, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
@@ -482,6 +486,16 @@ public:
         return;
     }
 
+    void switchSideCB(const action_server::SwitchSideGoalConstPtr  &goal){
+    	action_server::SwitchSideResult result_;
+
+    	this->on_left_side = ~this->on_left_side;
+    	msn_srv->ref_ang *= -1;
+
+    	result_.success = true;
+		as_switch_side.setSucceeded(result_);
+		return;
+    }
 
 private:
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.
@@ -489,6 +503,10 @@ private:
     actionlib::SimpleActionServer<action_server::SwitchWallAction>   as_switch_wall;
     actionlib::SimpleActionServer<action_server::ApproachDoorAction> as_approach_door;
     actionlib::SimpleActionServer<action_server::PassDoorAction>     as_pass_door;
+    actionlib::SimpleActionServer<action_server::SwitchSideAction>   as_switch_side;
+
+    //
+    bool on_left_side; // Reference side of the wall
 };
 
 

@@ -65,6 +65,9 @@ def approach_door_result_cb(userdata, status, result):
         if result.success == True:
             rospy.loginfo("approach_door_result_cb -> result.succes == True")
             return 'succeeded'
+        if result.full_pass == True:
+            rospy.loginfo("approach_door_result_cb -> result.full_pass == True")
+            return 'full_pass'
         return 'aborted'
             
     rospy.loginfo("(approach_door_result_cb): This line should never be reached")
@@ -126,9 +129,11 @@ def main():
                                                            ApproachDoorAction,
                                                            goal =  ApproachDoorGoal(),
                                                            result_cb = approach_door_result_cb,
-                                                           outcomes=['aborted', 'succeeded']),
+                                                           outcomes=['aborted', 'succeeded', 'full_pass']),
                                transitions={'aborted'   :'Pause',
+                                            'full_pass' :'Switch side',
                                             'succeeded' :'Move along'} )
+        
         smach.StateMachine.add('Pass door',
                                smach_ros.SimpleActionState('PassDoorAS',
                                                            PassDoorAction,
@@ -137,7 +142,13 @@ def main():
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Move along'} )
                                             
-    
+        smach.StateMachine.add('Switch side',
+                               smach_ros.SimpleActionState('SwitchSideAS',
+                                                           SwitchSideAction,
+                                                           goal =  SwitchSideGoal(),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Move along'} )
         
     # Create and start the introspection server
     # This is for debug purpose
