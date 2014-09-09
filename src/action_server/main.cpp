@@ -339,9 +339,18 @@ public:
         }
 
         if (!isnan(apf->passages.at(0).cmd_middle.x) && !isnan(apf->passages.at(0).cmd_middle.y)) {
-        	pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x, apf->passages.at(0).cmd_middle.y, 0);
+        	ROS_INFO("Middle pass");
+        	Line_param *pass_line = apf->get_best_line(apf->passages.at(0).kin_left, loc_srv->lm);
+        	int offset_x = 0, offset_y = 0;
+        	if (pass_line != NULL) {
+        		offset_x = pass_line->ldir_vec.cmd.x * target_dist;
+        		offset_y = pass_line->ldir_vec.cmd.y * target_dist;
+        		ROS_INFO("Offset");
+        	}
+        	pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x + offset_x,
+        					   apf->passages.at(0).cmd_middle.y + offset_y, 0);
         	int tmp = map_srv->track(vec) - 1;
-        	if (this->move (vec, 0.4, 0, 0) == false) {
+        	if (this->move (vec, 0.6, 0, 0) == false) {
 				ROS_ERROR("Move function caused error");
 				as_approach_door.setAborted(result_);
 				return;
@@ -382,7 +391,7 @@ public:
         int pass_border_num = map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_left.x, apf->passages.at(0).cmd_left.y, 0)) - 1;
         int start_pos_num = map_srv->track(vec) - 1;
 
-
+/*
         msn_srv->unlock();
         while (true) {
             msn_srv->lock();
@@ -404,6 +413,37 @@ public:
             msn_srv->unlock();
         }
         msn_srv->lock();
+*/
+
+        Passage pass;
+        double vec_len = move_epsilon;
+        int pass_pos = 0;
+        int start_pos = 0;
+
+        while (vec_len >= move_epsilon) {
+			if (apf->passages.empty())
+				break;
+			pass = apf->passages.at(0);
+			pass_line = apf->get_best_line(pass.kin_left, loc_srv->lm);
+			if (pass_line != NULL) {
+				ROS_ERROR("Pass_line wasn't found");
+			}
+
+			vec = pcl::PointXYZ((pass.cmd_left.x - pass_line->fdir_vec.cmd.x * target_dist) / 2,
+								(pass.cmd_left.y - pass_line->fdir_vec.cmd.y * target_dist) / 2, 0);
+
+			start_pos = map_srv->track(vec) - 1;
+
+			if (this->move (vec, 0.4, 0, 0) == false) {
+				ROS_ERROR("Move function caused error");
+				as_approach_door.setAborted(result_);
+				return;
+			}
+
+			vec_len = sqrt(vec.x * vec.x + vec.y*vec.y);
+			pass_pos = map_srv->track(pcl::PointXYZ(pass.cmd_left.x, pass.cmd_left.y, 0)) - 1;
+		}
+
 
         pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_border_num).x,
                                 map_srv->tracked_points.at(pass_border_num).y, 0);
@@ -427,7 +467,7 @@ public:
 
         int cur_pos_num = map_srv->track(vec) - 1;
 
-        if (this->move (vec, 0.4, 60, 0.5) == false) {
+        if (this->move (vec, 0.4, 70, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
@@ -458,7 +498,7 @@ public:
 
         map_srv->track(vec);
 
-        if (this->move (vec, 0.5, 30, 0.5) == false) {
+        if (this->move (vec, 0.5, 40, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_approach_door.setAborted(result_);
             return;
