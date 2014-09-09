@@ -372,12 +372,12 @@ void VisualOdometry::publishOdom(const std_msgs::Header& header)
   odom.header.frame_id = fixed_frame_;
   tf::poseTFToMsg(f2b_, odom.pose.pose);
 
-  odom.pose.covariance = boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
-                                               (0) (1e-3)  (0)  (0)  (0)  (0)
-                                               (0)   (0)  (1e-3) (0)  (0)  (0)
-                                               (0)   (0)   (0) (1e-3) (0)  (0)
-                                               (0)   (0)   (0)  (0) (1e-3) (0)
-                                               (0)   (0)   (0)  (0)  (0)  (1e-3);
+  odom.pose.covariance = boost::assign::list_of(1e-1)  (0) (0)  (0)  (0)  (0)
+                                               (0) (1e-1)  (0)  (0)  (0)  (0)
+                                               (0)   (0)  (1e-1) (0)  (0)  (0)
+                                               (0)   (0)   (0) (1e-1) (0)  (0)
+                                               (0)   (0)   (0)  (0) (1e-1) (0)
+                                               (0)   (0)   (0)  (0)  (0)  (1e-1);
   odom_publisher_.publish(odom);
 }
 

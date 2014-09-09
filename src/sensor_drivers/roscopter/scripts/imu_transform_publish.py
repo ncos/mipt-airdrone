@@ -33,11 +33,11 @@ import tf
 
 # Initial IMU Message holder with generic covariances
 imuMsg = Imu()
-imuMsg.orientation_covariance = [999, 0,   0,
-                                 0,   999, 0,
-                                 0,   0,   999]
-imuMsg.angular_velocity_covariance = [999, 0,   0,
-                                      0,   999, 0,
+imuMsg.orientation_covariance = [0.01, 0,   0,
+                                 0,   0.01, 0,
+                                 0,   0,   0.01]
+imuMsg.angular_velocity_covariance = [0.01, 0,   0,
+                                      0,   0.01, 0,
                                       0,   0,   0.02]
 imuMsg.linear_acceleration_covariance = [0.2, 0,   0,
                                          0,   0.2, 0,
@@ -91,8 +91,8 @@ def imu_callback(msg):
         br.sendTransform((0, 0, 0),
                      q,
                      rospy.Time.now(),
-                     "apm_imu",
-                     "world")
+                     "imu",
+                     "base_link")
 
         #print("Transform with (%f, %f, %f)" % (roll,  pitch,  yaw))
         #print("Transform with (%f, %f, %f, %f)" % (q[0], q[1], q[2],  q[3]))
