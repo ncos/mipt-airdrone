@@ -340,16 +340,18 @@ public:
 
         if (!isnan(apf->passages.at(0).cmd_middle.x) && !isnan(apf->passages.at(0).cmd_middle.y)) {
         	ROS_INFO("Middle pass");
-        	Line_param *pass_line = apf->get_best_line(apf->passages.at(0).kin_left, loc_srv->lm);
-        	int offset_x = 0, offset_y = 0;
+        	Line_param *pass_line = apf->get_best_line(apf->passages.at(0).kin_rght, loc_srv->lm);
+        	double offset_x = 0, offset_y = 0;
         	if (pass_line != NULL) {
-        		offset_x = pass_line->ldir_vec.cmd.x * target_dist;
-        		offset_y = pass_line->ldir_vec.cmd.y * target_dist;
+        		offset_x = pass_line->fdir_vec.cmd.x * target_dist / 2;
+        		offset_y = pass_line->fdir_vec.cmd.y * target_dist / 2;
         		ROS_INFO("Offset");
         	}
-        	pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x + offset_x,
-        					   apf->passages.at(0).cmd_middle.y + offset_y, 0);
-        	int tmp = map_srv->track(vec) - 1;
+        	int tmp = map_srv->track(pcl::PointXYZ(offset_x, offset_y, 0)) - 1;
+        	pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x - offset_x,
+        					   apf->passages.at(0).cmd_middle.y - offset_y, 0);
+        	tmp = map_srv->track(vec) - 1;
+        	ROS_INFO("Middle door: %f | %f\nOffsets: %f | %f", vec.x, vec.y, offset_x, offset_y);
         	if (this->move (vec, 0.6, 0, 0) == false) {
 				ROS_ERROR("Move function caused error");
 				as_approach_door.setAborted(result_);
@@ -391,60 +393,40 @@ public:
         int pass_border_num = map_srv->track(pcl::PointXYZ(apf->passages.at(0).cmd_left.x, apf->passages.at(0).cmd_left.y, 0)) - 1;
         int start_pos_num = map_srv->track(vec) - 1;
 
-/*
-        msn_srv->unlock();
-        while (true) {
-            msn_srv->lock();
-            msn_srv->track();
-            if (apf->passages.size() > 0 &&
-               fabs(apf->passages.at(0).left_ang) < wall_ang_eps) {
-                msn_srv->unlock();
-                break;
-            }
-            msn_srv->ref_ang  = -10;
-            if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < wall_ang_eps ) {
-
-                    msn_srv->ref_dist = target_dist;
-                    msn_srv->move_parallel(-0.6);
-                    if (loc_srv->get_ref_wall()->distance > target_dist) {
-                        msn_srv->move_parallel(0);
-                    }
-            }
-            msn_srv->unlock();
-        }
-        msn_srv->lock();
-*/
-
         Passage pass;
         double vec_len = move_epsilon;
         int pass_pos = 0;
         int start_pos = 0;
 
+        ROS_INFO("AD Stage #1");
         while (vec_len >= move_epsilon) {
 			if (apf->passages.empty())
 				break;
+			ROS_INFO("DEBUG 1");
 			pass = apf->passages.at(0);
 			pass_line = apf->get_best_line(pass.kin_left, loc_srv->lm);
-			if (pass_line != NULL) {
+			if (pass_line != NULL && !isnan(pass.cmd_left.x) && !isnan(pass.cmd_left.y)) {
+				ROS_INFO("DEBUG 2"); // ERROR down here
+				vec = pcl::PointXYZ((pass.cmd_left.x - pass_line->fdir_vec.cmd.x * target_dist) / 2,
+									(pass.cmd_left.y - pass_line->fdir_vec.cmd.y * target_dist) / 2, 0);
+
+				start_pos = map_srv->track(vec) - 1;
+				ROS_INFO("DEBUG 3");
+				if (this->move (vec, 0.4, 0, 0) == false) {
+					ROS_ERROR("Move function caused error");
+					as_approach_door.setAborted(result_);
+					return;
+				}
+				ROS_INFO("DEBUG 4");
+				vec_len = sqrt(vec.x * vec.x + vec.y*vec.y);
+				pass_pos = map_srv->track(pcl::PointXYZ(pass.cmd_left.x, pass.cmd_left.y, 0)) - 1;
+			}
+			else {
 				ROS_ERROR("Pass_line wasn't found");
 			}
-
-			vec = pcl::PointXYZ((pass.cmd_left.x - pass_line->fdir_vec.cmd.x * target_dist) / 2,
-								(pass.cmd_left.y - pass_line->fdir_vec.cmd.y * target_dist) / 2, 0);
-
-			start_pos = map_srv->track(vec) - 1;
-
-			if (this->move (vec, 0.4, 0, 0) == false) {
-				ROS_ERROR("Move function caused error");
-				as_approach_door.setAborted(result_);
-				return;
-			}
-
-			vec_len = sqrt(vec.x * vec.x + vec.y*vec.y);
-			pass_pos = map_srv->track(pcl::PointXYZ(pass.cmd_left.x, pass.cmd_left.y, 0)) - 1;
 		}
 
-
+        ROS_INFO("AD Stage #2");
         pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_border_num).x,
                                 map_srv->tracked_points.at(pass_border_num).y, 0);
         if (apf->passages.size() > 0) {
@@ -457,13 +439,13 @@ public:
 
         //apf->passages.at(0).cmd_left.x;
 
-        ROS_INFO("Pos: %f\t %f\n Vec: %f\t %f", vec.x, vec.y, pass_vec.x, pass_vec.y);
+        ROS_INFO("Pos1: %f\t %f\n Vec: %f\t %f", vec.x, vec.y, pass_vec.x, pass_vec.y);
 
         //double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
         vec.x = (pass_vec.x + pass_vec.y) / sqrt(1.7);
         vec.y = (-pass_vec.x + pass_vec.y) / sqrt(1.7); // WTF? why '-'
 
-        ROS_INFO("Vec: %f\t %f", vec.x, vec.y);
+        ROS_INFO("Vec1: %f\t %f", vec.x, vec.y);
 
         int cur_pos_num = map_srv->track(vec) - 1;
 
@@ -473,6 +455,7 @@ public:
             return;
         }
 
+        ROS_INFO("AD Stage #3");
         //pass_border = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x,
         //                             map_srv->tracked_points.at(pass_border_num).y, 0);
         pass_vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x - map_srv->tracked_points.at(start_pos_num).x,
@@ -487,14 +470,14 @@ public:
             }
         }
 
-        ROS_INFO("Pos: %f\t %f\n Vec: %f\t %f", map_srv->tracked_points.at(start_pos_num).x, map_srv->tracked_points.at(start_pos_num).y,
+        ROS_INFO("Pos2: %f\t %f\n Vec: %f\t %f", map_srv->tracked_points.at(start_pos_num).x, map_srv->tracked_points.at(start_pos_num).y,
                                                                pass_vec.x, pass_vec.y);
 
         double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
         vec.x = map_srv->tracked_points.at(cur_pos_num).x + pass_vec.x;
         vec.y = map_srv->tracked_points.at(cur_pos_num).y + pass_vec.y;
 
-        ROS_INFO("Vec: %f\t %f", vec.x, vec.y);
+        ROS_INFO("Vec2: %f\t %f", vec.x, vec.y);
 
         map_srv->track(vec);
 
@@ -534,7 +517,6 @@ public:
     	target_angl *= -1;
     	//msn_srv->ref_ang = target_angl;
 
-    	ROS_INFO("%d | %f | %f", this->on_left_side, msn_srv->ref_ang, target_angl);
     	msn_srv->unlock();
     	result_.success = true;
 		as_switch_side.setSucceeded(result_);
