@@ -63,6 +63,7 @@ VisualOdometry::VisualOdometry(
   model_cov_publisher_ = nh_.advertise<visualization_msgs::Marker>(
     "model/covariances", 1);
   
+  tf_listener_.waitForTransform(fixed_frame_, base_frame_, ros::Time::now(), ros::Duration(1.0));
   // **** subscribers
   
   ImageTransport rgb_it(nh_);
@@ -355,6 +356,18 @@ void VisualOdometry::RGBDCallback(
 
 void VisualOdometry::refine_f2b_()
 {
+    tf::StampedTransform tf_m;
+
+    try
+    {
+        tf_listener_.lookupTransform (fixed_frame_, base_frame_, ros::Time(0), tf_m);
+    }
+    catch (tf::TransformException& ex)
+    {
+        ROS_WARN("Base to camera transform unavailable %s", ex.what());
+    }
+
+    f2b_ = tf_m;
 	//this->motion_estimation_.set_f2b_(this->f2b_);
 
 }
