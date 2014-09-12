@@ -7,14 +7,6 @@
 
   <!-- Main quadrotor link -->
   <xacro:macro name="quadrotor_base_macro">
-    <link name="base_stabilized"/>    
-
-    <joint name="base_stabilized_to_quadrotor_visual" type = "fixed">
-      <parent link = "base_stabilized"/>
-      <child  link = "quadrotor_visual"/>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-    </joint>
-
     <link name="quadrotor_visual">
       <inertial>
         <mass value="1.477" />
@@ -38,9 +30,10 @@
 
     <link name="base_link"/>
 
-    <joint name="base_stabilized_to_base" type = "fixed">
-      <parent link = "base_stabilized"/>
-      <child  link = "base_link"/>
+    <joint name="base_link_to_quadrotor_visual" type = "fixed">
+      <parent link = "base_link"/>
+      <child  link = "quadrotor_visual"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
 
     <!-- Sonar height sensor -->
