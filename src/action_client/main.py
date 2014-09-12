@@ -132,7 +132,7 @@ def main():
                                                            outcomes=['aborted', 'succeeded', 'full_pass']),
                                transitions={'aborted'   :'Pause',
                                             'full_pass' :'Switch side',
-                                            'succeeded' :'Move along'} )
+                                            'succeeded' :'Pass door'} )
         
         smach.StateMachine.add('Pass door',
                                smach_ros.SimpleActionState('PassDoorAS',

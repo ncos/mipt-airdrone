@@ -333,7 +333,7 @@ public:
         msn_srv->set_target_angle(0);
 
         if (apf->passages.size() == 0) {
-            ROS_ERROR("No passage");
+            ROS_ERROR("No passage in AD");
             as_approach_door.setAborted(result_);
                 return;
         }
@@ -383,7 +383,7 @@ public:
 
         Passage pass;
         double vec_len = move_epsilon;
-        int pass_border_num = 0;
+        int pass_pos_num = 0;
         int start_pos_num = 0;
 
         ROS_INFO("AD Stage #1");
@@ -393,8 +393,8 @@ public:
 			pass = apf->passages.at(0);
 			pass_line = apf->get_best_line(pass.kin_left, loc_srv->lm);
 			if (pass_line != NULL && !isnan(pass.cmd_left.x) && !isnan(pass.cmd_left.y)) {
-				vec = pcl::PointXYZ((pass.cmd_left.x - pass_line->fdir_vec.cmd.x * target_dist) / 2,
-									(pass.cmd_left.y - pass_line->fdir_vec.cmd.y * target_dist) / 2, 0);
+				vec = pcl::PointXYZ((pass.cmd_left.x - pass_line->fdir_vec.cmd.x * target_dist - pass_line->ldir_vec.cmd.x * target_dist / 2) / 2,
+									(pass.cmd_left.y - pass_line->fdir_vec.cmd.y * target_dist - pass_line->ldir_vec.cmd.y * target_dist / 2) / 2, 0);
 
 				start_pos_num = map_srv->track(vec) - 1;
 
@@ -405,61 +405,13 @@ public:
 				}
 				ROS_INFO("DEBUG 4");
 				vec_len = sqrt(vec.x * vec.x + vec.y*vec.y);
-				pass_border_num = map_srv->track(pcl::PointXYZ(pass.cmd_left.x, pass.cmd_left.y, 0)) - 1;
+				pass_pos_num = map_srv->track(pcl::PointXYZ(pass.cmd_left.x, pass.cmd_left.y, 0)) - 1;
 			}
 			else {
 				ROS_ERROR("Pass_line wasn't found");
 			}
 		}
 
-        ROS_INFO("AD Stage #2");
-        pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_border_num).x,
-                                map_srv->tracked_points.at(pass_border_num).y, 0);
-        if (apf->passages.size() > 0) {
-            pass_x = apf->passages.at(0).cmd_left.x;
-            pass_y = apf->passages.at(0).cmd_left.y;
-            if (!isnan(pass_x) || !isnan(pass_y)){
-                pass_vec = pcl::PointXYZ (pass_x, pass_y, 0);
-            }
-        }
-
-        vec.x = (pass_vec.x + pass_vec.y) / sqrt(1.7);
-        vec.y = (-pass_vec.x + pass_vec.y) / sqrt(1.7); // WTF? why '-'
-
-        int cur_pos_num = map_srv->track(vec) - 1;
-
-        if (this->move (vec, 0.4, 60, 0.5) == false) {
-            ROS_ERROR("Move function caused error");
-            as_approach_door.setAborted(result_);
-            return;
-        }
-
-        ROS_INFO("AD Stage #3");
-        pass_vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_border_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                                  map_srv->tracked_points.at(pass_border_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-
-        if (apf->passages.size() > 0) {
-            pass_x = apf->passages.at(0).cmd_left.x;
-            pass_y = apf->passages.at(0).cmd_left.y;
-            if (!isnan(pass_x) || !isnan(pass_y)){
-                pass_vec = pcl::PointXYZ (pass_x - map_srv->tracked_points.at(start_pos_num).x,
-                                          pass_y - map_srv->tracked_points.at(start_pos_num).y, 0);
-            }
-        }
-
-        double pass_vec_len = sqrt (pass_vec.x * pass_vec.x + pass_vec.y * pass_vec.y);
-        vec.x = map_srv->tracked_points.at(cur_pos_num).x + pass_vec.x;
-        vec.y = map_srv->tracked_points.at(cur_pos_num).y + pass_vec.y;
-
-        ROS_INFO("Vec2: %f\t %f", vec.x, vec.y);
-
-        map_srv->track(vec);
-
-        if (this->move (vec, 0.5, 40, 0.5) == false) {
-            ROS_ERROR("Move function caused error");
-            as_approach_door.setAborted(result_);
-            return;
-        }
 
         msn_srv->unlock();
         result_.success = true;
@@ -474,6 +426,81 @@ public:
         action_server::PassDoorFeedback feedback_;
 
         msn_srv->lock();
+
+        // Check for appropriate input parameters
+        Passage pass;
+        Line_param *pass_line = NULL;
+        if (apf->passages.size() == 0) {
+			ROS_ERROR("No passage in PD");
+			msn_srv->unlock();
+            result_.success = true;
+            as_pass_door.setSucceeded(result_);
+            return;
+		}
+        else {
+        	pass = apf->passages.at(0);
+        	pass_line = apf->get_best_line(pass.kin_left, loc_srv->lm);
+        }
+
+        double pass_x = pass.cmd_left.x;
+		double pass_y = pass.cmd_left.y;
+		if (pass_line == NULL || isnan(pass_x) || isnan(pass_y)){
+			ROS_ERROR("Wrong pass dist");
+			as_pass_door.setAborted(result_);
+			return;
+		}
+
+		// Start action
+        ROS_INFO("PD Stage #1");
+        pcl::PointXYZ vec (0, 0, 0);
+
+        vec.x = ( pass.cmd_left.x + pass.cmd_left.y) / sqrt(1.7);
+        vec.y = (-pass.cmd_left.x + pass.cmd_left.y) / sqrt(1.7); // WTF? why '-'
+
+        map_srv->track(vec) - 1;
+        int pass_pos_num  = map_srv->track(pcl::PointXYZ (pass.cmd_left.x, pass.cmd_left.y, 0)) - 1;
+        int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
+
+        if (this->move (vec, 0.4, 60, 0.5) == false) {
+            ROS_ERROR("Move function caused error");
+            as_pass_door.setAborted(result_);
+            return;
+        }
+
+        ROS_INFO("PD Stage #2");
+        //vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_pos_num).x - map_srv->tracked_points.at(start_pos_num).x,
+        //                     map_srv->tracked_points.at(pass_pos_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
+        // 70 and 40 angle
+
+        ROS_INFO("Vec2: %f\t %f", vec.x, vec.y);
+
+        map_srv->track(vec);
+
+
+        pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_pos_num).x - map_srv->tracked_points.at(start_pos_num).x,
+                                map_srv->tracked_points.at(pass_pos_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
+/*
+        if (apf->passages.size() > 0) {
+            pass_x = apf->passages.at(0).cmd_left.x;
+            pass_y = apf->passages.at(0).cmd_left.y;
+            if (!isnan(pass_x) || !isnan(pass_y)){
+                pass_vec = pcl::PointXYZ (pass_x - map_srv->tracked_points.at(start_pos_num).x,
+                                          pass_y - map_srv->tracked_points.at(start_pos_num).y, 0);
+            }
+        }
+*/
+        vec.x = pass_vec.x;
+        vec.y = pass_vec.y;
+
+        map_srv->track(vec);
+
+
+        if (this->move (vec, 0.5, 20, 0.5) == false) {
+            ROS_ERROR("Move function caused error");
+            as_pass_door.setAborted(result_);
+            return;
+        }
+
 
 
         msn_srv->unlock();
