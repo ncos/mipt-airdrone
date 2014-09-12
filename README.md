@@ -7,7 +7,7 @@ Multicopter autopilot system for CROC aerial robotics competition
 ### IMPORTANT!
 1. This manual assumes you have successfully installed the ROS Indigo on Ubuntu (the code was tested on Ubuntu 14.04)
 2. Useful ROS HOWTO's: 
-  - [ROS Hydro installation](http://wiki.ros.org/indigo/Installation/Ubuntu "Read this to install ROS on your system")
+  - [ROS Indigo installation](http://wiki.ros.org/indigo/Installation/Ubuntu "Read this to install ROS on your system")
   - [ROS Tutorial](http://wiki.ros.org/ROS/Tutorials "This is a brief ROS tutorial. Helps to understand basic ROS concepts")
   - [Actionlib](http://wiki.ros.org/actionlib "Look into the actionlib tutorials if you want to deal with the code")
   - [Smach](http://wiki.ros.org/smach/Tutorials "The state mashine library that controls the drone's behavior")
