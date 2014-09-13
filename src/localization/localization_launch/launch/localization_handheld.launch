@@ -3,6 +3,9 @@
   <include file="$(find ccny_launch)/launch/ccny_rgbd.launch"></include>
   <!--include file="$(find roscopter)/launch/roscopter.launch"></include-->
 
+  <node pkg="tf" type="static_transform_publisher" name="base_link2camera_link" args="0 0 0 0 0 0 base_link camera_link 30" />
+  <!--node pkg="tf" type="static_transform_publisher" name="base_link2imu_link" args="0 0 0 -2.0 0 0 base_link imu_link 60" /-->
+
   <node pkg="tf_manager" type="tf_manager_nd" name="airdrone_tf_manager"/>
 
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
