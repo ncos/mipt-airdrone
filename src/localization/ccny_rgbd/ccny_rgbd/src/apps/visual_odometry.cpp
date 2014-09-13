@@ -23,6 +23,7 @@
 
 #include "ccny_rgbd/apps/visual_odometry.h"
 #include <boost/assign/list_of.hpp> // for 'list_of()'
+#include <tf_conversions/tf_eigen.h>
 
 namespace ccny_rgbd {
   
@@ -355,7 +356,7 @@ void VisualOdometry::RGBDCallback(
 }
 
 void VisualOdometry::refine_f2b_()
-{
+{/*
     tf::StampedTransform tf_m;
 
     try
@@ -364,18 +365,21 @@ void VisualOdometry::refine_f2b_()
     }
     catch (tf::TransformException& ex)
     {
-        ROS_WARN("Base to camera transform unavailable %s", ex.what());
+        ROS_WARN("Fixed to base transform is unavailable %s", ex.what());
     }
 
     f2b_ = tf_m;
-	//this->motion_estimation_.set_f2b_(this->f2b_);
 
+    Eigen::Affine3d a;
+    tf::transformTFToEigen (this->f2b_, a);
+	this->motion_estimation_.set_f2b_(this->f2b_.);
+*/
 }
 
 void VisualOdometry::publishTf(const std_msgs::Header& header)
 {
-  tf::StampedTransform transform_msg(f2b_, header.stamp, fixed_frame_, base_frame_);
-  tf_broadcaster_.sendTransform (transform_msg);
+    tf::StampedTransform transform_msg(f2b_, header.stamp, fixed_frame_, base_frame_);
+    tf_broadcaster_.sendTransform (transform_msg);
 }
 
 void VisualOdometry::publishOdom(const std_msgs::Header& header)
