@@ -49,7 +49,10 @@
   <run_depend>lib_rgbdtools</run_depend>
   <run_depend>octomap</run_depend>
   <run_depend>libg2o</run_depend>
- 
+   
+  <export>
+    <nodelet plugin="${prefix}/nodelets/rgbd_image_proc_nodelet.xml" />
+  </export>
 </package>
 
 

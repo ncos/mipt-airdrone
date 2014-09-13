@@ -8,6 +8,7 @@ Panels:
         - /Status1
         - /TF1
         - /TF1/Frames1
+        - /Image1
       Splitter Ratio: 0.723906
     Tree Height: 510
   - Class: rviz/Selection
@@ -56,23 +57,25 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base_footprint:
-          Value: false
+          Value: true
         base_link:
           Value: true
+        base_stabilized:
+          Value: true
         camera_depth_frame:
-          Value: false
+          Value: true
         camera_depth_optical_frame:
-          Value: false
+          Value: true
         camera_link:
           Value: true
         camera_rgb_frame:
-          Value: false
+          Value: true
         camera_rgb_optical_frame:
-          Value: false
-        imu:
+          Value: true
+        imu_link:
           Value: true
         odom:
-          Value: false
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -81,16 +84,17 @@ Visualization Manager:
       Tree:
         odom:
           base_footprint:
-            base_link:
-              camera_link:
-                camera_depth_frame:
-                  camera_depth_optical_frame:
-                    {}
-                camera_rgb_frame:
-                  camera_rgb_optical_frame:
-                    {}
-              imu:
-                {}
+            base_stabilized:
+              base_link:
+                camera_link:
+                  camera_depth_frame:
+                    camera_depth_optical_frame:
+                      {}
+                  camera_rgb_frame:
+                    camera_rgb_optical_frame:
+                      {}
+                imu_link:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 0.2
@@ -190,7 +194,7 @@ Visualization Manager:
       Value: false
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /camera/depth/image_raw
+      Image Topic: /rgbd_calibrated/depth
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -258,5 +262,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1769
-  X: 131
-  Y: 32
+  X: 121
+  Y: 22
