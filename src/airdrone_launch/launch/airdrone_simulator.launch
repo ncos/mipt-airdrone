@@ -14,24 +14,15 @@
     <remap from="image_color"      to="/debayer/kinect/rgb/image_color"/>
     <remap from="image_rect_color" to="/debayer/kinect/rgb/image_rect_color"/>
   </node>
-  <node pkg="nodelet" type="nodelet" name="rgbd_image_proc" args="load ccny_rgbd/RGBDImageProcNodelet nodelet_manager" output="log">
-    <remap from="/camera/rgb/image_color"   to="/debayer/kinect/rgb/image_color"/>
-    <remap from="/camera/depth/image_raw"   to="$(arg input_depth_image_raw_topic)"/>
-    <remap from="/camera/rgb/camera_info"   to="$(arg input_rgb_camera_info_topic)"/>
-    <remap from="/camera/depth/camera_info" to="$(arg input_depth_camera_info_topic)"/>
-    <remap from="/rgbd/rgb"                 to="/rgbd_calibrated/rgb"/>
-    <remap from="/rgbd/depth"               to="/rgbd_calibrated/depth"/>
-    <remap from="/rgbd/info"                to="/rgbd_calibrated/info"/>
-    <remap from="/rgbd/cloud"               to="/rgbd_calibrated/cloud"/>
-    <param name="scale"         value="1.0"/>
-    <param name="unwarp"        value="false"/>
-    <param name="publish_cloud" value="false"/>
-    <param name="calib_path"    value="$(find ccny_rgbd_data)/calibration_openni_default"/>
-    <param name="verbose"       value="false"/>
-  </node>
 
-  <!-- Visual odometry
-  <include file="$(find localization_launch)/launch/localization.launch"></include>  -->
+  <!-- Visual odometry (CCNY-RGBD) -->
+  <!--
+  <include file="$(find localization_launch)/launch/localization.launch">
+    <arg name="input_depth_topic" value="$(arg input_depth_image_raw_topic)"/>
+    <arg name="input_rgb_topic"   value="/debayer/kinect/rgb/image_color"/>
+    <arg name="input_info_topic"  value="$(arg input_rgb_camera_info_topic)"/>
+  </include>  
+  -->
 
   <!-- Copter service nodes -->
   <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"></node>

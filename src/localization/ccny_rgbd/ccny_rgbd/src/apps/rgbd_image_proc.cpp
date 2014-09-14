@@ -270,8 +270,8 @@ void RGBDImageProc::RGBDCallback(
   dur_rectify = getMsDuration(start_rectify);
   
   //cv::imshow("RGB Rect", rgb_img_rect);
-  //cv::imshow("Depth Rect", depth_img_rect);
-  //cv::waitKey(1);
+  cv::imshow("Depth Rect", depth_img_rect);
+  cv::waitKey(1);
   
   // **** unwarp 
   if (unwarp_) 
@@ -315,6 +315,7 @@ void RGBDImageProc::RGBDCallback(
   // **** allocate registered depth image
   cv_bridge::CvImage cv_img_depth(depth_msg->header, depth_msg->encoding, depth_img_rect_reg);
   ImageMsg::Ptr depth_out_msg = cv_img_depth.toImageMsg();
+  //depth_out_msg->step = depth_msg->step;
   
   // **** update camera info (single, since both images are in rgb frame)
   rgb_rect_info_msg_.header = rgb_info_msg->header;
@@ -331,6 +332,8 @@ void RGBDImageProc::RGBDCallback(
              dur_total);
   }
   // **** publish
+  //ROS_INFO("DEPTH_OUT: s=%d w=%d h=%d e=%s; DEPTH_IN: step=%d", depth_out_msg->step, depth_out_msg->width, depth_out_msg->height, depth_out_msg->encoding.c_str(),
+  //                                                              depth_msg->step);
   rgb_publisher_.publish(rgb_out_msg);
   depth_publisher_.publish(depth_out_msg);
   info_publisher_.publish(rgb_rect_info_msg_);

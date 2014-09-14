@@ -24,7 +24,7 @@
 
     #### diagnostics ##################################
         
-    <param name="verbose"     value="true"/>    
+    <param name="verbose"     value="false"/>    
     
     #### frames and tf output #########################
     

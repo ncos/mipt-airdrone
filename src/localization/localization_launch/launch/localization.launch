@@ -1,11 +1,15 @@
 <launch>
+  <arg name="input_depth_topic" default="/rgbd_calibrated/depth"/>
+  <arg name="input_rgb_topic"   default="/rgbd_calibrated/rgb"/>
+  <arg name="input_info_topic"  default="/rgbd_calibrated/info"/>
+
   <node pkg="tf_manager" type="tf_manager_nd" name="airdrone_tf_manager"/>
 
   <!-- Visual odometry -->
   <include file="$(find ccny_launch)/launch/ccny_rgbd.launch">
-    <arg name="camera_depth_topic" value="/rgbd_calibrated/depth"/>
-    <arg name="camera_rgb_topic"   value="/rgbd_calibrated/rgb"/>
-    <arg name="camera_info_topic"  value="/rgbd_calibrated/info"/>
+    <arg name="camera_depth_topic" value="$(arg input_depth_topic)"/>
+    <arg name="camera_rgb_topic"   value="$(arg input_rgb_topic)"/>
+    <arg name="camera_info_topic"  value="$(arg input_info_topic)"/>
   </include>
 
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
