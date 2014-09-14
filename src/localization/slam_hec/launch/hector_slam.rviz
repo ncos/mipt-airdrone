@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /TF1/Frames1
+        - /Image1
       Splitter Ratio: 0.723906
     Tree Height: 510
   - Class: rviz/Selection
@@ -53,27 +54,31 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base_footprint:
-          Value: true
         base_link:
           Value: true
-        base_stabilized:
+        flow_camera_link:
           Value: true
-        camera_depth_frame:
+        flow_camera_optical_frame:
           Value: true
-        camera_depth_optical_frame:
+        kinect_depth_frame:
           Value: true
-        camera_link:
+        kinect_depth_optical_frame:
           Value: true
-        camera_rgb_frame:
+        kinect_link:
           Value: true
-        camera_rgb_optical_frame:
+        kinect_rgb_frame:
+          Value: true
+        kinect_rgb_optical_frame:
           Value: true
         map:
           Value: true
         nav:
           Value: true
+        quadrotor_visual:
+          Value: true
         scanmatcher_frame:
+          Value: true
+        sonar_link:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -83,16 +88,21 @@ Visualization Manager:
       Tree:
         map:
           nav:
-            base_footprint:
-              base_stabilized:
-                base_link:
-                  camera_link:
-                    camera_depth_frame:
-                      camera_depth_optical_frame:
-                        {}
-                    camera_rgb_frame:
-                      camera_rgb_optical_frame:
-                        {}
+            base_link:
+              flow_camera_link:
+                flow_camera_optical_frame:
+                  {}
+              kinect_link:
+                kinect_depth_frame:
+                  kinect_depth_optical_frame:
+                    {}
+                kinect_rgb_frame:
+                  kinect_rgb_optical_frame:
+                    {}
+              quadrotor_visual:
+                {}
+              sonar_link:
+                {}
           scanmatcher_frame:
             {}
       Update Interval: 0
@@ -136,7 +146,7 @@ Visualization Manager:
       Value: false
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /camera/depth/image_raw
+      Image Topic: /sensors/kinect/rgb/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -206,22 +216,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 6.75681
+      Distance: 4.59212
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.96637
-        Y: 0.287649
-        Z: 1.08333
+        X: -0.237792
+        Y: -0.957842
+        Z: 0.355246
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.1554
+      Pitch: 1.0504
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.79539
+      Yaw: 2.68039
     Saved: ~
 Window Geometry:
   Displays:
@@ -241,5 +251,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1769
-  X: 84
-  Y: 32
+  X: 74
+  Y: 22

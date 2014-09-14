@@ -15,6 +15,26 @@
     <remap from="image_rect_color" to="/debayer/kinect/rgb/image_rect_color"/>
   </node>
 
+  <!-- Start laserscan generator to convert depth image to laserscan -->
+  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" respawn="true"> 
+    <param name="output_frame_id" value="/kinect_depth_frame"/>
+    <param name="scan_height"     value="200"/> 
+    <param name="scan_time"       value="0.033"/>
+    <param name="range_min"       value="0.45"/>
+    <param name="range_max"       value="10.0"/>
+    <remap from="/image"       to="$(arg input_depth_image_raw_topic)"/>
+    <remap from="/camera_info" to="$(arg input_depth_camera_info_topic)"/>
+    <remap from="/scan"        to="/sensors/kinect/scan"/>
+  </node>
+
+  <!-- Visual odometry (Hector-slam) -->
+  <node pkg="tf" type="static_transform_publisher" name="odom2base_footprint" args="0 0 0 0 0 0 nav base_link 30" />
+  <include file="$(find slam_hec)/launch/slam.launch">
+    <arg name="input_laserscan_topic" value="/sensors/kinect/scan"/>
+    <arg name="input_base_frame_name" value="base_link"/>
+    <arg name="input_odom_frame_name" value="nav"/>
+  </include>  
+
   <!-- Visual odometry (CCNY-RGBD) -->
   <!--
   <include file="$(find localization_launch)/launch/localization.launch">
