@@ -1,4 +1,23 @@
 <launch>
+  <arg name="input_depth_image_raw_topic"   default="/sensors/kinect/depth/image_raw"/>
+  <arg name="input_depth_camera_info_topic" default="/sensors/kinect/depth/camera_info"/>
+  <arg name="input_rgb_image_raw_topic"     default="/sensors/kinect/rgb/image_raw"/>
+  <arg name="input_rgb_camera_info_topic"   default="/sensors/kinect/rgb/camera_info"/>
+
+  <!-- Start laserscan generator to convert depth image to laserscan -->
+  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" respawn="true"> 
+    <param name="output_frame_id" value="/kinect_depth_frame"/>
+    <param name="scan_height"     value="200"/> 
+    <param name="scan_time"       value="0.033"/>
+    <param name="range_min"       value="0.45"/>
+    <param name="range_max"       value="10.0"/>
+    <remap from="/image"       to="$(arg input_depth_image_raw_topic)"/>
+    <remap from="/camera_info" to="$(arg input_depth_camera_info_topic)"/>
+    <remap from="/scan"        to="/sensors/kinect/scan"/>
+  </node>
+
+  <node pkg="ransac_slam"    name="ransac_slam"         type="ransac_slam_nd"    output="screen" required="true"></node>
+
   <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"></node>
   <node pkg="altitude_cntrl" name="altitude_controller" type="altitude_cntrl_nd" output="screen" required="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
