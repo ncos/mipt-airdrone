@@ -148,8 +148,16 @@ def main():
                                                            goal =  SwitchSideGoal(),
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
-                                            'succeeded' :'Move along'} )
+                                            'succeeded' :'Approach wall'} )
         
+        smach.StateMachine.add('Approach wall',
+                               smach_ros.SimpleActionState('ApproachWallAS',
+                                                           ApproachWallAction,
+                                                           goal =  ApproachWallGoal(),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Move along'} )
+                
     # Create and start the introspection server
     # This is for debug purpose
     sis = smach_ros.IntrospectionServer('introspection_server', sm0, '/STATE_MASHINE')

@@ -14,7 +14,7 @@
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/extract_indices.h>
 
-#define MIN_POINTS_IN_LINE 300
+#define MIN_POINTS_IN_LINE 150
 
 using std::cout;
 using std::cerr;
