@@ -154,12 +154,11 @@ gen_launcher('ad_rebuild_eclipse',           'AdRebuild4Eclipse', 'AdRebuild4Ecl
                                                                                            ' -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8\n'\
                                                                                            'source ' + LOCAL_BASH_FILE + '\n'\
                                                                                            'echo "Press any key to continue..."\nread')
-gen_launcher('ad_simulator', 'AdSimulator',                       'AdAirdroneTest.png',       'roslaunch airdrone_launch simulator.launch')
-gen_launcher('ad_airdrone_simulator_launch', 'AdRunInSimulator',  'AdAirdroneLaunch.png',     'roslaunch airdrone_launch airdrone_simulator.launch')
-gen_launcher('ad_airdrone_real_launch',      'AdRun4Real',        'AdAirdroneRealLaunch.png', 'roslaunch airdrone_launch airdrone.launch')
-gen_launcher('ad_optical_flow',              'AdOpticalFlow',     'AdSpare.png',              'roslaunch optical_flow test_cpu_farn.launch')
-gen_launcher('ad_localization',              'AdLocalization',    'AdSpare.png',              'roslaunch /home/ncos/mipt-airdrone/src/localization/launch/localization_simulator.launch')
-
+gen_launcher('ad_simulator',                 'AdSimulator',       'AdAirdroneTest.png',          'roslaunch airdrone_launch simulator.launch')
+gen_launcher('ad_airdrone_simulator_launch', 'AdRunInSimulator',  'AdAirdroneLaunch.png',        'roslaunch airdrone_launch airdrone_simulator.launch')
+gen_launcher('ad_airdrone_real_launch',      'AdRun4Real',        'AdAirdroneRealLaunch.png',    'roslaunch airdrone_launch airdrone.launch')
+gen_launcher('ad_optical_flow',              'AdOpticalFlow',     'AdSpare.png',                 'roslaunch optical_flow test_cpu_farn.launch')
+gen_launcher('ad_keyboard_control',          'AdKeyboardControl', 'AdKeyboardControlLaunch.png', 'roslaunch keyboard_control keyboard_control.launch')
 
 
 

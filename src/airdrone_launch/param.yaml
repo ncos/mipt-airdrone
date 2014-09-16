@@ -34,3 +34,6 @@ apf_better_q:  1   # 1 is more computationally demanding but gives less false al
 
 # Move function euristic constants
 move_epsilon:  0.1
+
+# Move function euristic constants
+keyboard_control: true

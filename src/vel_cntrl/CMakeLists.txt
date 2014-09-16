@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-#SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wcpp" )
-#SET( CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} -Wcpp" ) #Флаги компилятора
-SET(COMPILE_FLAGS "-Wno-deprecated")   #Флаги компилятора
-add_definitions(${COMPILE_FLAGS})
+#SET(COMPILE_FLAGS "-Wno-deprecated")
+#SET(CMAKE_CXX_FLAGS "-lsfml-graphics -lsfml-window -lsfml-system")
+#add_definitions(${COMPILE_FLAGS})
 
 project(vel_cntrl)
 
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wno-deprecated")
+set(CMAKE_BUILD_TYPE Release)
 
 
 find_package(catkin REQUIRED COMPONENTS 
@@ -40,10 +42,6 @@ generate_messages(DEPENDENCIES std_msgs sensor_msgs geometry_msgs)
 
 
 
-
-
-
-
 catkin_package(CATKIN_DEPENDS message_runtime)
 
 ###########
@@ -54,10 +52,7 @@ catkin_package(CATKIN_DEPENDS message_runtime)
 include_directories(${catkin_INCLUDE_DIRS})
 
 
-
-
-
-set(SOURCES main.cpp)	  # Установка переменной со списком исходников
+set(SOURCES main.cpp)
 
 add_executable(vel_cntrl_nd ${SOURCES})
 target_link_libraries(vel_cntrl_nd ${catkin_LIBRARIES})

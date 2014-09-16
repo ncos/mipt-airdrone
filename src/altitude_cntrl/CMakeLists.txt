@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 
 
-SET(COMPILE_FLAGS "-Wno-deprecated")   #Флаги компилятора
-add_definitions(${COMPILE_FLAGS})
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wno-deprecated")
+set(CMAKE_BUILD_TYPE Release)
+
 
 project(altitude_cntrl)
 
