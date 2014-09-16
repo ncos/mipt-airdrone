@@ -1,14 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
-
-#SET(COMPILE_FLAGS "-Wno-deprecated")
-#SET(CMAKE_CXX_FLAGS "-lsfml-graphics -lsfml-window -lsfml-system")
-#add_definitions(${COMPILE_FLAGS})
-
 project(vel_cntrl)
 
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wno-deprecated")
-set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wno-deprecated")
+#set(CMAKE_BUILD_TYPE Release)
 
 
 find_package(catkin REQUIRED COMPONENTS 

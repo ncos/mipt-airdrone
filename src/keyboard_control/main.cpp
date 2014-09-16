@@ -1,3 +1,4 @@
+#include <cmath>
 #include <ros/ros.h>
 #include <SFML/Graphics.hpp>
 #include <geometry_msgs/Twist.h>
@@ -24,10 +25,15 @@ bool higher   = false;
 bool lower    = false;
 
 
+double norm(geometry_msgs::Vector3 vec) {
+    return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+};
+
+
 geometry_msgs::Twist keyboard_spin(sf::RenderWindow &window)
 {
     const double v_mod = 0.5;
-    const double a_mod = 0.5;
+    const double a_mod = 1.0;
 
     geometry_msgs::Twist vel;
 
@@ -61,17 +67,28 @@ geometry_msgs::Twist keyboard_spin(sf::RenderWindow &window)
             if (event.key.code == sf::Keyboard::X) higher   = false;
             if (event.key.code == sf::Keyboard::Z) lower    = false;
         }
-
-        if (up)       vel.linear.x  =  1;
-        if (down)     vel.linear.x  = -1;
-        if (left)     vel.linear.y  =  1;
-        if (rght)     vel.linear.y  = -1;
-        if (higher)   vel.linear.z  =  1;
-        if (lower)    vel.linear.z  = -1;
-        if (rot_left) vel.angular.z =  1;
-        if (rot_rght) vel.angular.z = -1;
-
     }
+
+    if (up)       vel.linear.x  =  1;
+    if (down)     vel.linear.x  = -1;
+    if (left)     vel.linear.y  =  1;
+    if (rght)     vel.linear.y  = -1;
+    if (higher)   vel.linear.z  =  1;
+    if (lower)    vel.linear.z  = -1;
+    if (rot_left) vel.angular.z =  1;
+    if (rot_rght) vel.angular.z = -1;
+
+    if (norm(vel.linear) > 0) {
+        vel.linear.x  = vel.linear.x * v_mod / norm(vel.linear);
+        vel.linear.y  = vel.linear.y * v_mod / norm(vel.linear);
+        vel.linear.z  = vel.linear.z * v_mod / norm(vel.linear);
+    }
+    if (norm(vel.angular) > 0) {
+        vel.angular.x = vel.angular.x * a_mod / norm(vel.angular);
+        vel.angular.y = vel.angular.y * a_mod / norm(vel.angular);
+        vel.angular.z = vel.angular.z * a_mod / norm(vel.angular);
+    }
+
     return vel;
 };
 

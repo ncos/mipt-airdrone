@@ -34,7 +34,7 @@ struct Cmp_class {
 //ros::Time start;
 void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
-    cerr << "\tIdle_sec: " << cloud->header.stamp << "\n";
+    //cerr << "\tIdle_sec: " << cloud->header.stamp << "\n";
 	//cerr << "\tIdle_sec: " << ros::Time::now().toSec() - start.toSec(); start = ros::Time::now();
 	pcl::PassThrough<pcl::PointXYZ> pass;
 	pass.setInputCloud (cloud);
