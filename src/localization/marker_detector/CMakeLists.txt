@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(marker_detector)
 
-
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_BUILD_TYPE Release)
 
 find_package(catkin REQUIRED COMPONENTS 
 				cv_bridge 

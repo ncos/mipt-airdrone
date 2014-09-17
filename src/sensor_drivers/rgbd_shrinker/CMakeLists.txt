@@ -1,13 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
-
-#SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wcpp" )
-#SET( CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE} -Wcpp" ) #Флаги компилятора
-SET(COMPILE_FLAGS "-Wno-deprecated")   #Флаги компилятора
-add_definitions(${COMPILE_FLAGS})
-
 project(rgbd_shrinker)
 
-
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wno-deprecated")
+set(CMAKE_BUILD_TYPE Release)
 
 find_package(catkin REQUIRED COMPONENTS 
 				cv_bridge 

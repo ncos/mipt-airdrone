@@ -14,6 +14,7 @@
 ros::Subscriber sub_vel_1;
 ros::Subscriber sub_vel_2;
 ros::Subscriber sub_vel_3;
+ros::Subscriber sub_vel_keybrd;
 ros::Publisher  pub_vel;
 ros::Publisher  pub_rc;
 ros::Publisher  pub_mrk;
@@ -21,12 +22,14 @@ ros::Publisher  pub_mrk;
 geometry_msgs::Twist vel_1;
 geometry_msgs::Twist vel_2;
 geometry_msgs::Twist vel_3;
+geometry_msgs::Twist vel_kbrd;
 
 visualization_msgs::Marker height_text;
 
 
 double vel_to_pwr = 0.0;
 double angle_of_kinect = 0.0;
+bool keyboard_control = false;
 double rc_acc[8];
 vel_cntrl::RC rc_msg;
 
@@ -75,9 +78,13 @@ void callback_3(const geometry_msgs::Twist vel)
     vel_3.angular.z = vel.angular.z;
 };
 
-
-
-
+void callback_4(const geometry_msgs::Twist vel)
+{
+    vel_kbrd.linear = rotate_z(vel.linear, angle_of_kinect);
+    vel_kbrd.angular.x = vel.angular.x;
+    vel_kbrd.angular.y = vel.angular.y;
+    vel_kbrd.angular.z = vel.angular.z;
+};
 
 
 void set_manual_control()
@@ -86,15 +93,10 @@ void set_manual_control()
 };
 
 
-
 void set_all_min()
 {
     rc_msg.channel.elems[THROTTLE] = 1000;
 };
-
-
-
-
 
 
 void vel_to_RC(geometry_msgs::Twist vel)
@@ -108,6 +110,8 @@ void vel_to_RC(geometry_msgs::Twist vel)
 };
 
 
+
+
 int main( int argc, char** argv )
 {
     ros::init(argc, argv, "velocity_server");
@@ -115,17 +119,20 @@ int main( int argc, char** argv )
     ros::Rate loop_rate(60);
 
 
-    std::string input_topic_vel_1 = nh.resolveName("/cmd_vel_1");
-    std::string input_topic_vel_2 = nh.resolveName("/cmd_vel_2");
-    std::string input_topic_vel_3 = nh.resolveName("/cmd_vel_3");
-    std::string output_topic_vel  = nh.resolveName("/cmd_vel"  );
-    std::string output_topic_rc   = nh.resolveName("/apm/send_rc"  );
-    std::string output_topic_mrk  = nh.resolveName("visualization_marker");
+    std::string input_topic_vel_1      = nh.resolveName("/cmd_vel_1");
+    std::string input_topic_vel_2      = nh.resolveName("/cmd_vel_2");
+    std::string input_topic_vel_3      = nh.resolveName("/cmd_vel_3");
+    std::string input_topic_vel_keybrd = nh.resolveName("/cmd_vel_keyboard");
+    std::string output_topic_vel       = nh.resolveName("/cmd_vel"  );
+    std::string output_topic_rc        = nh.resolveName("/apm/send_rc"  );
+    std::string output_topic_mrk       = nh.resolveName("visualization_marker");
 
 
-    sub_vel_1   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_1,  1, callback_1);
-    sub_vel_2   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_2,  1, callback_2);
-    sub_vel_3   = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_3,  1, callback_3);
+    sub_vel_1      = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_1,       1, callback_1);
+    sub_vel_2      = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_2,       1, callback_2);
+    sub_vel_3      = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_3,       1, callback_3);
+    sub_vel_keybrd = nh.subscribe<geometry_msgs::Twist > (input_topic_vel_keybrd,  1, callback_4);
+
 
     pub_vel     = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
     pub_rc      = nh.advertise<vel_cntrl::RC        >           (output_topic_rc,  1 );
@@ -134,7 +141,7 @@ int main( int argc, char** argv )
 
     if (!nh.getParam("vel_to_pwr", vel_to_pwr)) ROS_ERROR("Failed to get param 'vel_to_pwr'");
     if (!nh.getParam("angle_of_kinect", angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
-
+    if (!nh.getParam("keyboard_control", keyboard_control)) keyboard_control = false;
 
     height_text.header.frame_id = "/kinect_link";
     height_text.ns = "text_ns";
@@ -150,7 +157,6 @@ int main( int argc, char** argv )
     height_text.text    = "THROTTLE = [Nan]\nROLL = [Nan]\nPITCH = [Nan]\nYAW = [Nan]\n";
     pub_mrk.publish(height_text);
 
-
 #ifndef TEST_MODE
     ros::service::waitForService("/arm");
 #endif
@@ -159,17 +165,26 @@ int main( int argc, char** argv )
     while (ros::ok())
     {
         geometry_msgs::Twist vel_acc;
-        vel_acc.linear.x = vel_1.linear.x + vel_2.linear.x + vel_3.linear.x;
-        vel_acc.linear.y = vel_1.linear.y + vel_2.linear.y + vel_3.linear.y;
-        vel_acc.linear.z = vel_1.linear.z + vel_2.linear.z + vel_3.linear.z;
+        if (keyboard_control == true) {
+            vel_acc.linear.x = vel_kbrd.linear.x;
+            vel_acc.linear.y = vel_kbrd.linear.y;
+            vel_acc.linear.z = vel_kbrd.linear.z;
 
-        vel_acc.angular.x = vel_1.angular.x + vel_2.angular.x + vel_3.angular.x;
-        vel_acc.angular.y = vel_1.angular.y + vel_2.angular.y + vel_3.angular.y;
-        vel_acc.angular.z = vel_1.angular.z + vel_2.angular.z + vel_3.angular.z;
+            vel_acc.angular.x = vel_kbrd.angular.x;
+            vel_acc.angular.y = vel_kbrd.angular.y;
+            vel_acc.angular.z = vel_kbrd.angular.z;
+        }
+        else {
+            vel_acc.linear.x = vel_1.linear.x + vel_2.linear.x + vel_3.linear.x;
+            vel_acc.linear.y = vel_1.linear.y + vel_2.linear.y + vel_3.linear.y;
+            vel_acc.linear.z = vel_1.linear.z + vel_2.linear.z + vel_3.linear.z;
+
+            vel_acc.angular.x = vel_1.angular.x + vel_2.angular.x + vel_3.angular.x;
+            vel_acc.angular.y = vel_1.angular.y + vel_2.angular.y + vel_3.angular.y;
+            vel_acc.angular.z = vel_1.angular.z + vel_2.angular.z + vel_3.angular.z;
+        }
 
         pub_vel.publish(vel_acc);
-
-
         vel_to_RC(vel_acc);
         pub_rc.publish(rc_msg);
 
