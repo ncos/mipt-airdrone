@@ -28,18 +28,6 @@ enum PassageType {
     ortogonal, parrallel, single_wall, undefined, non_valid
 };
 
-struct Passage_type
-{
-    int type;
-    bool pass_exist;
-    bool closest_exist;
-    bool opposite_exist;
-    bool middle_exist;
-    Passage_type () : type(non_valid), pass_exist (false), closest_exist(false),
-                      opposite_exist(false), middle_exist(false){}
-    int recognize (std::vector<Passage> pass, bool on_left_side);
-
-};
 
 struct Passage
 {
@@ -193,5 +181,21 @@ private:
     double get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg);
 };
 
+
+struct Passage_type
+{
+    int type;
+    bool pass_exist;
+    bool closest_exist;
+    bool opposite_exist;
+    bool middle_exist;
+    boost::shared_ptr<boost::mutex> mutex;
+
+    Passage_type () : type(non_valid), pass_exist (false), closest_exist(false),
+                      opposite_exist(false), middle_exist(false) {}
+
+    int  recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side);
+
+};
 
 #endif // PASSAGEFINDER_H

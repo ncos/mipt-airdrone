@@ -22,6 +22,7 @@
 #include <action_server/PassDoorAction.h>
 #include <action_server/SwitchSideAction.h>
 #include <action_server/ApproachWallAction.h>
+#include <action_server/MiddlePassAction.h>
 
 // Mutex is necessary to avoid control races between task handlers and cloud callback
 // cloud callback (or callback) is needed to renew information about point cloud and external sensors
@@ -34,6 +35,7 @@ boost::shared_ptr<LocationServer> loc_srv;
 boost::shared_ptr<MotionServer>   msn_srv;
 boost::shared_ptr<MappingServer>  map_srv;
 boost::shared_ptr<Advanced_Passage_finder> apf;
+boost::shared_ptr<Passage_type> pt;
 
 std::string input_topic;
 std::string output_topic_vel;
@@ -71,6 +73,7 @@ public:
         as_pass_door    (nh_, "PassDoorAS",     boost::bind(&ActionServer::passDoorCB,     this, _1), false),
         as_switch_side  (nh_, "SwitchSideAS",   boost::bind(&ActionServer::switchSideCB,   this, _1), false),
         as_approach_wall(nh_, "ApproachWallAS", boost::bind(&ActionServer::approachWallCB, this, _1), false),
+        as_middle_pass  (nh_, "MiddlePassAS",   boost::bind(&ActionServer::middlePassCB,   this, _1), false),
 		on_left_side (true)
     {
         as_move_along   .start();
@@ -79,6 +82,7 @@ public:
         as_pass_door    .start();
         as_switch_side  .start();
         as_approach_wall.start();
+        as_middle_pass  .start();
     }
 
     ~ActionServer(void) {}
@@ -280,7 +284,6 @@ public:
         {
             msn_srv->lock();
 
-
             double current_angl       = map_srv->get_global_angle();
             pcl::PointXYZ current_pos = map_srv->get_global_positon();
             double delta_angl  = map_srv->diff(current_angl, prev_angl);
@@ -305,11 +308,12 @@ public:
                 davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
             }
             //TODO: conform sign of phi and rot_vel
-            if (phi < rot_epsilon) {
+            if (phi < 1) {
                 rot_done = true;
             }
             else {
-                phi -= delta_angl;
+                phi -= fabs(delta_angl);
+                phi = phi > 360 ? (phi - 360) : phi;
                 msn_srv->buf_cmd.angular.z = rot_vel;
             }
 
@@ -317,6 +321,10 @@ public:
                 msn_srv->unlock();
                 break;
             }
+
+            ROS_INFO("vel: %f | %f",msn_srv->buf_cmd.linear.x,
+                                              msn_srv->buf_cmd.linear.y);
+            ROS_INFO("%f | %f | %f", len, phi, delta_angl);
 
             msn_srv->unlock();
             r.sleep();
@@ -342,28 +350,14 @@ public:
         pcl::PointXYZ pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                                apf->passages.at(0).kin_left;
 
-        if (!isnan(apf->passages.at(0).cmd_middle.x) && !isnan(apf->passages.at(0).cmd_middle.y) &&
+        if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == parrallel &&
             apf->passages.at(0).left_ang * apf->passages.at(0).rght_ang < 0) {
         	ROS_INFO("Middle pass");
-        	Line_param *pass_line = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
-        	double offset_x = 0, offset_y = 0;
-        	if (pass_line != NULL) {
-        		offset_x = pass_line->fdir_vec.cmd.x * target_dist / 2;
-        		offset_y = pass_line->fdir_vec.cmd.y * target_dist / 2;
-        	}
-        	int tmp = map_srv->track(pcl::PointXYZ(offset_x, offset_y, 0)) - 1;
-        	pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x - offset_x,
-        					   apf->passages.at(0).cmd_middle.y - offset_y, 0);
-        	tmp = map_srv->track(vec) - 1;
-        	if (this->move (vec, 0.6, 0, 0) == false) {
-				ROS_ERROR("Move function caused error");
-				as_approach_door.setAborted(result_);
-				return;
-			}
         	msn_srv->unlock();
-			result_.success = true;
-			as_approach_door.setSucceeded(result_);
-			return;
+        	result_.middle_pass = true;
+            as_approach_door.setSucceeded(result_);
+            return;
+            return;
         }
 
         pcl::PointXYZ pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
@@ -416,7 +410,7 @@ public:
 			        ROS_INFO("Corr angle %d | %d", this->on_left_side && pass_point_ang < 0, !this->on_left_side && pass_point_ang > 0);
 			        if ((this->on_left_side && pass_point_ang < 0) ||
 			           (!this->on_left_side && pass_point_ang > 0)) {
-                        if (fabs(pass_pos_ang_diff) < rot_epsilon) {
+                        if (fabs(pass_pos_ang_diff) < rot_epsilon || pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
                             ROS_INFO("Done");
                             msn_srv->unlock();
                             break;
@@ -446,6 +440,7 @@ public:
 			    double vel = this->on_left_side ? -0.4 : 0.4;
 			    msn_srv->move_parallel(vel);
 				ROS_ERROR("Pass_line wasn't found");
+				break;
 			}
 			msn_srv->unlock();
 			r.sleep();
@@ -463,20 +458,14 @@ public:
                                                                apf->passages.at(0).cmd_left;
         pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
                                               apf->passages.at(0).cmd_rght;
-        if (pass_line_op != NULL && !isnan(pass_point_cmd_op.x) && !isnan(pass_point_cmd_op.y) &&
-            pass_line    != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
+        if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
             ROS_INFO("Try full_pass");
-            double scalar_mul = pass_line_op->ldir_vec.cmd.x * pass_line->ldir_vec.cmd.x +
-                                pass_line_op->ldir_vec.cmd.y * pass_line->ldir_vec.cmd.y;
-            ROS_INFO("scal_mul %f", scalar_mul);
-            if (fabs(scalar_mul) < move_epsilon) {
                 ROS_INFO("Use full_pass");
                 loc_srv->track_wall(pass_line_op);
                 msn_srv->unlock();
-                result_.full_pass = true;
+                result_.ortog_pass = true;
                 as_approach_door.setSucceeded(result_);
                 return;
-            }
         }
         ROS_INFO("DEBUG 6");
         msn_srv->unlock();
@@ -526,10 +515,12 @@ public:
         vec.y = (-pass_point_cmd.x * side_sign+ pass_point_cmd.y) / sqrt(1.7); // WTF? why '-'
 
         map_srv->track(vec) - 1;
+        ROS_INFO("Vec1: %f\t %f", vec.x, vec.y);
         int pass_pos_num  = map_srv->track(pcl::PointXYZ (pass_point_cmd.x, pass_point_cmd.y, 0)) - 1;
         int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
 
-        if (this->move (vec, 0.4, 70, 0.5) == false) {
+        double rot_vel1 = this->on_left_side ? 0.5 : -0.5;
+        if (this->move (vec, 0.4, 70, rot_vel1) == false) {
             ROS_ERROR("Move function caused error");
             as_pass_door.setAborted(result_);
             return;
@@ -539,8 +530,6 @@ public:
         //vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_pos_num).x - map_srv->tracked_points.at(start_pos_num).x,
         //                     map_srv->tracked_points.at(pass_pos_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
         // 70 and 40 angle
-
-        ROS_INFO("Vec2: %f\t %f", vec.x, vec.y);
 
         map_srv->track(vec);
 
@@ -561,9 +550,9 @@ public:
         vec.y = pass_vec.y;
 
         map_srv->track(vec);
-
-
-        if (this->move (vec, 0.5, 50, 0.5) == false) {
+        ROS_INFO("Vec2: %f\t %f", vec.x, vec.y);
+        double rot_vel2 = this->on_left_side ? 0.5 : -0.5;
+        if (this->move (vec, 0.5, 30, rot_vel2) == false) {
             ROS_ERROR("Move function caused error");
             as_pass_door.setAborted(result_);
             return;
@@ -600,7 +589,7 @@ public:
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
             msn_srv->move_parallel(0);
-            if (loc_srv->get_ref_wall()->distance - target_dist <= move_epsilon)
+            if (fabs(loc_srv->get_ref_wall()->distance - target_dist) <= move_epsilon)
                 break;
             msn_srv->unlock();
             r.sleep();
@@ -612,6 +601,32 @@ public:
         return;
     }
 
+    void middlePassCB(const action_server::MiddlePassGoalConstPtr  &goal) {
+        action_server::MiddlePassResult result_;
+        msn_srv->lock();
+
+        pcl::PointXYZ pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
+                                                               apf->passages.at(0).kin_left;
+        Line_param *pass_line = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
+        double offset_x = 0, offset_y = 0;
+        if (pass_line != NULL) {
+            offset_x = pass_line->fdir_vec.cmd.x * target_dist / 2;
+            offset_y = pass_line->fdir_vec.cmd.y * target_dist / 2;
+        }
+        int tmp = map_srv->track(pcl::PointXYZ(offset_x, offset_y, 0)) - 1;
+        pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x - offset_x,
+                           apf->passages.at(0).cmd_middle.y - offset_y, 0);
+        tmp = map_srv->track(vec) - 1;
+        if (this->move (vec, 0.6, 0, 0) == false) {
+            ROS_ERROR("Move function caused error");
+            as_middle_pass.setAborted(result_);
+            return;
+        }
+
+        msn_srv->unlock();
+        as_middle_pass.setSucceeded(result_);
+        return;
+    }
 private:
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.
     actionlib::SimpleActionServer<action_server::MoveAlongAction>    as_move_along;
@@ -620,7 +635,7 @@ private:
     actionlib::SimpleActionServer<action_server::PassDoorAction>     as_pass_door;
     actionlib::SimpleActionServer<action_server::SwitchSideAction>   as_switch_side;
     actionlib::SimpleActionServer<action_server::ApproachWallAction> as_approach_wall;
-
+    actionlib::SimpleActionServer<action_server::MiddlePassAction>   as_middle_pass;
     //
     bool on_left_side; // Reference side of the wall
 };
@@ -729,6 +744,7 @@ int main( int argc, char** argv )
     msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
     map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer (nh, "/ground_truth_to_tf/pose"));
     apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
+    pt        = boost::shared_ptr<Passage_type>   (new Passage_type ());
 
     msn_srv->set_pid_ang(ang_P, ang_I, ang_D);
     msn_srv->set_pid_vel(vel_P, vel_I, vel_D);
