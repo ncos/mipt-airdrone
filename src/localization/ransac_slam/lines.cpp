@@ -94,7 +94,7 @@ void Line_param::normalize(pcl::ModelCoefficients::Ptr coefficients)
 // *****************************************
 //              Line map
 // *****************************************
-Line_map::Line_map () : eps(20), derr (0.5)
+Line_map::Line_map ()
 {
     this->coefficients = pcl::ModelCoefficients::Ptr (new pcl::ModelCoefficients ());
     this->inliers      = pcl::PointIndices::Ptr      (new pcl::PointIndices ());
@@ -140,6 +140,7 @@ void Line_map::renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 };
 
 
+
 Line_param *Line_map::get_best_fit (double angle, double distance)
 {
 	int id = 0;
@@ -156,23 +157,39 @@ Line_param *Line_map::get_best_fit (double angle, double distance)
 };
 
 
-Line_param *Line_map::get_closest (double angle)
+Line_param *get_best_fit_a (double angle, double eps);
+Line_param *get_best_fit_d (double distance, double eps);
+
+
+
+
+
+
+
+void Line_map::filter_off_and_sort_a (double angle,    double eps, std::vector<Line_param> &l)
 {
-	int id = 0;
-	double distance = 10000;
-	for (int i = 0; i < lines.size(); i++)
-	{
-		if (fabs(lines.at(i).angle - angle) < eps)
-		{
-			double newdistance = 	lines.at(i).distance;
-			if (newdistance < distance) { id = i; distance = newdistance; }
-		}
-	}
-	if (fabs(lines.at(id).angle - angle) > eps ) return NULL;
-	return &lines.at(id);
+
 };
 
+void Line_map::filter_off_and_sort_d (double distance, double eps, std::vector<Line_param> &l)
+{
 
+};
+
+double Line_map::get_error (Line_param &l1, Line_param &l2)
+{
+
+};
+
+double Line_map::get_error (Line_param &l, double angle, double distance)
+{
+
+};
+
+double Line_map::get_error (double delta1, double delta2)
+{
+
+};
 
 // *****************************************
 //              Location server
@@ -200,7 +217,7 @@ void LocationServer::track_wall(Line_param *wall)
 
 void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
-    if (cloud->points.size() < 10) {
+    if (cloud->points.size() < min_points_in_cloud) {
         ROS_WARN("The cloud is empty. Location server is unable to provide pose estimation. Skipping...");
         if (this->ref_wall != NULL) {
             this->ref_wall->found = false;

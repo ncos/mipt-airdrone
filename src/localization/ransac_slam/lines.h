@@ -18,6 +18,7 @@
 
 
 extern int min_points_in_line;
+extern int min_points_in_cloud;
 
 class VectorMath
 {
@@ -85,23 +86,22 @@ private:
 
 public:
 	std::vector<Line_param> lines;
-	double eps, derr;
 
 	Line_map ();
 
 	void renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
 	Line_param *get_best_fit (double angle, double distance);
-	Line_param *get_closest  (double angle);
+	Line_param *get_best_fit_a (double angle, double eps);
+    Line_param *get_best_fit_d (double distance, double eps);
+    void filter_off_and_sort_a (double angle,    double eps, std::vector<Line_param> &l);
+    void filter_off_and_sort_d (double distance, double eps, std::vector<Line_param> &l);
+
+private:
+    double get_error (Line_param &l1, Line_param &l2);
+    double get_error (Line_param &l, double angle, double distance);
+    double get_error (double delta1, double delta2);
 };
 
-
-struct stMemory
-{
-    double angle;
-    double distance;
-    stMemory () : angle(0), distance(0)
-    {}
-};
 
 
 class LocationServer
@@ -111,14 +111,13 @@ public:
     bool lost_ref_wall;
 private:
     double yaw;
-    stMemory stm;
     Line_param *ref_wall, *corner_wall_left, *corner_wall_rght;
 
 public:
     LocationServer () : corner_wall_left(NULL), corner_wall_rght(NULL),
                         lost_ref_wall(true), ref_wall(NULL), yaw(0) {};
-    double get_yaw()        {return this->yaw; }
-    void   set_zero_yaw()   {this->yaw = 0.0;  }
+    double get_yaw()   {return this->yaw; }
+    void   reset_yaw() {this->yaw = 0.0; }
     void   track_wall           (Line_param *wall);
     Line_param  *get_ref_wall() {return this->ref_wall; }
     Line_param  *get_crn_wall_left() {return this->corner_wall_left; }
@@ -126,6 +125,7 @@ public:
     void   spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud);
     bool   obstacle_detected_left ();
     bool   obstacle_detected_rght ();
+
 };
 
 
