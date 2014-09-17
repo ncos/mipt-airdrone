@@ -24,6 +24,22 @@ extern double apf_min_angl;
 extern double apf_max_angl;
 extern double apf_better_q;
 
+enum PassageType {
+    ortogonal, parrallel, single_wall, undefined, non_valid
+};
+
+struct Passage_type
+{
+    int type;
+    bool pass_exist;
+    bool closest_exist;
+    bool opposite_exist;
+    bool middle_exist;
+    Passage_type () : type(non_valid), pass_exist (false), closest_exist(false),
+                      opposite_exist(false), middle_exist(false){}
+    int recognize (std::vector<Passage> pass, bool on_left_side);
+
+};
 
 struct Passage
 {

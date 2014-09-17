@@ -56,11 +56,9 @@ double apf_min_angl    = 0.0;
 double apf_max_angl    = 0.0;
 double apf_better_q    = 0.0;
 double move_epsilon    = 0.0;
-
-
-double rot_epsilon = 5;
-double wall_ang_eps = 5;
-double angle_to_pass = 30;
+double rot_epsilon     = 0.0;
+double wall_ang_eps    = 0.0;
+double angle_to_pass   = 0.0;
 
 
 class ActionServer
@@ -343,9 +341,9 @@ public:
 
         pcl::PointXYZ pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                                apf->passages.at(0).kin_left;
-        // Enable for parallel walls
-/*
-        if (!isnan(apf->passages.at(0).cmd_middle.x) && !isnan(apf->passages.at(0).cmd_middle.y)) {
+
+        if (!isnan(apf->passages.at(0).cmd_middle.x) && !isnan(apf->passages.at(0).cmd_middle.y) &&
+            apf->passages.at(0).left_ang * apf->passages.at(0).rght_ang < 0) {
         	ROS_INFO("Middle pass");
         	Line_param *pass_line = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
         	double offset_x = 0, offset_y = 0;
@@ -367,7 +365,7 @@ public:
 			as_approach_door.setSucceeded(result_);
 			return;
         }
-*/
+
         pcl::PointXYZ pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
                                                             apf->passages.at(0).cmd_rght;
         if (isnan(pass_point_cmd.x) || isnan(pass_point_cmd.y)){
@@ -408,150 +406,44 @@ public:
             double vel = this->on_left_side ? -0.4 : 0.4;
 			pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
 			//pass_pos_num = map_srv->track(pcl::PointXYZ(pass_point_cmd.x, pass_point_cmd.y, 0)) - 1;
+            msn_srv->ref_ang  = target_angl;
+            msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
-			    msn_srv->ref_ang  = target_angl;
-			    msn_srv->ref_dist = target_dist;
+			    ROS_INFO("Pass found");
 			    double pass_pos_ang_diff = fabs(pass_point_ang) - angle_to_pass;
-			    ROS_INFO("%f | %f | %f", pass_pos_ang_diff, pass_point_ang, fabs(pass_point_ang));
-			    if (fabs(pass_pos_ang_diff) < rot_epsilon) {
-			        msn_srv->unlock();
-			        break;
-			    }
-			    else {
-			        if (pass_pos_ang_diff > 0) {
-			            ROS_INFO("Forw");
-			            msn_srv->move_parallel(-vel);
-			        }
+			    ROS_INFO("%f | %f | %f", pass_pos_ang_diff, pass_point_ang, loc_srv->get_ref_wall()->angle);
+			    if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
+			        ROS_INFO("Corr angle %d | %d", this->on_left_side && pass_point_ang < 0, !this->on_left_side && pass_point_ang > 0);
+			        if ((this->on_left_side && pass_point_ang < 0) ||
+			           (!this->on_left_side && pass_point_ang > 0)) {
+                        if (fabs(pass_pos_ang_diff) < rot_epsilon) {
+                            ROS_INFO("Done");
+                            msn_srv->unlock();
+                            break;
+                        }
+                        else {
+                            if (pass_pos_ang_diff < 0) {
+                                ROS_INFO("Forw");
+                                msn_srv->move_parallel(vel);
+                            }
+                            else {
+                                ROS_INFO("Backw");
+                                msn_srv->move_parallel(-vel);
+                            }
+                        }
+                    }
 			        else {
-			            ROS_INFO("Backw");
+			            ROS_INFO("Angle to pass");
 			            msn_srv->move_parallel(vel);
 			        }
 			    }
-			    /*
-			    double offset_x = pass_line->ldir_vec.cmd.x * target_dist / 1.8;
-			    double offset_y = pass_line->ldir_vec.cmd.y * target_dist / 1.8;
-			    if (this->on_left_side) {
-			        offset_x *= -1;
-			        offset_y *= -1;
-			    }
-			    map_srv->track(pcl::PointXYZ((pass_point_cmd.x - pass_line->fdir_vec.cmd.x * target_dist + offset_x),
-			                                 (pass_point_cmd.y - pass_line->fdir_vec.cmd.y * target_dist + offset_y), 0));
-
-
-			    msn_srv->ref_ang  = target_angl;
-			    msn_srv->ref_dist = target_dist;
-
-			    ROS_INFO("%f | %f ", loc_srv->get_ref_wall()->distance,
-			                         loc_srv->get_ref_wall()->angle);
-
-			    if (fabs(pass_point_ang) < 10) {
-			        ROS_INFO("DEBUG 2");
-			        msn_srv->move_parallel(-vel);
-			    }
-			    if (fabs(loc_srv->get_ref_wall()->distance - target_dist) > move_epsilon ||
-			        fabs(loc_srv->get_ref_wall()->angle - target_angl) > rot_epsilon) {
+			    else {
+			        ROS_INFO("Change angle");
 			        msn_srv->move_parallel(0);
-			        ROS_INFO("DEBUG 3");
 			    }
-			    else {
-			        double pass_point_dist = sqrt (pass_point_cmd.x * pass_point_cmd.x +
-			                                       pass_point_cmd.y * pass_point_cmd.y) *
-			                                 fabs(sin (pass_point_ang * M_PI / 180)) - target_dist / 1.8;
-			        ROS_INFO("DEBUG 4");
-			        ROS_INFO("%f | %f | %f | %f | %f", pass_point_dist, pass_point_dist + target_dist / 1.8, pass_point_ang,
-			                fabs(sin (pass_point_ang * M_PI / 180)),
-			                sqrt (pass_point_cmd.x * pass_point_cmd.x + pass_point_cmd.y * pass_point_cmd.y));
-			        if (fabs(pass_point_dist) <= move_epsilon) {
-			            ROS_INFO("DEBUG 5");
-			            msn_srv->unlock();
-			            break;
-			        }
-			        else if (pass_point_dist > 0) {
-			            msn_srv->move_parallel(-vel);
-			            ROS_INFO("DEBUG 6");
-			        }
-			        else {
-			            msn_srv->move_parallel(vel);
-			            ROS_INFO("DEBUG 7");
-			        }
-			    }
-
-			    /*
-			   msn_srv->unlock();
-			   while (true) {
-			   msn_srv->lock();
-			   msn_srv->track();
-			   if (apf->passages.size() > 0 &&
-			   fabs(apf->passages.at(0).left_ang) < wall_ang_eps) {
-			   msn_srv->unlock();
-			   break;
-			   }
-			   if (fabs(loc_srv->get_ref_wall()->angle - msn_srv->ref_ang) < wall_ang_eps ) {
-			   msn_srv->ref_ang = 0;
-			   if (loc_srv->get_ref_wall()->distance <= target_dist) {
-			   msn_srv->ref_dist = target_dist;
-			   msn_srv->move_parallel(-0.6);
-			   }
-			   else {
-			   msn_srv->ref_dist = target_dist;
-			   msn_srv->move_parallel(0);
-			   }
-			   }
-			   else {
-			   msn_srv->buf_cmd.angular.z += -0.5;
-			   }
-			   msn_srv->unlock();
-			   }
-			   msn_srv->lock();
-			   */
-			    /*
-			    double offset_x = pass_line->ldir_vec.cmd.x * target_dist / 2;
-			    double offset_y = pass_line->ldir_vec.cmd.x * target_dist / 2;
-
-			    if (this->on_left_side) {
-			        offset_x *= -1;
-			        offset_y *= -1;
-			    }
-
-			    davinci->draw_vec(pass_line->ldir_vec.kin.x, pass_line->ldir_vec.kin.y, 5555, VIOLET);
-			    davinci->draw_vec(pass_line->fdir_vec.kin.x, pass_line->fdir_vec.kin.y, 5556, CYAN);
-				davinci->draw_line(pass_line, 5557, RED);
-			    vec = pcl::PointXYZ((pass_point_cmd.x - pass_line->fdir_vec.cmd.x * target_dist + offset_x) / 2,
-									(pass_point_cmd.y - pass_line->fdir_vec.cmd.y * target_dist + offset_y) / 2, 0);
-				map_srv->track(pcl::PointXYZ(pass_point_cmd.x - pass_line->fdir_vec.cmd.x,
-				                             pass_point_cmd.y - pass_line->fdir_vec.cmd.y, 0));
-				map_srv->track(pcl::PointXYZ(pass_point_cmd.x + offset_x / target_dist,
-				                             pass_point_cmd.y + offset_y / target_dist, 0));
-				ROS_INFO("DEBUG 2");
-				//start_pos_num = map_srv->track(vec) - 1;
-				ROS_INFO("DEBUG 3");
-				//msn_srv->unlock();
-				if (this->move (vec, 0.4, 0, 0) == false) {
-					ROS_ERROR("Move function caused error");
-					as_approach_door.setAborted(result_);
-					return;
-				}
-				//msn_srv->lock();
-				ROS_INFO("DEBUG 4");
-				vec_len = sqrt(vec.x * vec.x + vec.y*vec.y);
-				if (!apf->passages.empty()) {
-                    pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
-                                                          apf->passages.at(0).cmd_rght;
-                    ROS_INFO("DEBUG 4A");
-                    pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
-                                                          apf->passages.at(0).kin_rght;
-				}
-				else
-				    break;
-	            ROS_INFO("DEBUG 4B");
-	            //int tmp = 0;
-	            //scanf("%d", &tmp);
-	             */
 			}
 			else {
-			    double vel = 0.4;
-                if (this->on_left_side)
-                    vel *= -1;
+			    double vel = this->on_left_side ? -0.4 : 0.4;
 			    msn_srv->move_parallel(vel);
 				ROS_ERROR("Pass_line wasn't found");
 			}
@@ -562,15 +454,29 @@ public:
         ROS_INFO("DEBUG 5");
         pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                  apf->passages.at(0).kin_left;
-        pass_line = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
+        Line_param *pass_line_op = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
+        pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
+                                              apf->passages.at(0).kin_rght;
+        pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
+
         pcl::PointXYZ pass_point_cmd_op = this->on_left_side ? apf->passages.at(0).cmd_rght :
                                                                apf->passages.at(0).cmd_left;
-        if (pass_line != NULL && !isnan(pass_point_cmd_op.x) && !isnan(pass_point_cmd_op.y)) {
-            loc_srv->track_wall(pass_line);
-            msn_srv->unlock();
-            result_.full_pass = true;
-            as_approach_door.setSucceeded(result_);
-            return;
+        pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
+                                              apf->passages.at(0).cmd_rght;
+        if (pass_line_op != NULL && !isnan(pass_point_cmd_op.x) && !isnan(pass_point_cmd_op.y) &&
+            pass_line    != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
+            ROS_INFO("Try full_pass");
+            double scalar_mul = pass_line_op->ldir_vec.cmd.x * pass_line->ldir_vec.cmd.x +
+                                pass_line_op->ldir_vec.cmd.y * pass_line->ldir_vec.cmd.y;
+            ROS_INFO("scal_mul %f", scalar_mul);
+            if (fabs(scalar_mul) < move_epsilon) {
+                ROS_INFO("Use full_pass");
+                loc_srv->track_wall(pass_line_op);
+                msn_srv->unlock();
+                result_.full_pass = true;
+                as_approach_door.setSucceeded(result_);
+                return;
+            }
         }
         ROS_INFO("DEBUG 6");
         msn_srv->unlock();
@@ -615,15 +521,15 @@ public:
 		// Start action
         ROS_INFO("PD Stage #1");
         pcl::PointXYZ vec (0, 0, 0);
-
-        vec.x = ( pass_point_cmd.x + pass_point_cmd.y) / sqrt(1.7);
-        vec.y = (-pass_point_cmd.x + pass_point_cmd.y) / sqrt(1.7); // WTF? why '-'
+        double side_sign = (this->on_left_side) ? 1 : -1;
+        vec.x = ( pass_point_cmd.x + pass_point_cmd.y * side_sign) / sqrt(1.7);
+        vec.y = (-pass_point_cmd.x * side_sign+ pass_point_cmd.y) / sqrt(1.7); // WTF? why '-'
 
         map_srv->track(vec) - 1;
         int pass_pos_num  = map_srv->track(pcl::PointXYZ (pass_point_cmd.x, pass_point_cmd.y, 0)) - 1;
         int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
 
-        if (this->move (vec, 0.4, 55, 0.5) == false) {
+        if (this->move (vec, 0.4, 70, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_pass_door.setAborted(result_);
             return;
@@ -657,7 +563,7 @@ public:
         map_srv->track(vec);
 
 
-        if (this->move (vec, 0.5, 25, 0.5) == false) {
+        if (this->move (vec, 0.5, 50, 0.5) == false) {
             ROS_ERROR("Move function caused error");
             as_pass_door.setAborted(result_);
             return;
@@ -805,6 +711,9 @@ int main( int argc, char** argv )
     if (!nh.getParam("apf_max_angl",  apf_max_angl))  ROS_ERROR("Failed to get param 'apf_max_angl'");
     if (!nh.getParam("apf_better_q",  apf_better_q))  ROS_ERROR("Failed to get param 'apf_better_q'");
     if (!nh.getParam("move_epsilon",  move_epsilon))  ROS_ERROR("Failed to get param 'move_epsilon'");
+    if (!nh.getParam("angle_to_pass", angle_to_pass)) ROS_ERROR("Failed to get param 'angle_to_pass'");
+    if (!nh.getParam("rot_epsilon",   rot_epsilon))   ROS_ERROR("Failed to get param 'rot_epsilon'");
+    if (!nh.getParam("wall_ang_eps",  wall_ang_eps))  ROS_ERROR("Failed to get param 'wall_ang_eps'");
 
 
     input_topic      = nh.resolveName("/shrinker/depth/laser_points");

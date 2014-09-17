@@ -1,6 +1,78 @@
 #include "passage_finder.h"
 
+//              Passage type recognition
 
+int Passage_type::recognize (std::vector<Passage> pass, bool on_left_side) {
+    loc_srv->lock();
+    this->type = non_valid;
+    this->pass_exist = false;
+    this->closest_exist = false;
+    this->opposite_exist = false;
+    this->middle_exist = false;
+
+    if (pass.empty()) {
+        loc_srv->unlock();
+        return non_valid;
+    }
+
+    pcl::PointXYZ pass_point_cmd = on_left_side ? pass.at(0).cmd_left :
+                                                  pass.at(0).cmd_rght;
+    pcl::PointXYZ pass_point_cmd_op = on_left_side ? pass.at(0).cmd_rght :
+                                                     pass.at(0).cmd_left;
+    pcl::PointXYZ pass_point_kin = on_left_side ? pass.at(0).kin_left :
+                                                  pass.at(0).kin_rght;
+    pcl::PointXYZ pass_point_kin_op = on_left_side ? pass.at(0).kin_rght :
+                                                     pass.at(0).kin_left;
+    pcl::PointXYZ pass_point_middle = pass.at(0).cmd_middle;
+    double pass_point_ang = on_left_side ? pass.at(0).left_ang :
+                                           pass.at(0).rght_ang;
+    Line_param *pass_line    = apf->get_best_line(pass_point_kin,    loc_srv->lm);
+    Line_param *pass_line_op = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
+
+    double scalar_mul = NAN;
+    if (pass_line != NULL && pass_line_op != NULL)
+        scalar_mul = pass_line_op->ldir_vec.cmd.x * pass_line->ldir_vec.cmd.x +
+                     pass_line_op->ldir_vec.cmd.y * pass_line->ldir_vec.cmd.y;
+
+    if(pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
+        this->pass_exist = true;
+        this->closest_exist = true;
+    }
+
+    if(pass_line_op != NULL && !isnan(pass_point_cmd_op.x) && !isnan(pass_point_cmd_op.y)) {
+        this->pass_exist = true;
+        this->opposite_exist = true;
+    }
+
+    if(!isnan(pass_point_middle.x) && !isnan(pass_point_middle.y)) {
+        this->pass_exist = true;
+        this->middle_exist = true;
+    }
+
+    if ( this->pass_exist   &&  this->closest_exist &&
+        !this->middle_exist && !this->opposite_exist) {
+        this->type = single_wall;
+        loc_srv->unlock();
+        return single_wall;
+    }
+
+    if (this->pass_exist && this->closest_exist && this->opposite_exist &&
+        !isnan(scalar_mul) && fabs(scalar_mul) < move_epsilon) {
+        this->type = ortogonal;
+        loc_srv->unlock();
+        return ortogonal;
+    }
+
+    if (this->pass_exist && this->middle_exist &&
+        !isnan(scalar_mul) && fabs(scalar_mul - 1) < move_epsilon) {
+        this->type = parrallel;
+        loc_srv->unlock();
+        return parrallel;
+    }
+
+    this->type = undefined;
+    return undefined;
+}
 
 // *****************************************
 //              Advanced Passage Finder
