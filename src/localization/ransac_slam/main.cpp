@@ -1,67 +1,39 @@
 #include <vector>
 #include <math.h>
-#include <algorithm>    // std::sort
+#include <algorithm> // std::sort
 
 #include <ros/ros.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/common/common_headers.h>
 #include <pcl/filters/passthrough.h>
-#include <tf/transform_listener.h>
+#include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud.h>
-#include <tf/message_filter.h>
 #include <message_filters/subscriber.h>
 #include <laser_geometry/laser_geometry.h>
+#include <tf/transform_listener.h>
+#include <tf/transform_broadcaster.h>
+#include <tf/message_filter.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 
 #include "lines.h"
 #include "da_vinci.h" // Draw in Rviz
 
 
-std::string cloud_topic;
+
+// Parameters from param.yaml
+int min_points_in_cloud;
+int min_points_in_line;
+std::string input_cloud_topic;
+std::string output_cloud_topic;
+int shrink_order;
+std::string output_cloud_shrinked_topic;
 std::string visualization_topic; // Rviz markers
-unsigned long long int min_points_in_cloud;
-
-class LaserScanProcessor
-{
-private:
-    ros::NodeHandle n_;
-    laser_geometry::LaserProjection projector_;
-    tf::TransformListener listener_;
-    message_filters::Subscriber<sensor_msgs::LaserScan> laser_sub_;
-    tf::MessageFilter<sensor_msgs::LaserScan> laser_notifier_;
-    ros::Publisher scan_pub_;
-    LocationServer loc_srv;
-    DaVinci davinci;
-
-public:
-    LaserScanProcessor(ros::NodeHandle n) : n_(n), laser_sub_(n,"/sensors/kinect/scan", 10), davinci(n, visualization_topic),
-                                            laser_notifier_(laser_sub_, listener_, "base_link", 10) {
-        this->laser_notifier_.registerCallback(boost::bind(&LaserScanProcessor::scanCallback, this, _1));
-        this->laser_notifier_.setTolerance(ros::Duration(0.01));
-        this->scan_pub_ = n_.advertise<sensor_msgs::PointCloud>("/my_cloud", 1);
-    }
-
-private:
-    void scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan_in) {
-        std::string input_frame = scan_in->header.frame_id;
-        sensor_msgs::PointCloud cloud;
-        try {
-            projector_.transformLaserScanToPointCloud("base_link", *scan_in, cloud, listener_);
-        }
-        catch (tf::TransformException& e) {
-            std::cout << e.what();
-            return;
-        }
-
-        this->davinci.draw_line(input_frame, loc_srv.get_crn_wall_left(), 1, BLUE);
-        this->davinci.draw_line(input_frame, loc_srv.get_ref_wall(),      0, GREEN);
-        this->davinci.draw_line(input_frame, loc_srv.get_crn_wall_rght(), 2, BLUE);
-
-        // Do something with cloud.
-
-        scan_pub_.publish(cloud);
-    }
-};
+bool publish_clouds;
+std::string fixed_frame;
+std::string base_frame;
+std::string output_frame;
+bool publish_tf;
 
 
 class CloudProcessor
@@ -69,15 +41,22 @@ class CloudProcessor
 private:
     ros::NodeHandle n_;
     pcl::PointCloud<pcl::PointXYZ>::Ptr laser_cloud;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr laser_cloud_shrinked;
     ros::Subscriber cloud_sub;
-    tf::TransformListener listener_;
+    ros::Publisher  pub_laser_cloud;
+    ros::Publisher  pub_laser_cloud_shrinked;
+    tf::TransformListener tf_listener;
+    tf::TransformBroadcaster tf_broadcaster;
     LocationServer loc_srv;
     DaVinci davinci;
 
 public:
     CloudProcessor(ros::NodeHandle n) : n_(n), davinci(n, visualization_topic),
-                                        laser_cloud(new pcl::PointCloud<pcl::PointXYZ>) {
-        this->cloud_sub = n.subscribe<pcl::PointCloud<pcl::PointXYZ> > (cloud_topic, 1, &CloudProcessor::rgbdCallback, this);
+                                        laser_cloud(new pcl::PointCloud<pcl::PointXYZ>),
+                                        laser_cloud_shrinked(new pcl::PointCloud<pcl::PointXYZ>) {
+        this->cloud_sub = n.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_cloud_topic, 1, &CloudProcessor::rgbdCallback, this);
+        this->pub_laser_cloud = n.advertise<pcl::PointCloud<pcl::PointXYZ> > (output_cloud_topic, 1);
+        this->pub_laser_cloud_shrinked = n.advertise<pcl::PointCloud<pcl::PointXYZ> > (output_cloud_shrinked_topic, 1);
     }
 
 private:
@@ -89,18 +68,30 @@ private:
         }
     } cmp_class;
 
+    void update_shrinked_cloud(unsigned int order) {
+        this->laser_cloud_shrinked->clear();
+        if (this->laser_cloud->points.size() == 0) return;
+
+        for (int i = 0; i < this->laser_cloud->points.size(); ++i) {
+            if (i % order == 0) {
+                this->laser_cloud_shrinked->push_back(this->laser_cloud->points.at(i));
+            }
+        }
+        this->laser_cloud_shrinked->header = this->laser_cloud->header;
+    }
+
     void rgbdCallback (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud) {
         if(cloud->points.size() < min_points_in_cloud) {
             ROS_ERROR("rgbdCallback: The input cloud size is %lu points! \
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
 
-        std::string input_frame = cloud->header.frame_id;
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
         pass.setFilterLimits (-0.3, -0.2);  // (-0.3, -0.2)
         pass.filter (*this->laser_cloud);
+        this->laser_cloud->header = cloud->header;
 
         for (int i = 0; i < this->laser_cloud->points.size(); i++) {
             this->laser_cloud->points[i].y = 0;
@@ -111,16 +102,42 @@ private:
             ROS_ERROR("rgbdCallback: The cloud size after processing is %lu points! \
                       (this is too little to provide an adequate position estimation)", this->laser_cloud->points.size());
         }
-
+        this->update_shrinked_cloud(shrink_order);
         this->loc_srv.spin_once(this->laser_cloud);
+        this->draw_lines();
 
-        ROS_INFO("angle: %f\t range: %f", loc_srv.get_ref_wall()->angle, loc_srv.get_ref_wall()->distance);
+        tf::Transform motion = this->estimate_motion();
 
-        //input_frame = "kinect_link";
-        this->davinci.draw_line(input_frame, loc_srv.get_crn_wall_left(), 10, BLUE);
-        this->davinci.draw_line(input_frame, loc_srv.get_ref_wall(),      11, GREEN);
-        this->davinci.draw_line(input_frame, loc_srv.get_crn_wall_rght(), 12, BLUE);
+        if (publish_clouds) {
+            this->pub_laser_cloud.publish(this->laser_cloud);
+            this->pub_laser_cloud_shrinked.publish(this->laser_cloud_shrinked);
+        }
     }
+
+    void draw_lines() {
+        this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_left(), 10, BLUE);
+        this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_ref_wall(),      11, GREEN);
+        this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_rght(), 12, BLUE);
+        for (int i = 0; i < loc_srv.lm.lines.size(); ++i) {
+            if (&loc_srv.lm.lines.at(i) == loc_srv.get_crn_wall_left()) continue;
+            if (&loc_srv.lm.lines.at(i) == loc_srv.get_crn_wall_rght()) continue;
+            if (&loc_srv.lm.lines.at(i) == loc_srv.get_ref_wall())      continue;
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &loc_srv.lm.lines.at(i), 101 + i, CYAN);
+        }
+    }
+
+    tf::Transform estimate_motion() {
+        tf::Transform motion;
+        motion.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
+
+        tf::Quaternion q = tf::createQuaternionFromRPY(0, 0, 0);
+        motion.setRotation(q);
+        this->tf_broadcaster.sendTransform(tf::StampedTransform(motion, ros::Time::now(), fixed_frame, output_frame));
+
+        return motion;
+    }
+
+
 };
 
 
@@ -135,9 +152,19 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "ransac_slam");
     ros::NodeHandle nh;
 
-    cloud_topic = "/sensors/kinect/depth/points";
-    visualization_topic = "visualization/rviz_markers";
-    min_points_in_cloud = 10;
+    if (!nh.getParam("ransac_slam/min_points_in_line", min_points_in_line)) min_points_in_line = 50;
+    if (!nh.getParam("ransac_slam/min_points_in_cloud", min_points_in_cloud)) min_points_in_cloud = 10;
+    if (!nh.getParam("ransac_slam/input_cloud_topic", input_cloud_topic)) input_cloud_topic = "/sensors/kinect/depth/points";
+    if (!nh.getParam("ransac_slam/output_cloud_topic", output_cloud_topic)) output_cloud_topic = "/ransac_slam/flat_cloud";
+    if (!nh.getParam("ransac_slam/shrink_order", shrink_order)) shrink_order = 50;
+    if (!nh.getParam("ransac_slam/output_cloud_shrinked_topic", output_cloud_shrinked_topic)) output_cloud_shrinked_topic = "/ransac_slam/shrinked_flat_cloud";
+    if (!nh.getParam("ransac_slam/visualization_topic", visualization_topic)) visualization_topic = "/ransac_slam/markers";
+    if (!nh.getParam("ransac_slam/publish_clouds", publish_clouds)) publish_clouds = true;
+    if (!nh.getParam("ransac_slam/fixed_frame", fixed_frame)) fixed_frame = "/odom";
+    if (!nh.getParam("ransac_slam/base_frame", base_frame)) base_frame = "/base_stabilized";
+    if (!nh.getParam("ransac_slam/output_frame", output_frame)) output_frame = "/ransac_slam/tf_output";
+    if (!nh.getParam("ransac_slam/publish_tf", publish_tf)) publish_tf = true;
+
 
     CloudProcessor cp(nh);
 

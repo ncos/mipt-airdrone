@@ -17,7 +17,7 @@
 #include <geometry_msgs/PoseStamped.h>
 
 
-#define MIN_POINTS_IN_LINE 300
+extern int min_points_in_line;
 
 class VectorMath
 {

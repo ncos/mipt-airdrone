@@ -116,6 +116,39 @@ void DaVinci::draw_line (std::string frame, Line_param *lp, int id, POINT_COLOR 
 };
 
 
+void DaVinci::draw_line (std_msgs::Header header, Line_param *lp, int id, POINT_COLOR color)
+{
+    if(lp == NULL) return;
+
+    visualization_msgs::Marker marker;
+    marker.header = header;
+    marker.ns = "line_ns";
+    marker.action = visualization_msgs::Marker::ADD;
+    marker.id = id;
+    marker.type = visualization_msgs::Marker::LINE_LIST;
+    marker.scale.x = 0.02;
+
+    const int length = 40;
+    geometry_msgs::Point p;
+    p.x = lp->fdir_vec.x * lp->distance + lp->ldir_vec.x * length / 2;
+    p.y = lp->fdir_vec.y * lp->distance + lp->ldir_vec.y * length / 2;
+    p.z = lp->fdir_vec.z * lp->distance + lp->ldir_vec.z * length / 2;
+    marker.points.push_back(p);
+
+    p.x = lp->fdir_vec.x * lp->distance - lp->ldir_vec.x * length / 2;
+    p.y = lp->fdir_vec.y * lp->distance - lp->ldir_vec.y * length / 2;
+    p.z = lp->fdir_vec.z * lp->distance - lp->ldir_vec.z * length / 2;
+    marker.points.push_back(p);
+
+    marker.color = this->choose_color(color);
+
+    marker.lifetime = ros::Duration(0.1);
+    marker.header.stamp = ros::Time::now();
+    this->publisher.publish(marker);
+};
+
+
+
 void DaVinci::draw_e_vec(std::string frame, pcl::PointXYZ point, int id, POINT_COLOR color)
 {
     const double len = 1.0;
