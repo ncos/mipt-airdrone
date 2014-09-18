@@ -139,58 +139,79 @@ void Line_map::renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
 	}
 };
 
-
-
-Line_param *Line_map::get_best_fit (double angle, double distance)
+Line_param Line_map::get_best_fit (double angle, double distance)
 {
-	int id = 0;
-	double error = 10000;
-	for (int i = 0; i < lines.size(); i++)
-	{
-		double newerror = 	fabs(lines.at(i).angle - angle) +
-							fabs(lines.at(i).distance - distance);
-		if (newerror < error) { id = i; error = newerror; }
-	}
-	if (fabs(lines.at(id).angle    - angle   ) > eps ) lines.at(id).found = false;
-	if (fabs(lines.at(id).distance - distance) > derr) lines.at(id).found = false;
-	return &lines.at(id);
+    std::vector<Line_param> l;
+    for (int i = 0; i < this->lines.size(); ++i) {
+        l.push_back(lines[i]);
+    }
+    lineCmp line_cmp_class(angle, distance);
+    std::sort (l.begin(), l.end(), line_cmp_class);
+    if (l.size() == 0) return NULL;
+    return l[0];
 };
 
-
-Line_param *get_best_fit_a (double angle, double eps);
-Line_param *get_best_fit_d (double distance, double eps);
-
-
-
-
-
-
-
-void Line_map::filter_off_and_sort_a (double angle,    double eps, std::vector<Line_param> &l)
+Line_param Line_map::get_best_fit_a (double angle)
 {
-
+    std::vector<Line_param> l;
+    this->sort_lines_a(angle, l);
+    if (l.size() == 0) return NULL;
+    return l[0];
 };
 
-void Line_map::filter_off_and_sort_d (double distance, double eps, std::vector<Line_param> &l)
+Line_param Line_map::get_best_fit_d (double distance)
 {
-
+    std::vector<Line_param> l;
+    this->sort_lines_d(distance, l);
+    if (l.size() == 0) return NULL;
+    return l[0];
 };
 
-double Line_map::get_error (Line_param &l1, Line_param &l2)
+void Line_map::sort_lines_a (double angle, std::vector<Line_param> &l)
 {
+    for (int i = 0; i < this->lines.size(); ++i) {
+        l.push_back(lines[i]);
+    }
+    lineCmp line_cmp_class(angle, NAN);
+    std::sort (l.begin(), l.end(), line_cmp_class);
 
 };
 
-double Line_map::get_error (Line_param &l, double angle, double distance)
+void Line_map::sort_lines_d (double distance, std::vector<Line_param> &l)
 {
+    for (int i = 0; i < this->lines.size(); ++i) {
+        l.push_back(lines[i]);
+    }
+    lineCmp line_cmp_class(NAN, distance);
+    std::sort (l.begin(), l.end(), line_cmp_class);
 
 };
 
-double Line_map::get_error (double delta1, double delta2)
+// *****************************************
+//              Line metrics
+// *****************************************
+double LineMetrics::get_error (Line_param &l1, Line_param &l2)
 {
-
+    return LineMetrics::get_error(l1.angle - l2.angle, l1.distance - l2.distance);
 };
 
+double LineMetrics::get_error (Line_param &l, double angle, double distance)
+{
+    return LineMetrics::get_error(l.angle - angle, l.distance - distance);
+};
+
+double LineMetrics::get_error (double delta1, double delta2)
+{
+    double d1 = delta1, d2 = delta2;
+    if (isnan(delta1)) d1 = 0;
+    if (isnan(delta2)) d2 = 0;
+    return sqrt(d1 * d1 + d2 * d2);
+};
+
+// *****************************************
+//              Brute force matcher
+// *****************************************
+BruteForceMatcher
 // *****************************************
 //              Location server
 // *****************************************
@@ -218,16 +239,11 @@ void LocationServer::track_wall(Line_param *wall)
 void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
     if (cloud->points.size() < min_points_in_cloud) {
-        ROS_WARN("The cloud is empty. Location server is unable to provide pose estimation. Skipping...");
-        if (this->ref_wall != NULL) {
-            this->ref_wall->found = false;
-        }
+        ROS_WARN("The cloud is too small (%lu points). Location server is unable \
+                                        to provide reliable pose estimation", cloud->points.size());
         return;
     };
 
-    if (this->ref_wall == NULL) {
-        ROS_WARN("No ref_wall. Using random!");
-    };
 
     this->lm.renew(cloud);
     this->ref_wall = this->lm.get_best_fit(this->stm.angle, this->stm.distance);
@@ -242,20 +258,6 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
 
     this->corner_wall_left = lm.get_closest(this->stm.angle + 90);
     this->corner_wall_rght = lm.get_closest(this->stm.angle - 90);
-};
-
-
-bool LocationServer::obstacle_detected_left ()
-{
-    if (this->corner_wall_left == NULL) return false;
-    return true;
-};
-
-
-bool LocationServer::obstacle_detected_rght ()
-{
-    if (this->corner_wall_rght == NULL) return false;
-    return true;
 };
 
 
