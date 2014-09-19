@@ -1,7 +1,5 @@
 #include "passage_finder.h"
 
-
-
 // *****************************************
 //              Advanced Passage Finder
 // *****************************************
@@ -199,7 +197,19 @@ double Advanced_Passage_finder::sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2)
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
 };
 
+std::vector<Line_param> Advanced_Passage_finder::get_best_line_vector(pcl::PointXYZ &point, Line_map &linemap) {
+    const double eps = 0.2; // How close should be the passage border to the line
+    const int min_quality = 1;
 
+    std::vector<Line_param> ret;
+
+    int best_quality = 0, best_i = 0;
+    for (int i = 0; i < linemap.lines.size(); ++i) {
+            ret.push_back(linemap.lines.at(i));
+    }
+
+    return ret;
+}
 
 // *****************************************
 // 				Location server
@@ -580,4 +590,95 @@ pcl::PointXYZ MappingServer::rotate(const pcl::PointXYZ vec, double angle)
 
     return rotated;
 };
+
+
+//              Passage type recognition
+
+int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side) {
+    this->type = non_valid;
+    this->pass_exist = false;
+    this->closest_exist = false;
+    this->opposite_exist = false;
+    this->middle_exist = false;
+
+    if (apf->passages.empty()) {
+        return non_valid;
+    }
+
+    pcl::PointXYZ pass_point_cmd = on_left_side ? apf->passages.at(0).cmd_left :
+                                                  apf->passages.at(0).cmd_rght;
+    pcl::PointXYZ pass_point_cmd_op = on_left_side ? apf->passages.at(0).cmd_rght :
+                                                     apf->passages.at(0).cmd_left;
+    pcl::PointXYZ pass_point_kin = on_left_side ? apf->passages.at(0).kin_left :
+                                                  apf->passages.at(0).kin_rght;
+    pcl::PointXYZ pass_point_kin_op = on_left_side ? apf->passages.at(0).kin_rght :
+                                                     apf->passages.at(0).kin_left;
+    pcl::PointXYZ pass_point_middle = apf->passages.at(0).cmd_middle;
+    double pass_point_ang = on_left_side ? apf->passages.at(0).left_ang :
+                                           apf->passages.at(0).rght_ang;
+    Line_param *pass_line = apf->get_best_line(pass_point_kin, lm);
+    std::vector<Line_param> op_pl = apf->get_best_line_vector(pass_point_kin_op, lm);
+    Line_param *pass_line_op = NULL;
+
+    double scalar_mul = 2;
+    if (pass_line != NULL) {
+        for (int i = 0; i < op_pl.size(); i++) {
+            double tmp = pass_line->ldir_vec.cmd.x * op_pl.at(i).ldir_vec.cmd.x +
+                         pass_line->ldir_vec.cmd.y * op_pl.at(i).ldir_vec.cmd.y;
+            ROS_INFO("Scal: %f", tmp);
+            if (tmp < scalar_mul) {
+                scalar_mul = tmp;
+                pass_line_op = &op_pl.at(i);
+            }
+        }
+    }
+
+    ROS_INFO("|| %d || %d ||", pass_line != NULL, pass_line_op != NULL);
+
+    if (pass_line != NULL && pass_line_op != NULL) {
+        ROS_INFO("%f | %f || %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
+                                       pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y);
+
+    }
+
+    if(pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
+        this->pass_exist = true;
+        this->closest_exist = true;
+    }
+
+    if(pass_line_op != NULL && !isnan(pass_point_cmd_op.x) && !isnan(pass_point_cmd_op.y)) {
+        this->pass_exist = true;
+        this->opposite_exist = true;
+    }
+
+    if(!isnan(pass_point_middle.x) && !isnan(pass_point_middle.y)) {
+        this->pass_exist = true;
+        this->middle_exist = true;
+    }
+
+    if ( this->pass_exist   &&  this->closest_exist &&
+        !this->middle_exist && !this->opposite_exist) {
+        this->type = single_wall;
+        return single_wall;
+    }
+
+    ROS_INFO("%d | %d | %d | %d | %f", this->pass_exist, this->closest_exist,
+                                       this->opposite_exist, this->middle_exist,
+                                       fabs(scalar_mul));
+
+    if (this->pass_exist && this->closest_exist && this->opposite_exist &&
+        fabs(scalar_mul) <= 1 && fabs(scalar_mul) < 0.1) {
+        this->type = ortogonal;
+        return ortogonal;
+    }
+
+    if (this->pass_exist && this->middle_exist &&
+        fabs(scalar_mul) <= 1 && fabs(scalar_mul - 1) < 0.1) {
+        this->type = parrallel;
+        return parrallel;
+    }
+
+    this->type = undefined;
+    return undefined;
+}
 

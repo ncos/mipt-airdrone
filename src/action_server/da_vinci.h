@@ -9,7 +9,7 @@
 
 
 // Draw in kinect coordinates
-enum POINT_COLOR {RED, GREEN, BLUE, GOLD, CYAN};
+enum POINT_COLOR {RED, GREEN, BLUE, GOLD, CYAN, VIOLET};
 class DaVinci
 {
     ros::NodeHandle nh;

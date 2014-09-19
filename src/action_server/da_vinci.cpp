@@ -161,9 +161,9 @@ void DaVinci::draw_vec(double x, double y, int id, POINT_COLOR color)
     marker.action = visualization_msgs::Marker::ADD;
     marker.id = id;
     marker.type = visualization_msgs::Marker::ARROW;
-    marker.scale.x = 0.01;
-    marker.scale.y = 0.04;
-    marker.scale.z = 0.05;
+    marker.scale.x = 0.04;
+    marker.scale.y = 0.13;
+    marker.scale.z = 0.20;
 
     geometry_msgs::Point p;
     p.y = 0;
@@ -261,6 +261,10 @@ visualization_msgs::Marker::_color_type DaVinci::choose_color(POINT_COLOR color)
         col.g = 165;
         col.b =  32;
         break;
+    case VIOLET:
+        col.r = 227;
+        col.g = 0;
+        col.b = 255;
     default:
         col.r = 255;
         col.g = 255;

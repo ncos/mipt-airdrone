@@ -4,6 +4,8 @@ float32 y
 ---
 #result definition
 bool success
+bool ortog_pass
+bool middle_pass
 float32 x
 float32 y
 ---
