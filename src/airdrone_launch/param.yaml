@@ -10,7 +10,7 @@ PID_ang_I: 0.000 #0.000
 PID_ang_D: 0.000 #0.000
 
 # Height of hovering
-base_height: 0.6
+base_height: 1.0
 
 # How to convert velocity to engine power
 vel_to_pwr: 10.0
@@ -42,4 +42,4 @@ wall_ang_eps: 5
 angle_to_pass: 30
 
 
-keyboard_control: true
+keyboard_control: false
