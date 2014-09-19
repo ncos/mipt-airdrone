@@ -312,7 +312,7 @@ public:
                 rot_done = true;
             }
             else {
-                phi -= fabs(delta_angl);
+                phi -= fabs(delta_angl) < 180 ? fabs(delta_angl) : 360 - fabs(delta_angl);
                 phi = phi > 360 ? (phi - 360) : phi;
                 msn_srv->buf_cmd.angular.z = rot_vel;
             }
@@ -322,8 +322,9 @@ public:
                 break;
             }
 
+
             ROS_INFO("vel: %f | %f",msn_srv->buf_cmd.linear.x,
-                                              msn_srv->buf_cmd.linear.y);
+                                    msn_srv->buf_cmd.linear.y);
             ROS_INFO("%f | %f | %f", len, phi, delta_angl);
 
             msn_srv->unlock();
@@ -347,19 +348,6 @@ public:
                 return;
         }
 
-        pcl::PointXYZ pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
-                                                               apf->passages.at(0).kin_left;
-
-        if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == parrallel &&
-            apf->passages.at(0).left_ang * apf->passages.at(0).rght_ang < 0) {
-        	ROS_INFO("Middle pass");
-        	msn_srv->unlock();
-        	result_.middle_pass = true;
-            as_approach_door.setSucceeded(result_);
-            return;
-            return;
-        }
-
         pcl::PointXYZ pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
                                                             apf->passages.at(0).cmd_rght;
         if (isnan(pass_point_cmd.x) || isnan(pass_point_cmd.y)){
@@ -370,6 +358,8 @@ public:
 
         pcl::PointXYZ pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
                                                             apf->passages.at(0).kin_rght;
+        pcl::PointXYZ pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
+                                                               apf->passages.at(0).kin_left;
         Line_param *pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
         davinci->draw_vec(pass_line->fdir_vec.kin.x, pass_line->fdir_vec.kin.y, 667, RED);
 
@@ -377,10 +367,6 @@ public:
             ROS_ERROR("Pass_line wasn't found");
         }
 
-        pcl::PointXYZ vec;
-        double vec_len = move_epsilon;
-        int pass_pos_num = 0;
-        int start_pos_num = 0;
 
         double pass_point_ang = 0;
 
@@ -397,49 +383,55 @@ public:
                                                   apf->passages.at(0).kin_rght;
             pass_point_ang = this->on_left_side ? apf->passages.at(0).left_ang :
                                                   apf->passages.at(0).rght_ang;
+            pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
+                                                     apf->passages.at(0).kin_left;
+            Line_param *pass_line_op = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
             double vel = this->on_left_side ? -0.4 : 0.4;
 			pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
-			//pass_pos_num = map_srv->track(pcl::PointXYZ(pass_point_cmd.x, pass_point_cmd.y, 0)) - 1;
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
 			    ROS_INFO("Pass found");
-			    double pass_pos_ang_diff = fabs(pass_point_ang) - angle_to_pass;
-			    ROS_INFO("%f | %f | %f", pass_pos_ang_diff, pass_point_ang, loc_srv->get_ref_wall()->angle);
-			    if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
-			        ROS_INFO("Corr angle %d | %d", this->on_left_side && pass_point_ang < 0, !this->on_left_side && pass_point_ang > 0);
-			        if ((this->on_left_side && pass_point_ang < 0) ||
-			           (!this->on_left_side && pass_point_ang > 0)) {
-                        if (fabs(pass_pos_ang_diff) < rot_epsilon || pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
-                            ROS_INFO("Done");
+			    ROS_INFO("%f | %f | %f", pass_point_ang, loc_srv->get_ref_wall()->angle, fabs(loc_srv->get_ref_wall()->angle) - fabs(pass_point_ang));
+			    ROS_INFO("Pass type: %d", pt->recognize(apf, loc_srv->lm, this->on_left_side));
+                if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
+                    if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
+                        ROS_INFO("Done type recognition");
+                        msn_srv->unlock();
+                        break;
+                    }
+			        if (( this->on_left_side && pass_point_ang < 0) ||
+			            (!this->on_left_side && pass_point_ang > 0)) {
+			            double wall_to_pass_angle = fabs(loc_srv->get_ref_wall()->angle) -
+			                                        fabs(pass_point_ang);
+
+			            if (fabs(wall_to_pass_angle - angle_to_pass) < rot_epsilon) {
+                            ROS_INFO("Done turn");
                             msn_srv->unlock();
                             break;
-                        }
-                        else {
-                            if (pass_pos_ang_diff < 0) {
-                                ROS_INFO("Forw");
-                                msn_srv->move_parallel(vel);
-                            }
-                            else {
-                                ROS_INFO("Backw");
-                                msn_srv->move_parallel(-vel);
-                            }
-                        }
-                    }
-			        else {
-			            ROS_INFO("Angle to pass");
-			            msn_srv->move_parallel(vel);
+			            }
+			            else if (fabs(wall_to_pass_angle) >= angle_to_pass) {
+			                ROS_INFO("Forw");
+			                msn_srv->move_parallel(vel);
+			            }
+			            else {
+			                ROS_INFO("Backw");
+			                msn_srv->move_parallel(-vel);
+			            }
 			        }
+                    else {
+                        ROS_INFO("Angle to pass");
+                        msn_srv->move_parallel(vel);
+                    }
 			    }
-			    else {
-			        ROS_INFO("Change angle");
-			        msn_srv->move_parallel(0);
-			    }
+                else {
+                    ROS_INFO("Angle to wall");
+                    msn_srv->move_parallel(0);
+                }
 			}
 			else {
-			    double vel = this->on_left_side ? -0.4 : 0.4;
-			    msn_srv->move_parallel(vel);
 				ROS_ERROR("Pass_line wasn't found");
+				msn_srv->unlock();
 				break;
 			}
 			msn_srv->unlock();
@@ -449,24 +441,49 @@ public:
         ROS_INFO("DEBUG 5");
         pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                  apf->passages.at(0).kin_left;
-        Line_param *pass_line_op = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
         pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
                                               apf->passages.at(0).kin_rght;
-        pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
 
-        pcl::PointXYZ pass_point_cmd_op = this->on_left_side ? apf->passages.at(0).cmd_rght :
-                                                               apf->passages.at(0).cmd_left;
-        pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
-                                              apf->passages.at(0).cmd_rght;
+        pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
+        std::vector<Line_param> op_pl = apf->get_best_line_vector(pass_point_kin_op, loc_srv->lm);
+        Line_param *pass_line_op = NULL;
+
+        double scalar_mul = 2;
+        if (pass_line != NULL) {
+            for (int i = 0; i < op_pl.size(); i++) {
+                double tmp = pass_line->ldir_vec.cmd.x * op_pl.at(i).ldir_vec.cmd.x +
+                             pass_line->ldir_vec.cmd.y * op_pl.at(i).ldir_vec.cmd.y;
+                if (tmp < scalar_mul) {
+                    scalar_mul = tmp;
+                    pass_line_op = &op_pl.at(i);
+                }
+            }
+        }
+
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
             ROS_INFO("Try full_pass");
                 ROS_INFO("Use full_pass");
                 loc_srv->track_wall(pass_line_op);
+                ROS_INFO("WALL: %f | %f | %f | %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
+                                               pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y, scalar_mul);
                 msn_srv->unlock();
                 result_.ortog_pass = true;
                 as_approach_door.setSucceeded(result_);
                 return;
         }
+
+        pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
+                                                 apf->passages.at(0).kin_left;
+
+        if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == parrallel &&
+            apf->passages.at(0).left_ang * apf->passages.at(0).rght_ang < 0) {
+            ROS_INFO("Middle pass");
+            msn_srv->unlock();
+            result_.middle_pass = true;
+            as_approach_door.setSucceeded(result_);
+            return;
+        }
+
         ROS_INFO("DEBUG 6");
         msn_srv->unlock();
         result_.success = true;
@@ -627,6 +644,7 @@ public:
         as_middle_pass.setSucceeded(result_);
         return;
     }
+
 private:
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.
     actionlib::SimpleActionServer<action_server::MoveAlongAction>    as_move_along;
@@ -664,9 +682,6 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     davinci->draw_line(loc_srv->get_crn_wall_left(), 1, BLUE);
     davinci->draw_line(loc_srv->get_ref_wall(),      0, GREEN);
     davinci->draw_line(loc_srv->get_crn_wall_rght(), 2, BLUE);
-
-    davinci->draw_vec(loc_srv->get_ref_wall()->ldir_vec.kin.x, loc_srv->get_ref_wall()->ldir_vec.kin.y, 5555, VIOLET);
-    davinci->draw_vec(loc_srv->get_ref_wall()->fdir_vec.kin.x, loc_srv->get_ref_wall()->fdir_vec.kin.y, 5556, CYAN);
 
     for (int i = 0; i < apf->passages.size(); ++i) {
         davinci->draw_point(apf->passages.at(i).kin_left.x,   apf->passages.at(i).kin_left.y,   i*3 + 0, RED);

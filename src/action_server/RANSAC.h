@@ -171,7 +171,7 @@ public:
 	std::vector<Line_param> lines;
 	double eps, derr;
 
-	Line_map () : eps(20), derr (0.5)
+	Line_map () : eps(30), derr (1.0)
 	{
 		this->coefficients = pcl::ModelCoefficients::Ptr (new pcl::ModelCoefficients ());
 		this->inliers 	   = pcl::PointIndices::Ptr 	 (new pcl::PointIndices ());

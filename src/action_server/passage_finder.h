@@ -65,6 +65,7 @@ public:
     void renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud);
     bool passage_on_line(Line_param &line, Passage &passage);
     Line_param *get_best_line(pcl::PointXYZ &point, Line_map &linemap);
+    std::vector<Line_param> get_best_line_vector(pcl::PointXYZ &point, Line_map &linemap);
 
 private:
     void add_passage(double point1x, double point1y, double point2x, double point2y);
@@ -194,7 +195,7 @@ struct Passage_type
     Passage_type () : type(non_valid), pass_exist (false), closest_exist(false),
                       opposite_exist(false), middle_exist(false) {}
 
-    int  recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side);
+    int recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side);
 
 };
 
