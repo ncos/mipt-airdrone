@@ -322,11 +322,6 @@ public:
                 break;
             }
 
-
-            ROS_INFO("vel: %f | %f",msn_srv->buf_cmd.linear.x,
-                                    msn_srv->buf_cmd.linear.y);
-            ROS_INFO("%f | %f | %f", len, phi, delta_angl);
-
             msn_srv->unlock();
             r.sleep();
         }
@@ -370,7 +365,6 @@ public:
 
         double pass_point_ang = 0;
 
-        ROS_INFO("AD Stage #1");
         msn_srv->unlock();
         while (1) {
             msn_srv->lock();
@@ -391,12 +385,8 @@ public:
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
-			    ROS_INFO("Pass found");
-			    ROS_INFO("%f | %f | %f", pass_point_ang, loc_srv->get_ref_wall()->angle, fabs(loc_srv->get_ref_wall()->angle) - fabs(pass_point_ang));
-			    ROS_INFO("Pass type: %d", pt->recognize(apf, loc_srv->lm, this->on_left_side));
                 if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
                     if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
-                        ROS_INFO("Done type recognition");
                         msn_srv->unlock();
                         break;
                     }
@@ -404,28 +394,22 @@ public:
 			            (!this->on_left_side && pass_point_ang > 0)) {
 			            double wall_to_pass_angle = fabs(loc_srv->get_ref_wall()->angle) -
 			                                        fabs(pass_point_ang);
-
 			            if (fabs(wall_to_pass_angle - angle_to_pass) < rot_epsilon) {
-                            ROS_INFO("Done turn");
                             msn_srv->unlock();
                             break;
 			            }
 			            else if (fabs(wall_to_pass_angle) >= angle_to_pass) {
-			                ROS_INFO("Forw");
 			                msn_srv->move_parallel(vel);
 			            }
 			            else {
-			                ROS_INFO("Backw");
 			                msn_srv->move_parallel(-vel);
 			            }
 			        }
                     else {
-                        ROS_INFO("Angle to pass");
                         msn_srv->move_parallel(vel);
                     }
 			    }
                 else {
-                    ROS_INFO("Angle to wall");
                     msn_srv->move_parallel(0);
                 }
 			}
@@ -438,7 +422,6 @@ public:
 			r.sleep();
 		}
         msn_srv->lock();
-        ROS_INFO("DEBUG 5");
         pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                  apf->passages.at(0).kin_left;
         pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
@@ -451,11 +434,7 @@ public:
             pass_line_op = &tmp_line;
 
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
-            ROS_INFO("Try full_pass");
-                ROS_INFO("Use full_pass");
                 loc_srv->track_wall(pass_line_op);
-                ROS_INFO("WALL: %f | %f | %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
-                                                    pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y);
                 msn_srv->unlock();
                 result_.ortog_pass = true;
                 as_approach_door.setSucceeded(result_);
@@ -467,14 +446,12 @@ public:
 
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == parrallel &&
             apf->passages.at(0).left_ang * apf->passages.at(0).rght_ang < 0) {
-            ROS_INFO("Middle pass");
             msn_srv->unlock();
             result_.middle_pass = true;
             as_approach_door.setSucceeded(result_);
             return;
         }
 
-        ROS_INFO("DEBUG 6");
         msn_srv->unlock();
         result_.success = true;
         as_approach_door.setSucceeded(result_);
@@ -561,7 +538,6 @@ public:
 
     	this->on_left_side = !this->on_left_side;
     	target_angl *= -1;
-    	//msn_srv->ref_ang = target_angl;
 
     	msn_srv->unlock();
     	result_.success = true;

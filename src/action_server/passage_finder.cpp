@@ -657,15 +657,11 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
     Line_param *pass_line_op = NULL;
     if (tmp_line.found)
         pass_line_op = &tmp_line;
-    ROS_INFO("|| %d || %d ||", pass_line != NULL, pass_line_op != NULL);
 
     double scalar_mul = NAN;
     if (pass_line != NULL && pass_line_op != NULL) {
         scalar_mul = pass_line->ldir_vec.cmd.x * pass_line_op->ldir_vec.cmd.x +
                      pass_line->ldir_vec.cmd.y * pass_line_op->ldir_vec.cmd.y;
-        ROS_INFO("%f | %f || %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
-                                       pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y);
-
     }
 
     if(pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
@@ -689,9 +685,6 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
         return single_wall;
     }
 
-    ROS_INFO("%d | %d | %d | %d | %f", this->pass_exist, this->closest_exist,
-                                       this->opposite_exist, this->middle_exist,
-                                       fabs(scalar_mul));
 
     if (this->pass_exist && this->closest_exist && this->opposite_exist &&
         fabs(scalar_mul) <= 1 && fabs(scalar_mul) < 0.1) {
