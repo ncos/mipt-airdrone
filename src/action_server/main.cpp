@@ -445,27 +445,17 @@ public:
                                               apf->passages.at(0).kin_rght;
 
         pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
-        std::vector<Line_param> op_pl = apf->get_best_line_vector(pass_point_kin_op, loc_srv->lm);
+        Line_param tmp_line = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
         Line_param *pass_line_op = NULL;
-
-        double scalar_mul = 2;
-        if (pass_line != NULL) {
-            for (int i = 0; i < op_pl.size(); i++) {
-                double tmp = pass_line->ldir_vec.cmd.x * op_pl.at(i).ldir_vec.cmd.x +
-                             pass_line->ldir_vec.cmd.y * op_pl.at(i).ldir_vec.cmd.y;
-                if (tmp < scalar_mul) {
-                    scalar_mul = tmp;
-                    pass_line_op = &op_pl.at(i);
-                }
-            }
-        }
+        if (tmp_line.found)
+            pass_line_op = &tmp_line;
 
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
             ROS_INFO("Try full_pass");
                 ROS_INFO("Use full_pass");
                 loc_srv->track_wall(pass_line_op);
-                ROS_INFO("WALL: %f | %f | %f | %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
-                                               pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y, scalar_mul);
+                ROS_INFO("WALL: %f | %f | %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
+                                                    pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y);
                 msn_srv->unlock();
                 result_.ortog_pass = true;
                 as_approach_door.setSucceeded(result_);
@@ -528,92 +518,35 @@ public:
 			return;
 		}
 
+		double vel[3] = {0.75, 0.75, 0.75};
+		double angle[3] = {60, 60, 40};
+		std::vector<int> stage_num;
+
 		int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
 		pcl::PointXYZ vec (0, 0, 0);
 		vec.x = pass_line->ldir_vec.cmd.x * side_sign * 1.5 * target_dist;
 		vec.y = pass_line->ldir_vec.cmd.y * side_sign * 1.5 * target_dist;
-		int stage_one_num = map_srv->track(vec) - 1;
+		stage_num.push_back(map_srv->track(vec) - 1);
 
 
 		vec.x = pass_line->fdir_vec.cmd.x * 2 * target_dist;
 		vec.y = pass_line->fdir_vec.cmd.y * 2 * target_dist;
-		int stage_two_num = map_srv->track(vec) - 1;
+		stage_num.push_back(map_srv->track(vec) - 1);
 
 		vec.x = -pass_line->ldir_vec.cmd.x * side_sign * 1.5 * target_dist;
         vec.y = -pass_line->ldir_vec.cmd.y * side_sign * 1.5 * target_dist;
-        int stage_three_num = map_srv->track(vec) - 1;
+        stage_num.push_back(map_srv->track(vec) - 1);
 
-        vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_one_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                            map_srv->tracked_points.at(stage_one_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
+        for (int i = 0; i < stage_num.size(); i++) {
+            vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_num.at(i)).x - map_srv->tracked_points.at(start_pos_num).x,
+                                map_srv->tracked_points.at(stage_num.at(i)).y - map_srv->tracked_points.at(start_pos_num).y, 0);
 
-        if (this->move (vec, 0.4, 60, rot_vel) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
+            if (this->move (vec, vel[i], angle[i], rot_vel) == false) {
+                ROS_ERROR("Move function caused error");
+                as_pass_door.setAborted(result_);
+                return;
+            }
         }
-
-        vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_two_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                            map_srv->tracked_points.at(stage_two_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-
-        if (this->move (vec, 0.4, 60, rot_vel) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-
-        vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_three_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                            map_srv->tracked_points.at(stage_three_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-
-        if (this->move (vec, 0.4, 40, rot_vel) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-
-
-/*
-		// Start action
-        ROS_INFO("PD Stage #1");
-        pcl::PointXYZ vec (0, 0, 0);
-        double side_sign = (this->on_left_side) ? 1 : -1;
-        vec.x = ( pass_point_cmd.x + pass_point_cmd.y * side_sign) / sqrt(1.7);
-        vec.y = (-pass_point_cmd.x * side_sign+ pass_point_cmd.y) / sqrt(1.7); // WTF? why '-'
-
-        map_srv->track(vec) - 1;
-        ROS_INFO("Vec1: %f\t %f", vec.x, vec.y);
-        int pass_pos_num  = map_srv->track(pcl::PointXYZ (pass_point_cmd.x, pass_point_cmd.y, 0)) - 1;
-        int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
-
-        double rot_vel1 = this->on_left_side ? 0.5 : -0.5;
-        if (this->move (vec, 0.4, 70, rot_vel1) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-
-        ROS_INFO("PD Stage #2");
-        //vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_pos_num).x - map_srv->tracked_points.at(start_pos_num).x,
-        //                     map_srv->tracked_points.at(pass_pos_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-        // 70 and 40 angle
-
-        map_srv->track(vec);
-
-
-        pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_pos_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                                map_srv->tracked_points.at(pass_pos_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-
-        vec.x = pass_vec.x;
-        vec.y = pass_vec.y;
-
-        map_srv->track(vec);
-        ROS_INFO("Vec2: %f\t %f", vec.x, vec.y);
-        double rot_vel2 = this->on_left_side ? 0.5 : -0.5;
-        if (this->move (vec, 0.5, 30, rot_vel2) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-        */
 
         msn_srv->unlock();
         result_.success = true;
