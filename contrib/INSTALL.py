@@ -157,6 +157,7 @@ gen_launcher('ad_rebuild_eclipse',           'AdRebuild4Eclipse', 'AdRebuild4Ecl
 gen_launcher('ad_simulator',                 'AdSimulator',       'AdAirdroneTest.png',          'roslaunch airdrone_launch simulator.launch')
 gen_launcher('ad_airdrone_simulator_launch', 'AdRunInSimulator',  'AdAirdroneLaunch.png',        'roslaunch airdrone_launch airdrone_simulator.launch')
 gen_launcher('ad_airdrone_real_launch',      'AdRun4Real',        'AdAirdroneRealLaunch.png',    'roslaunch airdrone_launch airdrone.launch')
+gen_launcher('ad_workstation',               'AdWorkstation',     'AdWorkstation.png',           'roslaunch airdrone_launch workstation.launch')
 gen_launcher('ad_optical_flow',              'AdOpticalFlow',     'AdSpare.png',                 'roslaunch optical_flow test_cpu_farn.launch')
 gen_launcher('ad_keyboard_control',          'AdKeyboardControl', 'AdKeyboardControlLaunch.png', 'roslaunch keyboard_control keyboard_control.launch')
 
