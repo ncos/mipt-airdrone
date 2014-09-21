@@ -8,6 +8,15 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 LOCAL_BASH_FILE = ROOT_DIR + "/devel/setup.bash"
 LAUNCHER_DIR = ROOT_DIR + "/contrib/launchers_gen/"
 HOME_DIR = os.path.expanduser("~")
+try:
+    ROS_HOSTNAME=os.environ["ROS_HOSTNAME"]
+except:
+    ROS_HOSTNAME=""
+
+try:
+    ROS_MASTER_URI=os.environ["ROS_MASTER_URI"]
+except:
+    ROS_MASTER_URI=""
 
 print "\nINSTALL SCRIPT FOR MIPT-AIRDRONE PROJECT"
 print "author: Anton Mitrokhin, 2014"
@@ -16,6 +25,11 @@ print ""
 print "Workspace root directory:", ROOT_DIR
 print "Launcher bash scripts directory:", LAUNCHER_DIR
 print ""
+print "Network setup:"
+print "ROS_HOSTNAME=", ROS_HOSTNAME
+print "ROS_MASTER_URI=", ROS_MASTER_URI
+print ""
+
 
 '''
 Deps:
@@ -113,8 +127,12 @@ def gen_launcher(bash_name, launcher_name, icon_name, command):
     format_str = '#!/bin/bash\n'\
     'source ' + ROS_INSTALL_DIR + '/setup.bash\n'\
     'source ' + LOCAL_BASH_FILE + '\n'\
-    'export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH\n\n'\
-    '' + command + '\n\n'\
+    'export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH\n'
+    if len(str(ROS_HOSTNAME)) != 0:
+        format_str +='export ROS_HOSTNAME=' + str(ROS_HOSTNAME) + '\n'
+    if len(str(ROS_MASTER_URI)) != 0:
+        format_str +='export ROS_MASTER_URI=' + str(ROS_MASTER_URI) + '\n'
+    format_str += '\n' + command + '\n\n'\
     'sleep 0.2'
 
     file_path = LAUNCHER_DIR + bash_name
@@ -157,8 +175,8 @@ gen_launcher('ad_rebuild_eclipse',           'AdRebuild4Eclipse', 'AdRebuild4Ecl
 gen_launcher('ad_simulator',                 'AdSimulator',       'AdAirdroneTest.png',          'roslaunch airdrone_launch simulator.launch')
 gen_launcher('ad_airdrone_simulator_launch', 'AdRunInSimulator',  'AdAirdroneLaunch.png',        'roslaunch airdrone_launch airdrone_simulator.launch')
 gen_launcher('ad_airdrone_real_launch',      'AdRun4Real',        'AdAirdroneRealLaunch.png',    'roslaunch airdrone_launch airdrone.launch')
+gen_launcher('ad_workstation',               'AdWorkstation',     'AdWorkstation.png',           'roslaunch airdrone_launch workstation.launch')
 gen_launcher('ad_optical_flow',              'AdOpticalFlow',     'AdSpare.png',                 'roslaunch optical_flow test_cpu_farn.launch')
 gen_launcher('ad_keyboard_control',          'AdKeyboardControl', 'AdKeyboardControlLaunch.png', 'roslaunch keyboard_control keyboard_control.launch')
-
 
 

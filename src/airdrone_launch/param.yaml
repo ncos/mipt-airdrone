@@ -10,7 +10,7 @@ PID_ang_I: 0.000 #0.000
 PID_ang_D: 0.000 #0.000
 
 # Height of hovering
-base_height: 0.6
+base_height: 1.0
 
 # How to convert velocity to engine power
 vel_to_pwr: 10.0
@@ -19,9 +19,9 @@ vel_to_pwr: 10.0
 angle_of_kinect: -45.0
 
 # The default movement speed, distance to reference wall and angle to this wall
-movement_speed: 0.5
+movement_speed: -0.5
 distance_to_wall: 1.0
-angle_to_wall: -45.0
+angle_to_wall: 45.0
 
 
 # Advanced passage finder related constants:
@@ -35,5 +35,11 @@ apf_better_q:  1   # 1 is more computationally demanding but gives less false al
 # Move function euristic constants
 move_epsilon:  0.1
 
+
 # Move function euristic constants
-keyboard_control: true
+rot_epsilon: 5
+wall_ang_eps: 5
+angle_to_pass: 30
+
+
+keyboard_control: false

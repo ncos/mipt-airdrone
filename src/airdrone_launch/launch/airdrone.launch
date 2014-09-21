@@ -1,29 +1,38 @@
 <launch>
-  <!-- Start Gazebo with wg world running in (max) realtime -->
-  <include file="$(find openni_launch)/launch/openni.launch"/>
-
+  <!-- Start freenect kinect driver -->
+  <include file="$(find freenect_launch)/launch/freenect.launch">
+    <arg name="camera" value="kinect" />
+  </include>
 
   <!-- Start mavlink communication -->
-  <node pkg="roscopter" name="roscopter" type="roscopter_node.py" output="screen" required="true"></node>
+  <!--
+  <node ns="apm" pkg="roscopter" type="driver.py" name="roscopter_driver" respawn="true" output="screen" args="--device=/dev/ttyACM0 --baudrate=115200 --enable-rc-control=true --mavlink-rate=25"></node>
+  <node ns="apm" pkg="roscopter" type="imu_transform_publish.py" name="roscopter_imu_transform" respawn="true" output="screen"></node>
+  -->
+  <node pkg="roscopter" name="roscopter" type="roscopter_node.py" respawn="true" required="true" output="screen"></node>
+
+  <node name="px4flow" pkg="px4flow" type="px4flow_node" output="screen" respawn="true" clear_params="true">
+    <param name="serial_port" value="/dev/ttyACM1"/>
+    <param name="baudrate" value="115200"/>
+  </node>
 
   <!-- Load essential nodes for multicopter operation -->
-  <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"></node>
-  <node pkg="altitude_cntrl" name="altitude_controller" type="altitude_cntrl_nd" output="screen" required="true">
+  <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="log" required="true">
+    <remap from="/sensors/kinect/depth/points" to="/kinect/depth/points"/>
+  </node>
+  <node pkg="altitude_cntrl" name="altitude_controller" type="altitude_cntrl_nd" output="log" required="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
   </node>
 
-  <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="screen" required="true">
+  <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="log" required="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
   </node>
 
-  <node pkg="action_server"  name="action_server"       type="action_server_nd"  output="screen">
+  <node pkg="action_server"  name="action_server"       type="action_server_nd"  output="log">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
   </node>
-  <node pkg="action_client"  name="action_client"       type="main.py"  output="screen"></node>
-  <node pkg="smach_viewer"  name="smach_viewer"       type="smach_viewer.py"  output="screen"></node>
 
-  <!-- Start rviz visualization with preset config -->
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find airdrone_launch)/rviz_cfg/croc_real.rviz"/>
+  <node pkg="action_client"  name="action_client"       type="main.py"  output="log"></node>
 </launch>
 
 
