@@ -197,36 +197,8 @@ double Advanced_Passage_finder::sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2)
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
 };
 
-Line_param Advanced_Passage_finder::get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap) {
-    /*
-    const double eps = 0.2; // How close should be the passage border to the line
-    const int min_quality = 1;
-
-    std::vector<Line_param> op_line;
-
-    int best_quality = 0, best_i = 0;
-    for (int i = 0; i < linemap.lines.size(); ++i) {
-            ret.push_back(linemap.lines.at(i));
-    }
-
-    Line_param *pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
-    std::vector<Line_param> op_pl = apf->get_best_line_vector(pass_point_kin_op, loc_srv->lm);
-    Line_param *pass_line_op = NULL;
-
-    double scalar_mul = 2;
-    if (pass_line != NULL) {
-        for (int i = 0; i < op_pl.size(); i++) {
-            double tmp = pass_line->ldir_vec.cmd.x * op_pl.at(i).ldir_vec.cmd.x +
-                         pass_line->ldir_vec.cmd.y * op_pl.at(i).ldir_vec.cmd.y;
-            if (tmp < scalar_mul) {
-                scalar_mul = tmp;
-                pass_line_op = &op_pl.at(i);
-            }
-        }
-    }
-    */
-
-    Line_param pass_line_op;
+Line_param* Advanced_Passage_finder::get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap) {
+    Line_param *pass_line_op;
     Line_param *pass_line = this->get_best_line(pass_point_kin, linemap);
     double scalar_mul = 2;
     if (pass_line != NULL) {
@@ -235,15 +207,12 @@ Line_param Advanced_Passage_finder::get_best_opposite_line(pcl::PointXYZ pass_po
                          pass_line->ldir_vec.cmd.y * linemap.lines.at(i).ldir_vec.cmd.y;
             if (tmp < scalar_mul) {
                 scalar_mul = tmp;
-                pass_line_op = linemap.lines.at(i);
+                pass_line_op = &linemap.lines.at(i);
             }
         }
     }
-    else {
-        Line_param ret;
-        ret.found = false;
-        return ret;
-    }
+    else
+        return NULL;
     return pass_line_op;
 }
 
@@ -653,10 +622,7 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
     double pass_point_ang = on_left_side ? apf->passages.at(0).left_ang :
                                            apf->passages.at(0).rght_ang;
     Line_param *pass_line = apf->get_best_line(pass_point_kin, lm);
-    Line_param tmp_line = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, lm);
-    Line_param *pass_line_op = NULL;
-    if (tmp_line.found)
-        pass_line_op = &tmp_line;
+    Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, lm);
 
     double scalar_mul = NAN;
     if (pass_line != NULL && pass_line_op != NULL) {

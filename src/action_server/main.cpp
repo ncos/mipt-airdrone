@@ -428,11 +428,7 @@ public:
                                               apf->passages.at(0).kin_rght;
 
         pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
-        Line_param tmp_line = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
-        Line_param *pass_line_op = NULL;
-        if (tmp_line.found)
-            pass_line_op = &tmp_line;
-
+        Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
                 loc_srv->track_wall(pass_line_op);
                 msn_srv->unlock();

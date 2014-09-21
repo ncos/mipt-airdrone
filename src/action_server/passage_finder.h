@@ -65,7 +65,7 @@ public:
     void renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud);
     bool passage_on_line(Line_param &line, Passage &passage);
     Line_param *get_best_line(pcl::PointXYZ &point, Line_map &linemap);
-    Line_param get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap);
+    Line_param *get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap);
 
 private:
     void add_passage(double point1x, double point1y, double point2x, double point2y);
