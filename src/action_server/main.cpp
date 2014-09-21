@@ -265,68 +265,6 @@ public:
         loc_srv->unlock();
     }
 
-    //TODO: Add cases for NAN input
-    bool move(pcl::PointXYZ target, double vel, double phi, double rot_vel)
-    {
-        if (isnan(target.x) || isnan(target.y) || isnan(phi)) {
-            return false;
-        }
-        bool move_done = false, rot_done = false;
-        ros::Rate r(60);
-        double prev_angl = map_srv->get_global_angle();
-        pcl::PointXYZ prev_pos = map_srv->get_global_positon();
-        //pcl::PointXYZ target (dir.x, dir.y, 0);
-
-        msn_srv->untrack();
-        msn_srv->unlock();
-
-        while (true)
-        {
-            msn_srv->lock();
-
-            double current_angl       = map_srv->get_global_angle();
-            pcl::PointXYZ current_pos = map_srv->get_global_positon();
-            double delta_angl  = map_srv->diff(current_angl, prev_angl);
-            pcl::PointXYZ shift = map_srv->diff(current_pos, prev_pos);
-            prev_angl = current_angl;
-            prev_pos  = current_pos;
-
-            // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
-            target.x = target.x - shift.x;
-            target.y = target.y - shift.y;
-            target = map_srv->rotate(target, -delta_angl);
-
-
-            double len = sqrt (target.x * target.x + target.y * target.y);
-            if (len < move_epsilon) {
-                move_done = true;
-            }
-            else {
-                msn_srv->buf_cmd.linear.x = target.x * vel / len;
-                msn_srv->buf_cmd.linear.y = target.y * vel / len;
-                msn_srv->buf_cmd.angular.z = 0;
-                davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
-            }
-            //TODO: conform sign of phi and rot_vel
-            if (phi < 1) {
-                rot_done = true;
-            }
-            else {
-                phi -= fabs(delta_angl) < 180 ? fabs(delta_angl) : 360 - fabs(delta_angl);
-                phi = phi > 360 ? (phi - 360) : phi;
-                msn_srv->buf_cmd.angular.z = rot_vel;
-            }
-
-            if (rot_done && move_done) {
-                msn_srv->unlock();
-                break;
-            }
-
-            msn_srv->unlock();
-            r.sleep();
-        }
-        return true;
-    }
 
     void approachDoorCB(const action_server::ApproachDoorGoalConstPtr  &goal)
     {
@@ -459,6 +397,7 @@ public:
         // TODO: Change for door on left sight
         action_server::PassDoorResult   result_;
         action_server::PassDoorFeedback feedback_;
+        ros::Rate r(60);
 
         msn_srv->lock();
 
@@ -486,7 +425,7 @@ public:
         }
 
 		if (pass_line == NULL || isnan(pass_point_cmd.x) || isnan(pass_point_cmd.y)){
-			ROS_ERROR("Wrong pass dist");
+			ROS_ERROR("Wrong pass distance");
 			as_pass_door.setAborted(result_);
 			return;
 		}
@@ -510,14 +449,20 @@ public:
         vec.y = -pass_line->ldir_vec.cmd.y * side_sign * 1.5 * target_dist;
         stage_num.push_back(map_srv->track(vec) - 1);
 
+        msn_srv->unlock();
         for (int i = 0; i < stage_num.size(); i++) {
+            msn_srv->lock();
             vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_num.at(i)).x - map_srv->tracked_points.at(start_pos_num).x,
                                 map_srv->tracked_points.at(stage_num.at(i)).y - map_srv->tracked_points.at(start_pos_num).y, 0);
 
-            if (this->move (vec, vel[i], angle[i], rot_vel) == false) {
-                ROS_ERROR("Move function caused error");
-                as_pass_door.setAborted(result_);
-                return;
+            msn_srv->unlock();
+            msn_srv->move (map_srv, vec, vel[i], angle[i], rot_vel);
+            bool all_done = false;
+            while (!all_done) {
+                msn_srv->lock();
+                all_done = msn_srv->move_done && msn_srv->rot_done;
+                msn_srv->unlock();
+                r.sleep();
             }
         }
 
@@ -637,6 +582,9 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
         davinci->draw_vec(apf->passages.at(i).kin_middle.x, apf->passages.at(i).kin_middle.y, i*3 + 1, GREEN);
         davinci->draw_vec(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 2, BLUE);
     }
+
+    if (!msn_srv->move_done || !msn_srv->rot_done)
+        msn_srv->move_step(map_srv);
 
     msn_srv->spin_once();
 

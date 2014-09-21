@@ -416,8 +416,64 @@ void MotionServer::spin_once()
 	}
 };
 
+void MotionServer::move(boost::shared_ptr<MappingServer> map_srv, pcl::PointXYZ target, double vel, double phi, double rot_vel) {
+    this->lock();
+    if (isnan(target.x) || isnan(target.y) || isnan(phi)) {
+        this->move_done = true;
+        this->rot_done = true;
+        return;
+    }
+
+    this->move_target = target;
+    this->move_vel = vel;
+    this->move_phi = phi;
+    this->move_rot_vel = rot_vel;
+    this->move_done = false;
+    this->rot_done = false;
+    this->prev_angl = map_srv->get_global_angle();
+    this->prev_pos = map_srv->get_global_positon();
+    this->untrack();
+
+    this->unlock();
+}
+
+void MotionServer::move_step(boost::shared_ptr<MappingServer> map_srv) {
+    this->untrack();
+
+    double current_angl       = map_srv->get_global_angle();
+    pcl::PointXYZ current_pos = map_srv->get_global_positon();
+    double delta_angl  = map_srv->diff(current_angl, prev_angl);
+    pcl::PointXYZ shift = map_srv->diff(current_pos, prev_pos);
+    this->prev_angl = current_angl;
+    this->prev_pos  = current_pos;
+
+    // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
+    this->move_target.x = this->move_target.x - shift.x;
+    this->move_target.y = this->move_target.y - shift.y;
+    this->move_target = map_srv->rotate(this->move_target, -delta_angl);
 
 
+    double len = sqrt (this->move_target.x * this->move_target.x +
+                       this->move_target.y * this->move_target.y);
+
+    if (len < this->move_epsilon) {
+        move_done = true;
+    }
+    else {
+        this->buf_cmd.linear.x = this->move_target.x * this->move_vel / len;
+        this->buf_cmd.linear.y = this->move_target.y * this->move_vel / len;
+        this->buf_cmd.angular.z = 0;
+    }
+    //TODO: conform sign of phi and rot_vel
+    if (this->move_phi < this->move_rot_epsilon) {
+        rot_done = true;
+    }
+    else {
+        this->move_phi -= fabs(delta_angl) < 180 ? fabs(delta_angl) : 360 - fabs(delta_angl);
+        this->move_phi = this->move_phi > 360 ? (this->move_phi - 360) : this->move_phi;
+        this->buf_cmd.angular.z = this->move_rot_vel;
+    }
+}
 
 // *****************************************
 //              Mapping server
@@ -597,8 +653,10 @@ pcl::PointXYZ MappingServer::rotate(const pcl::PointXYZ vec, double angle)
 };
 
 
-//              Passage type recognition
 
+// *****************************************
+//              Passage type recognition
+// *****************************************
 int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side) {
     this->type = non_valid;
     this->pass_exist = false;
