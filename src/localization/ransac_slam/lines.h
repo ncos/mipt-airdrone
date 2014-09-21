@@ -75,6 +75,15 @@ private:
 };
 
 
+class LineMetrics
+{
+public:
+    static double get_error (Line_param &l1, Line_param &l2);
+    static double get_error (Line_param &l, double angle, double distance);
+    static double get_error (double delta1, double delta2);
+};
+
+
 class Line_map
 {
 private:
@@ -84,47 +93,70 @@ private:
 	pcl::PointIndices::Ptr inliers;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_f;
 
+	struct lineCmp
+	{
+	    double angle, distance;
+	    lineCmp(double a, double d) {
+	        this->angle = a;
+	        this->distance = d;
+	    }
+	    bool operator() (Line_param &l1, Line_param &l2) {
+	        double err1 = LineMetrics::get_error(l1, this->angle, this->distance);
+            double err2 = LineMetrics::get_error(l2, this->angle, this->distance);
+            return err1 < err2;
+	    }
+	};
+
 public:
 	std::vector<Line_param> lines;
 
 	Line_map ();
 
 	void renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
-	Line_param *get_best_fit (double angle, double distance);
-	Line_param *get_best_fit_a (double angle, double eps);
-    Line_param *get_best_fit_d (double distance, double eps);
-    void filter_off_and_sort_a (double angle,    double eps, std::vector<Line_param> &l);
-    void filter_off_and_sort_d (double distance, double eps, std::vector<Line_param> &l);
+	Line_param get_best_fit (double angle, double distance);
+	Line_param get_best_fit_a (double angle);
+    Line_param get_best_fit_d (double distance);
+    void sort_lines_a (double angle,    std::vector<Line_param> &l);
+    void sort_lines_d (double distance, std::vector<Line_param> &l);
 
 private:
-    double get_error (Line_param &l1, Line_param &l2);
-    double get_error (Line_param &l, double angle, double distance);
-    double get_error (double delta1, double delta2);
+
 };
 
+
+
+class BruteForceMatcher
+{
+public:
+    struct Pair
+    {
+        Line_param l1, l2;
+        unsigned int id1, id2;
+        double eps;
+    };
+
+public:
+    std::vector<Pair> match(std::vector<Line_param> &l1, std::vector<Line_param> &l2);
+
+private:
+    Pair get_best_pair(std::vector<Pair> pairs);
+
+};
 
 
 class LocationServer
 {
 public:
     Line_map lm;
-    bool lost_ref_wall;
 private:
     double yaw;
-    Line_param *ref_wall, *corner_wall_left, *corner_wall_rght;
 
 public:
-    LocationServer () : corner_wall_left(NULL), corner_wall_rght(NULL),
-                        lost_ref_wall(true), ref_wall(NULL), yaw(0) {};
+    LocationServer () : yaw(0) {};
     double get_yaw()   {return this->yaw; }
     void   reset_yaw() {this->yaw = 0.0; }
-    void   track_wall           (Line_param *wall);
-    Line_param  *get_ref_wall() {return this->ref_wall; }
-    Line_param  *get_crn_wall_left() {return this->corner_wall_left; }
-    Line_param  *get_crn_wall_rght() {return this->corner_wall_rght; }
+
     void   spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud);
-    bool   obstacle_detected_left ();
-    bool   obstacle_detected_rght ();
 
 };
 
