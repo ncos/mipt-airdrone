@@ -104,7 +104,9 @@ private:
         }
         this->update_shrinked_cloud(shrink_order);
         this->loc_srv.spin_once(this->laser_cloud);
-        this->draw_lines();
+
+        //this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_left(), 10, BLUE);
+
 
         tf::Transform motion = this->estimate_motion();
 
@@ -114,17 +116,7 @@ private:
         }
     }
 
-    void draw_lines() {
-        this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_left(), 10, BLUE);
-        this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_ref_wall(),      11, GREEN);
-        this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_rght(), 12, BLUE);
-        for (int i = 0; i < loc_srv.lm.lines.size(); ++i) {
-            if (&loc_srv.lm.lines.at(i) == loc_srv.get_crn_wall_left()) continue;
-            if (&loc_srv.lm.lines.at(i) == loc_srv.get_crn_wall_rght()) continue;
-            if (&loc_srv.lm.lines.at(i) == loc_srv.get_ref_wall())      continue;
-            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &loc_srv.lm.lines.at(i), 101 + i, CYAN);
-        }
-    }
+
 
     tf::Transform estimate_motion() {
         tf::Transform motion;

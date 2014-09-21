@@ -100,7 +100,7 @@ private:
 	        this->angle = a;
 	        this->distance = d;
 	    }
-	    bool operator() (Line_param &l1, Line_param &l2) {
+	    bool operator() (Line_param l1, Line_param l2) {
 	        double err1 = LineMetrics::get_error(l1, this->angle, this->distance);
             double err2 = LineMetrics::get_error(l2, this->angle, this->distance);
             return err1 < err2;
@@ -131,15 +131,21 @@ public:
     struct Pair
     {
         Line_param l1, l2;
-        unsigned int id1, id2;
-        double eps;
+        double err;
+        Pair (Line_param &l1_, Line_param &l2_) {
+            l1 = l1_;
+            l2 = l2_;
+            err = LineMetrics::get_error(l1, l2);
+        }
     };
 
 public:
-    std::vector<Pair> match(std::vector<Line_param> &l1, std::vector<Line_param> &l2);
+    // returns the common error of the match
+    double match(std::vector<Line_param> l1, std::vector<Line_param> l2,
+                 std::vector<BruteForceMatcher::Pair> &matched, std::vector<Line_param> &unmatched);
 
 private:
-    Pair get_best_pair(std::vector<Pair> pairs);
+    unsigned int get_best_fit(Line_param &line, std::vector<Line_param> &lines);
 
 };
 

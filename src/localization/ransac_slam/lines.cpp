@@ -147,7 +147,6 @@ Line_param Line_map::get_best_fit (double angle, double distance)
     }
     lineCmp line_cmp_class(angle, distance);
     std::sort (l.begin(), l.end(), line_cmp_class);
-    if (l.size() == 0) return NULL;
     return l[0];
 };
 
@@ -155,7 +154,6 @@ Line_param Line_map::get_best_fit_a (double angle)
 {
     std::vector<Line_param> l;
     this->sort_lines_a(angle, l);
-    if (l.size() == 0) return NULL;
     return l[0];
 };
 
@@ -163,7 +161,6 @@ Line_param Line_map::get_best_fit_d (double distance)
 {
     std::vector<Line_param> l;
     this->sort_lines_d(distance, l);
-    if (l.size() == 0) return NULL;
     return l[0];
 };
 
@@ -211,31 +208,77 @@ double LineMetrics::get_error (double delta1, double delta2)
 // *****************************************
 //              Brute force matcher
 // *****************************************
-BruteForceMatcher
-// *****************************************
-//              Location server
-// *****************************************
-void LocationServer::track_wall(Line_param *wall)
-{
-    if (wall == NULL) {
-        ROS_ERROR("LocationServer::track_wall argument is NULL");
-        return;
+double BruteForceMatcher::match(std::vector<Line_param> l1, std::vector<Line_param> l2,
+                                std::vector<BruteForceMatcher::Pair> &matched, std::vector<Line_param> &unmatched) {
+    if (l1.size() == 0) {
+        unmatched = l2;
+        return 0;
     }
 
-    if (this->ref_wall == NULL) {
-        this->yaw = wall->angle;
+    if (l2.size() == 0) {
+        unmatched = l1;
+        return 0;
     }
 
-    this->ref_wall = wall;
-    this->stm.angle = wall->angle;
-    this->stm.distance = wall->distance;
-    this->lost_ref_wall = false;
+    Line_param query_line = l1.back();
+    // vec1: 2 3 4 5
+    // vec2: 1 2 3 4 5 ('1' vanished from the view)
+    l1.pop_back();
+    std::vector<BruteForceMatcher::Pair> matched_0;
+    std::vector<Line_param> unmatched_0;
+    double err_0 = match(l1, l2, matched_0, unmatched_0);
 
-    this->corner_wall_left = lm.get_closest(this->stm.angle + 90);
-    this->corner_wall_rght = lm.get_closest(this->stm.angle - 90);
+    // vec1: 2 3 4 5
+    // vec2: 1 2 4 5 ('1' did not vanish)
+    unsigned int l2_id = get_best_fit(query_line, l2);
+    BruteForceMatcher::Pair new_pair(query_line, l2[l2_id]);
+    l2.erase (l2.begin() + l2_id);
+    std::vector<BruteForceMatcher::Pair> matched_1;
+    std::vector<Line_param> unmatched_1;
+    double err_1 = match(l1, l2, matched_1, unmatched_1) + new_pair.err;
+
+    if (err_0 < err_1) {
+        matched = matched_0;
+        unmatched = unmatched_0;
+        unmatched.push_back(query_line);
+        return err_0;
+    }
+    else {
+        matched = matched_1;
+        unmatched = unmatched_1;
+        matched.push_back(new_pair);
+        return err_1;
+    }
+};
+
+unsigned int BruteForceMatcher::get_best_fit(Line_param &line, std::vector<Line_param> &lines) {
+    // return the id in the 'lines' vector that gives the lowest error
+    unsigned int id = 0;
+    if (lines.size() == 0) {
+        ROS_ERROR("ransac_slam/lines.cpp: 'lines' vector is empty!");
+        return 0;
+    }
+
+    double err = LineMetrics::get_error(line, lines[0]);
+    for (unsigned int i = 0; i < lines.size(); ++i) {
+        if (lines[i].frame != line.frame) {
+            ROS_ERROR("ransac_slam/lines.cpp: Unable to compare\
+                      lines with different frames! ('%s' and '%s')", lines[i].frame.c_str(), line.frame.c_str());
+            return i;
+        }
+        double err_ = LineMetrics::get_error(line, lines[i]);
+        if (err_ < err) {
+            err = err_;
+            id = i;
+        }
+    }
+    return id;
 };
 
 
+// *****************************************
+//              Location server
+// *****************************************
 void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 {
     if (cloud->points.size() < min_points_in_cloud) {
@@ -243,21 +286,6 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
                                         to provide reliable pose estimation", cloud->points.size());
         return;
     };
-
-
-    this->lm.renew(cloud);
-    this->ref_wall = this->lm.get_best_fit(this->stm.angle, this->stm.distance);
-
-    if (!this->ref_wall->found) { this->lost_ref_wall = true; ROS_WARN("Lost ref_wall"); }
-    else this->lost_ref_wall = false;
-    double d_angle = this->stm.angle - this->ref_wall->angle;
-    this->stm.angle = this->ref_wall->angle;
-    this->stm.distance = this->ref_wall->distance;
-
-    this->yaw -= d_angle;
-
-    this->corner_wall_left = lm.get_closest(this->stm.angle + 90);
-    this->corner_wall_rght = lm.get_closest(this->stm.angle - 90);
 };
 
 
