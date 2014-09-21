@@ -159,6 +159,7 @@ private:
     double move_rot_vel;
 
     // Move utility variables
+    boost::shared_ptr<MappingServer> map_srv;
     double move_epsilon;
     double move_rot_epsilon;
     double prev_angl;
@@ -171,12 +172,11 @@ public:
     bool rot_done;
 
 public:
-    MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
-        ref_wall(NULL), ref_dist(0), ref_ang(0), tracking_on(true),
+    MotionServer (boost::shared_ptr<boost::mutex> _mutex, boost::shared_ptr<MappingServer> _map_srv) :
+        mutex(_mutex), map_srv (_map_srv), ref_wall(NULL), ref_dist(0), ref_ang(0), tracking_on(true),
         move_target (pcl::PointXYZ(0, 0, 0)), move_vel (0), move_phi (0),
-        move_rot_vel (0), move_epsilon (0.1), move_rot_epsilon (0),
-        prev_angl (0), prev_pos (pcl::PointXYZ (0, 0, 0)),
-        move_done (true), rot_done (true) {}
+        move_rot_vel (0), move_epsilon (0.1), move_rot_epsilon (0), prev_angl (0),
+        prev_pos (pcl::PointXYZ (0, 0, 0)), move_done (true), rot_done (true) {}
     ~MotionServer ();
     void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
     void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
@@ -193,8 +193,8 @@ public:
     void unlock() {this->mutex->unlock(); }
     void set_target_angle (double angle) {this->ref_ang  = angle; }
     void set_target_dist  (double dist ) {this->ref_dist = dist;  }
-    void move(boost::shared_ptr<MappingServer> map_srv, pcl::PointXYZ target, double vel, double phi, double rot_vel);
-    void move_step(boost::shared_ptr<MappingServer> map_srv);
+    void move(pcl::PointXYZ target, double vel, double phi, double rot_vel);
+    void move_step();
 };
 
 

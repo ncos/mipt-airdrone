@@ -416,7 +416,7 @@ void MotionServer::spin_once()
 	}
 };
 
-void MotionServer::move(boost::shared_ptr<MappingServer> map_srv, pcl::PointXYZ target, double vel, double phi, double rot_vel) {
+void MotionServer::move(pcl::PointXYZ target, double vel, double phi, double rot_vel) {
     this->lock();
     if (isnan(target.x) || isnan(target.y) || isnan(phi)) {
         this->move_done = true;
@@ -430,27 +430,27 @@ void MotionServer::move(boost::shared_ptr<MappingServer> map_srv, pcl::PointXYZ 
     this->move_rot_vel = rot_vel;
     this->move_done = false;
     this->rot_done = false;
-    this->prev_angl = map_srv->get_global_angle();
-    this->prev_pos = map_srv->get_global_positon();
+    this->prev_angl = this->map_srv->get_global_angle();
+    this->prev_pos = this->map_srv->get_global_positon();
     this->untrack();
 
     this->unlock();
 }
 
-void MotionServer::move_step(boost::shared_ptr<MappingServer> map_srv) {
+void MotionServer::move_step() {
     this->untrack();
 
-    double current_angl       = map_srv->get_global_angle();
-    pcl::PointXYZ current_pos = map_srv->get_global_positon();
-    double delta_angl  = map_srv->diff(current_angl, prev_angl);
-    pcl::PointXYZ shift = map_srv->diff(current_pos, prev_pos);
+    double current_angl       = this->map_srv->get_global_angle();
+    pcl::PointXYZ current_pos = this->map_srv->get_global_positon();
+    double delta_angl  = this->map_srv->diff(current_angl, prev_angl);
+    pcl::PointXYZ shift = this->map_srv->diff(current_pos, prev_pos);
     this->prev_angl = current_angl;
     this->prev_pos  = current_pos;
 
     // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
     this->move_target.x = this->move_target.x - shift.x;
     this->move_target.y = this->move_target.y - shift.y;
-    this->move_target = map_srv->rotate(this->move_target, -delta_angl);
+    this->move_target = this->map_srv->rotate(this->move_target, -delta_angl);
 
 
     double len = sqrt (this->move_target.x * this->move_target.x +

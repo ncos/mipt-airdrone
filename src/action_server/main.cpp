@@ -441,8 +441,8 @@ public:
 		stage_num.push_back(map_srv->track(vec) - 1);
 
 
-		vec.x = pass_line->fdir_vec.cmd.x * 2 * target_dist;
-		vec.y = pass_line->fdir_vec.cmd.y * 2 * target_dist;
+		vec.x = pass_line->fdir_vec.cmd.x * 1.75 * target_dist;
+		vec.y = pass_line->fdir_vec.cmd.y * 1.75 * target_dist;
 		stage_num.push_back(map_srv->track(vec) - 1);
 
 		vec.x = -pass_line->ldir_vec.cmd.x * side_sign * 1.5 * target_dist;
@@ -456,7 +456,7 @@ public:
                                 map_srv->tracked_points.at(stage_num.at(i)).y - map_srv->tracked_points.at(start_pos_num).y, 0);
 
             msn_srv->unlock();
-            msn_srv->move (map_srv, vec, vel[i], angle[i], rot_vel);
+            msn_srv->move (vec, vel[i], angle[i], rot_vel);
             bool all_done = false;
             while (!all_done) {
                 msn_srv->lock();
@@ -510,6 +510,7 @@ public:
 
     void middlePassCB(const action_server::MiddlePassGoalConstPtr  &goal) {
         action_server::MiddlePassResult result_;
+        ros::Rate r(60);
         msn_srv->lock();
 
         pcl::PointXYZ pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
@@ -524,10 +525,15 @@ public:
         pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x - offset_x,
                            apf->passages.at(0).cmd_middle.y - offset_y, 0);
         tmp = map_srv->track(vec) - 1;
-        if (this->move (vec, 0.6, 0, 0) == false) {
-            ROS_ERROR("Move function caused error");
-            as_middle_pass.setAborted(result_);
-            return;
+
+        msn_srv->unlock();
+        msn_srv->move (vec, 0.6, 0, 0);
+        bool all_done = false;
+        while (!all_done) {
+            msn_srv->lock();
+            all_done = msn_srv->move_done && msn_srv->rot_done;
+            msn_srv->unlock();
+            r.sleep();
         }
 
         msn_srv->unlock();
@@ -584,7 +590,7 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     }
 
     if (!msn_srv->move_done || !msn_srv->rot_done)
-        msn_srv->move_step(map_srv);
+        msn_srv->move_step();
 
     msn_srv->spin_once();
 
@@ -649,8 +655,8 @@ int main( int argc, char** argv )
     davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
     mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
-    msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
     map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer (nh, "/ground_truth_to_tf/pose"));
+    msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr, map_srv));
     apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
     pt        = boost::shared_ptr<Passage_type>   (new Passage_type ());
 
