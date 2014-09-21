@@ -65,7 +65,7 @@ public:
     void renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud);
     bool passage_on_line(Line_param &line, Passage &passage);
     Line_param *get_best_line(pcl::PointXYZ &point, Line_map &linemap);
-    std::vector<Line_param> get_best_line_vector(pcl::PointXYZ &point, Line_map &linemap);
+    Line_param *get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap);
 
 private:
     void add_passage(double point1x, double point1y, double point2x, double point2y);
@@ -111,44 +111,6 @@ public:
 };
 
 
-
-
-class MotionServer
-{
-private:
-	PID pid_ang;
-	PID pid_vel;
-	Line_param *ref_wall;
-	boost::shared_ptr<boost::mutex> mutex;
-	bool tracking_on;
-
-public:
-	double ref_dist, ref_ang;
-	geometry_msgs::Twist base_cmd, buf_cmd;
-
-public:
-	MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
-        ref_wall(NULL), ref_dist(0), ref_ang(0), tracking_on(true)
-	{}
-	~MotionServer ();
-	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
-	void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
-	void set_ref_wall (Line_param *wall);
-	void track ();
-	void untrack ();
-	void set_angles_current ();
-	bool rotate(double angle);
-	bool move_parallel(double vel);
-	bool move_perpendicular(double shift);
-	void spin_once();
-	void clear_cmd();
-	void lock() {this->mutex->lock(); }
-	void unlock() {this->mutex->unlock(); }
-	void set_target_angle (double angle) {this->ref_ang  = angle; }
-	void set_target_dist  (double dist ) {this->ref_dist = dist;  }
-};
-
-
 class MappingServer
 {
 private:
@@ -183,6 +145,59 @@ private:
 };
 
 
+class MotionServer
+{
+private:
+    PID pid_ang;
+    PID pid_vel;
+    Line_param *ref_wall;
+    boost::shared_ptr<boost::mutex> mutex;
+    bool tracking_on;
+    pcl::PointXYZ move_target;
+    double move_vel;
+    double move_phi;
+    double move_rot_vel;
+
+    // Move utility variables
+    boost::shared_ptr<MappingServer> map_srv;
+    double move_epsilon;
+    double move_rot_epsilon;
+    double prev_angl;
+    pcl::PointXYZ prev_pos;
+
+public:
+    double ref_dist, ref_ang;
+    geometry_msgs::Twist base_cmd, buf_cmd;
+    bool move_done;
+    bool rot_done;
+
+public:
+    MotionServer (boost::shared_ptr<boost::mutex> _mutex, boost::shared_ptr<MappingServer> _map_srv) :
+        mutex(_mutex), map_srv (_map_srv), ref_wall(NULL), ref_dist(0), ref_ang(0), tracking_on(true),
+        move_target (pcl::PointXYZ(0, 0, 0)), move_vel (0), move_phi (0),
+        move_rot_vel (0), move_epsilon (0.1), move_rot_epsilon (0), prev_angl (0),
+        prev_pos (pcl::PointXYZ (0, 0, 0)), move_done (true), rot_done (true) {}
+    ~MotionServer ();
+    void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
+    void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
+    void set_ref_wall (Line_param *wall);
+    void track ();
+    void untrack ();
+    void set_angles_current ();
+    bool rotate(double angle);
+    bool move_parallel(double vel);
+    bool move_perpendicular(double shift);
+    void spin_once();
+    void clear_cmd();
+    void lock() {this->mutex->lock(); }
+    void unlock() {this->mutex->unlock(); }
+    void set_target_angle (double angle) {this->ref_ang  = angle; }
+    void set_target_dist  (double dist ) {this->ref_dist = dist;  }
+    void move(pcl::PointXYZ target, double vel, double phi, double rot_vel);
+    void move_step();
+};
+
+
 struct Passage_type
 {
     int type;
@@ -196,7 +211,6 @@ struct Passage_type
                       opposite_exist(false), middle_exist(false) {}
 
     int recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side);
-
 };
 
 #endif // PASSAGEFINDER_H
