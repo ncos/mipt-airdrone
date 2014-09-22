@@ -15,6 +15,7 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/message_filter.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <nav_msgs/Odometry.h>
 
 #include "lines.h"
 #include "da_vinci.h" // Draw in Rviz
@@ -103,7 +104,17 @@ private:
                       (this is too little to provide an adequate position estimation)", this->laser_cloud->points.size());
         }
         this->update_shrinked_cloud(shrink_order);
-        this->loc_srv.spin_once(this->laser_cloud);
+
+        tf::StampedTransform map_to_cloud_tf;
+        try {
+            this->tf_listener.lookupTransform(this->laser_cloud->header.frame_id, fixed_frame, ros::Time(0), map_to_cloud_tf);
+        }
+        catch (tf::TransformException &ex) {
+            ROS_ERROR("%s", ex.what());
+            ros::Duration(1.0).sleep();
+        }
+
+        this->loc_srv.spin_once(this->laser_cloud, map_to_cloud_tf);
 
         //this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_left(), 10, BLUE);
 

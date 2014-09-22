@@ -4,6 +4,8 @@
 #include <vector>
 #include <cmath>
 
+#include <boost/assign/list_of.hpp> // for 'list_of()'
+
 #include <ros/ros.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -13,12 +15,15 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/extract_indices.h>
+#include <tf/tf.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
-
+#include <nav_msgs/Odometry.h>
 
 extern int min_points_in_line;
 extern int min_points_in_cloud;
+extern std::string fixed_frame;
+extern std::string base_frame;
 
 class VectorMath
 {
@@ -141,11 +146,11 @@ public:
 
 public:
     // returns the common error of the match
-    double match(std::vector<Line_param> l1, std::vector<Line_param> l2,
+    static double match(std::vector<Line_param> l1, std::vector<Line_param> l2,
                  std::vector<BruteForceMatcher::Pair> &matched, std::vector<Line_param> &unmatched);
 
 private:
-    unsigned int get_best_fit(Line_param &line, std::vector<Line_param> &lines);
+    static unsigned int get_best_fit(Line_param &line, std::vector<Line_param> &lines);
 
 };
 
@@ -154,15 +159,10 @@ class LocationServer
 {
 public:
     Line_map lm;
-private:
-    double yaw;
 
 public:
-    LocationServer () : yaw(0) {};
-    double get_yaw()   {return this->yaw; }
-    void   reset_yaw() {this->yaw = 0.0; }
-
-    void   spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud);
+    LocationServer () {};
+    nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform map_to_cloud_tf);
 
 };
 
