@@ -144,6 +144,7 @@ void GazeboRosSonar::Update()
     if (range_.range > range_.max_range) range_.range = range_.max_range;
   }
 
+  ROS_ERROR("Range %f", range_.range);
   publisher_.publish(range_);
 }
 
