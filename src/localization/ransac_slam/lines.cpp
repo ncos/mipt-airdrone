@@ -210,14 +210,15 @@ double LineMetrics::get_error (double delta1, double delta2)
 // *****************************************
 double BruteForceMatcher::match(std::vector<Line_param> l1, std::vector<Line_param> l2,
                                 std::vector<BruteForceMatcher::Pair> &matched, std::vector<Line_param> &unmatched) {
+    const double unmatch_penalty = 90;
     if (l1.size() == 0) {
         unmatched = l2;
-        return 0;
+        return unmatch_penalty * unmatched.size();
     }
 
     if (l2.size() == 0) {
         unmatched = l1;
-        return 0;
+        return unmatch_penalty * unmatched.size();
     }
 
     Line_param query_line = l1.back();
@@ -226,7 +227,7 @@ double BruteForceMatcher::match(std::vector<Line_param> l1, std::vector<Line_par
     l1.pop_back();
     std::vector<BruteForceMatcher::Pair> matched_0;
     std::vector<Line_param> unmatched_0;
-    double err_0 = match(l1, l2, matched_0, unmatched_0);
+    double err_0 = match(l1, l2, matched_0, unmatched_0) + unmatch_penalty;
 
     // vec1: 2 3 4 5
     // vec2: 1 2 4 5 ('1' did not vanish)
@@ -288,11 +289,24 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
                                         to provide reliable pose estimation", cloud->points.size());
         return result_pose;
     }
+    std::vector<Line_param> lines_old = this->lm.lines;
     this->lm.renew(cloud);
+    std::vector<BruteForceMatcher::Pair> matched;
+    std::vector<Line_param> unmatched;
+    BruteForceMatcher::match(lines_old, this->lm.lines, matched, unmatched);
 
+    /*
+    ROS_INFO("matched: %lu", matched.size());
+    for (int i = 0; i < matched.size(); ++i) {
+        matched.at(i).l1
 
+                matched.at(i).l2
 
+    }
+    */
     double delta_yaw = 0;
+
+
 
     result_pose.pose.pose.position.x = fixed_to_base.getOrigin().x();
     result_pose.pose.pose.position.y = fixed_to_base.getOrigin().y();
