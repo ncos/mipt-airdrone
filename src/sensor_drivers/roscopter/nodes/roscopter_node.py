@@ -3,6 +3,7 @@ import os
 import sys
 import struct
 import time
+import serial
 
 import roslib; roslib.load_manifest('roscopter')
 import rospy
@@ -37,6 +38,10 @@ parser.add_option("--enable-control",dest="enable_control", default=True, help="
 (opts, args) = parser.parse_args()
 
 import mavutil
+
+# Close connection if exist
+serialport = serial.Serial(opts.device)
+serialport.close()
 
 # create a mavlink serial instance
 master = mavutil.mavlink_connection(opts.device, baud=opts.baudrate)
