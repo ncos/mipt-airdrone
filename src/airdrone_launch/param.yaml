@@ -49,6 +49,7 @@ ransac_slam/publish_tf: true
 ransac_slam/use_sonar_data: true
 ransac_slam/input_sonar_topic: '/sonar_height'
 ransac_slam/output_odom_topic: '/ransac_slam/odom_out'
+ransac_slam/kinect_depth_optical_frame: '/kinect_depth_optical_frame'
 
 
 

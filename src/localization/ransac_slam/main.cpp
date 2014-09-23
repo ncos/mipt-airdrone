@@ -34,6 +34,7 @@ std::string visualization_topic; // Rviz markers
 bool publish_clouds;
 std::string fixed_frame;
 std::string base_frame;
+std::string kinect_depth_optical_frame;
 std::string output_frame;
 std::string output_odom_topic;
 bool publish_tf;
@@ -67,7 +68,14 @@ public:
         this->pub_odom_out = n.advertise<nav_msgs::Odometry> (output_odom_topic, 1);
         if (use_sonar_data == false) this->sonar_sub.shutdown();
 
-        this->tf_listener.waitForTransform(base_frame, fixed_frame, ros::Time(0), ros::Duration(10.0) );
+        try {
+            this->tf_listener.waitForTransform(base_frame, fixed_frame, ros::Time(0), ros::Duration(10.0) );
+            this->tf_listener.waitForTransform(fixed_frame, kinect_depth_optical_frame, ros::Time(0), ros::Duration(10.0) );
+        }
+        catch (tf::TransformException &ex) {
+            ROS_ERROR("%s", ex.what());
+            ros::Duration(1.0).sleep();
+        }
     }
 
 private:
@@ -97,10 +105,6 @@ private:
             ROS_ERROR("rgbdCallback: The input cloud size is %lu points! \
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
-
-        ROS_ERROR("frames: %s -> %s", base_frame.c_str(), ("/" + pcl_conversions::fromPCL(laser_cloud->header).frame_id).c_str());
-        //if (!all_trasforms_are_initialized)
-        //    this->tf_listener.waitForTransform(pcl_conversions::fromPCL(laser_cloud->header).frame_id, base_frame, ros::Time(0), ros::Duration(10.0) );
 
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
@@ -139,16 +143,12 @@ private:
         }
 
         this->pub_odom_out.publish(map_to_cloud);
-        this->all_trasforms_are_initialized = true;
     }
 
 
     void sonarCallback (const sensor_msgs::Range range_msg) {
         this->loc_srv.range_from_sonar = range_msg.range;
     }
-
-
-
 };
 
 
@@ -173,6 +173,7 @@ int main(int argc, char** argv)
     if (!nh.getParam("ransac_slam/publish_clouds", publish_clouds)) publish_clouds = true;
     if (!nh.getParam("ransac_slam/fixed_frame", fixed_frame)) fixed_frame = "/odom";
     if (!nh.getParam("ransac_slam/base_frame", base_frame)) base_frame = "/base_stabilized";
+    if (!nh.getParam("ransac_slam/kinect_depth_optical_frame", kinect_depth_optical_frame)) kinect_depth_optical_frame = "/kinect_depth_optical_frame";
     if (!nh.getParam("ransac_slam/output_frame", output_frame)) output_frame = "/ransac_slam/tf_output";
     if (!nh.getParam("ransac_slam/publish_tf", publish_tf)) publish_tf = true;
     if (!nh.getParam("ransac_slam/use_sonar_data", use_sonar_data)) use_sonar_data = true;

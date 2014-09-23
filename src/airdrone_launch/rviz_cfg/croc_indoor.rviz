@@ -10,7 +10,6 @@ Panels:
         - /PointCloud21
         - /Marker1
         - /Odometry1
-        - /Odometry1/Status1
       Splitter Ratio: 0.67658
     Tree Height: 819
   - Class: rviz/Selection
@@ -177,8 +176,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -11.278
-        Min Value: -16.9934
+        Max Value: -11.2791
+        Min Value: -16.9917
         Value: true
       Axis: X
       Channel Name: intensity
@@ -219,14 +218,14 @@ Visualization Manager:
       Name: Map
       Topic: ""
       Value: false
-    - Angle Tolerance: 0.1
+    - Angle Tolerance: 0.01
       Class: rviz/Odometry
       Color: 255; 25; 0
       Enabled: true
-      Keep: 100
+      Keep: 1
       Length: 1
       Name: Odometry
-      Position Tolerance: 0.1
+      Position Tolerance: 0.01
       Topic: /ransac_slam/odom_out
       Value: true
   Enabled: true
@@ -253,22 +252,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 16.478
+      Distance: 42.4533
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 12.2741
-        Y: 28.0085
-        Z: 3.54216
+        X: 14.8422
+        Y: 14.2788
+        Z: -1.09902
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.5048
+      Pitch: 0.4048
       Target Frame: base_stabilized
       Value: Orbit (rviz)
-      Yaw: 1.8404
+      Yaw: 1.7354
     Saved: ~
 Window Geometry:
   Displays:
@@ -286,5 +285,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1855
-  X: 55
+  X: 47
   Y: 14
