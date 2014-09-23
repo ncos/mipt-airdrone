@@ -404,6 +404,7 @@ void MotionServer::spin_once()
         double vel_k = - this->pid_vel.get_output(this->ref_dist, this->ref_wall->distance);
         this->base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + this->buf_cmd.linear.x;
         this->base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + this->buf_cmd.linear.y;
+        this->base_cmd.linear.z  += this->buf_cmd.linear.z;
 	}
 	else {
 	    this->base_cmd.linear.x  += this->buf_cmd.linear.x;
@@ -421,6 +422,7 @@ void MotionServer::move(pcl::PointXYZ target, double vel, double phi, double rot
     if (isnan(target.x) || isnan(target.y) || isnan(phi)) {
         this->move_done = true;
         this->rot_done = true;
+        this->unlock();
         return;
     }
 
@@ -433,6 +435,20 @@ void MotionServer::move(pcl::PointXYZ target, double vel, double phi, double rot
     this->prev_angl = this->map_srv->get_global_angle();
     this->prev_pos = this->map_srv->get_global_positon();
     this->untrack();
+
+    this->unlock();
+}
+
+void MotionServer::set_height(double height) {
+    this->lock();
+    if (isnan(height)) {
+        this->height_done = true;
+        this->unlock();
+        return;
+    }
+
+    this->target_height = height;
+    this->height_done = false;
 
     this->unlock();
 }
@@ -473,6 +489,47 @@ void MotionServer::move_step() {
         this->move_phi = this->move_phi > 360 ? (this->move_phi - 360) : this->move_phi;
         this->buf_cmd.angular.z = this->move_rot_vel;
     }
+}
+
+void MotionServer::altitude_step() {
+    PID pid_vel(1, 0.5, 0.5);
+
+    tf::StampedTransform transform;
+    try {
+        this->listener.lookupTransform(base_footprint_frame, base_stabilized_frame,
+                                        ros::Time(0), transform);
+    }
+    catch (tf::TransformException &ex) {
+        ROS_ERROR("Unable to transform: %s",ex.what());
+        ros::Duration(0.1).sleep();
+    }
+
+    double tmp_vel = pid_vel.get_output(this->target_height, transform.getOrigin().z());
+
+    this->height = transform.getOrigin().z();
+
+    if (fabs(this->target_height - this->height) < this->height_epsilon) {
+        this->height_done = true;
+    }
+
+    if (fabs(this->prev_height - this->height) < this->height_epsilon / 10 &&
+        fabs(this->vert_vel) > this->height_epsilon) {
+        this->on_floor = true;
+    }
+    else {
+        this->on_floor = false;
+    }
+
+    if (!(this->on_floor && tmp_vel < 0)) {
+        this->buf_cmd.linear.z = tmp_vel;
+    }
+
+    this->vert_vel = tmp_vel;
+
+    char text[20];
+    sprintf(text, "Height = %f", this->height);
+    this->height_text.text = text;
+    this->pub_mrk.publish(this->height_text);
 }
 
 // *****************************************
