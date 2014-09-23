@@ -124,16 +124,17 @@ private:
         }
         this->update_shrinked_cloud(shrink_order);
 
-        tf::StampedTransform map_to_cloud_tf;
+        tf::StampedTransform fixed_to_base, base_to_cloud;
         try {
-            this->tf_listener.lookupTransform(this->laser_cloud->header.frame_id, fixed_frame, ros::Time(0), map_to_cloud_tf);
+            this->tf_listener.lookupTransform(fixed_frame, base_frame, ros::Time(0), fixed_to_base);
+            this->tf_listener.lookupTransform(base_frame, this->laser_cloud->header.frame_id, ros::Time(0), base_to_cloud);
         }
         catch (tf::TransformException &ex) {
             ROS_ERROR("%s", ex.what());
             ros::Duration(1.0).sleep();
         }
 
-        nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, map_to_cloud_tf);
+        nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);
 
         //this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_left(), 10, BLUE);
 

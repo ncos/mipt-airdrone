@@ -279,7 +279,8 @@ unsigned int BruteForceMatcher::get_best_fit(Line_param &line, std::vector<Line_
 // *****************************************
 //              Location server
 // *****************************************
-nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform map_to_cloud_tf)
+nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base,
+                                                                                                    tf::Transform base_to_cloud)
 {
     nav_msgs::Odometry result_pose;
     if (cloud->points.size() < min_points_in_cloud) {
@@ -291,12 +292,15 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
 
 
 
+    double delta_yaw = 0;
 
-    result_pose.pose.pose.position.x = 0;
-    result_pose.pose.pose.position.y = 0;
+    result_pose.pose.pose.position.x = fixed_to_base.getOrigin().x();
+    result_pose.pose.pose.position.y = fixed_to_base.getOrigin().y();
     result_pose.pose.pose.position.z = this->range_from_sonar;
 
-    tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0, 0, 0), result_pose.pose.pose.orientation);
+
+    tf::quaternionTFToMsg(fixed_to_base.getRotation() * tf::createQuaternionFromRPY(0, 0, delta_yaw), result_pose.pose.pose.orientation);
+
     result_pose.pose.covariance =   boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
                                                           (0) (1e-3)  (0)  (0)  (0)  (0)
                                                           (0)   (0)  (1e6) (0)  (0)  (0)
@@ -305,7 +309,7 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
                                                           (0)   (0)   (0)  (0)  (0)  (1e3);
 
 
-    result_pose.child_frame_id  = fixed_frame;
+    result_pose.child_frame_id  = base_frame;
     result_pose.header.frame_id = fixed_frame;
     result_pose.header.stamp = ros::Time::now();
     return result_pose;

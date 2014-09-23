@@ -176,8 +176,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -11.2791
-        Min Value: -16.9917
+        Max Value: -0.707321
+        Min Value: -1.9146
         Value: true
       Axis: X
       Channel Name: intensity
@@ -218,14 +218,14 @@ Visualization Manager:
       Name: Map
       Topic: ""
       Value: false
-    - Angle Tolerance: 0.01
+    - Angle Tolerance: 0.001
       Class: rviz/Odometry
       Color: 255; 25; 0
       Enabled: true
       Keep: 1
       Length: 1
       Name: Odometry
-      Position Tolerance: 0.01
+      Position Tolerance: 0.001
       Topic: /ransac_slam/odom_out
       Value: true
   Enabled: true
@@ -252,22 +252,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 42.4533
+      Distance: 9.47869
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 14.8422
-        Y: 14.2788
-        Z: -1.09902
+        X: -1.28473
+        Y: 0.510895
+        Z: -0.162457
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.4048
+      Pitch: 0.819797
       Target Frame: base_stabilized
       Value: Orbit (rviz)
-      Yaw: 1.7354
+      Yaw: 0.340403
     Saved: ~
 Window Geometry:
   Displays:
@@ -285,5 +285,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1855
-  X: 47
+  X: 55
   Y: 14

@@ -164,7 +164,7 @@ public:
 public:
     LocationServer (): range_from_sonar(0)
                                        {};
-    nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform map_to_cloud_tf);
+    nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base, tf::Transform base_to_cloud);
 
 };
 
