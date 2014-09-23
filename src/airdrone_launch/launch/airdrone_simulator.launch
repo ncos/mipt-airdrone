@@ -4,7 +4,6 @@
   <arg name="input_rgb_image_raw_topic"     default="/sensors/kinect/rgb/image_raw"/>
   <arg name="input_rgb_camera_info_topic"   default="/sensors/kinect/rgb/camera_info"/>
 
-  <node pkg="tf" type="static_transform_publisher" name="world2odom" args="0 0 0 0 0 0 world odom 50" />
 
   <node pkg="ransac_slam"    name="ransac_slam"         type="ransac_slam_nd"    output="screen" required="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />

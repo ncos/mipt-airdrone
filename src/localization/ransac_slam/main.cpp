@@ -15,6 +15,7 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/message_filter.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <sensor_msgs/Range.h>
 #include <nav_msgs/Odometry.h>
 
 #include "lines.h"
@@ -34,8 +35,10 @@ bool publish_clouds;
 std::string fixed_frame;
 std::string base_frame;
 std::string output_frame;
+std::string output_odom_topic;
 bool publish_tf;
-
+bool use_sonar_data;
+std::string input_sonar_topic;
 
 class CloudProcessor
 {
@@ -43,21 +46,28 @@ private:
     ros::NodeHandle n_;
     pcl::PointCloud<pcl::PointXYZ>::Ptr laser_cloud;
     pcl::PointCloud<pcl::PointXYZ>::Ptr laser_cloud_shrinked;
-    ros::Subscriber cloud_sub;
-    ros::Publisher  pub_laser_cloud;
-    ros::Publisher  pub_laser_cloud_shrinked;
+    ros::Subscriber cloud_sub, sonar_sub;
+    ros::Publisher pub_laser_cloud, pub_laser_cloud_shrinked;
+    ros::Publisher pub_odom_out;
     tf::TransformListener tf_listener;
     tf::TransformBroadcaster tf_broadcaster;
     LocationServer loc_srv;
     DaVinci davinci;
+    bool all_trasforms_are_initialized;
 
 public:
     CloudProcessor(ros::NodeHandle n) : n_(n), davinci(n, visualization_topic),
                                         laser_cloud(new pcl::PointCloud<pcl::PointXYZ>),
                                         laser_cloud_shrinked(new pcl::PointCloud<pcl::PointXYZ>) {
+        this->all_trasforms_are_initialized = false;
         this->cloud_sub = n.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_cloud_topic, 1, &CloudProcessor::rgbdCallback, this);
+        this->sonar_sub = n.subscribe<sensor_msgs::Range> (input_sonar_topic, 1, &CloudProcessor::sonarCallback, this);
         this->pub_laser_cloud = n.advertise<pcl::PointCloud<pcl::PointXYZ> > (output_cloud_topic, 1);
         this->pub_laser_cloud_shrinked = n.advertise<pcl::PointCloud<pcl::PointXYZ> > (output_cloud_shrinked_topic, 1);
+        this->pub_odom_out = n.advertise<nav_msgs::Odometry> (output_odom_topic, 1);
+        if (use_sonar_data == false) this->sonar_sub.shutdown();
+
+        this->tf_listener.waitForTransform(base_frame, fixed_frame, ros::Time(0), ros::Duration(10.0) );
     }
 
 private:
@@ -65,13 +75,14 @@ private:
     {
         bool operator() (pcl::PointXYZ point_1, pcl::PointXYZ point_2) {
             if(point_1.z == 0 || point_2.z == 0) return true;
-            return ((point_1.x/point_1.z) < (point_2.x/point_2.z) );
+            return ((point_1.x / point_1.z) < (point_2.x / point_2.z) );
         }
-    } cmp_class;
+    } cloud_cmp_class;
 
     void update_shrinked_cloud(unsigned int order) {
         this->laser_cloud_shrinked->clear();
         if (this->laser_cloud->points.size() == 0) return;
+        if (order == 0) return;
 
         for (int i = 0; i < this->laser_cloud->points.size(); ++i) {
             if (i % order == 0) {
@@ -87,6 +98,10 @@ private:
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
 
+        ROS_ERROR("frames: %s -> %s", base_frame.c_str(), ("/" + pcl_conversions::fromPCL(laser_cloud->header).frame_id).c_str());
+        //if (!all_trasforms_are_initialized)
+        //    this->tf_listener.waitForTransform(pcl_conversions::fromPCL(laser_cloud->header).frame_id, base_frame, ros::Time(0), ros::Duration(10.0) );
+
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
@@ -98,7 +113,7 @@ private:
             this->laser_cloud->points[i].y = 0;
         }
 
-        std::sort (this->laser_cloud->points.begin(), this->laser_cloud->points.end(), this->cmp_class); // Sorting by angle
+        std::sort (this->laser_cloud->points.begin(), this->laser_cloud->points.end(), this->cloud_cmp_class); // Sorting by angle
         if(this->laser_cloud->points.size() < min_points_in_cloud) {
             ROS_ERROR("rgbdCallback: The cloud size after processing is %lu points! \
                       (this is too little to provide an adequate position estimation)", this->laser_cloud->points.size());
@@ -114,31 +129,24 @@ private:
             ros::Duration(1.0).sleep();
         }
 
-        this->loc_srv.spin_once(this->laser_cloud, map_to_cloud_tf);
+        nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, map_to_cloud_tf);
 
         //this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_left(), 10, BLUE);
-
-
-        tf::Transform motion = this->estimate_motion();
 
         if (publish_clouds) {
             this->pub_laser_cloud.publish(this->laser_cloud);
             this->pub_laser_cloud_shrinked.publish(this->laser_cloud_shrinked);
         }
+
+        this->pub_odom_out.publish(map_to_cloud);
+        this->all_trasforms_are_initialized = true;
     }
 
 
-
-    tf::Transform estimate_motion() {
-        tf::Transform motion;
-        motion.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
-
-        tf::Quaternion q = tf::createQuaternionFromRPY(0, 0, 0);
-        motion.setRotation(q);
-        this->tf_broadcaster.sendTransform(tf::StampedTransform(motion, ros::Time::now(), fixed_frame, output_frame));
-
-        return motion;
+    void sonarCallback (const sensor_msgs::Range range_msg) {
+        this->loc_srv.range_from_sonar = range_msg.range;
     }
+
 
 
 };
@@ -167,6 +175,9 @@ int main(int argc, char** argv)
     if (!nh.getParam("ransac_slam/base_frame", base_frame)) base_frame = "/base_stabilized";
     if (!nh.getParam("ransac_slam/output_frame", output_frame)) output_frame = "/ransac_slam/tf_output";
     if (!nh.getParam("ransac_slam/publish_tf", publish_tf)) publish_tf = true;
+    if (!nh.getParam("ransac_slam/use_sonar_data", use_sonar_data)) use_sonar_data = true;
+    if (!nh.getParam("ransac_slam/input_sonar_topic", input_sonar_topic)) input_sonar_topic = "/sonar_height";
+    if (!nh.getParam("ransac_slam/output_odom_topic", output_odom_topic)) output_odom_topic = "/ransac_slam/odom_out";
 
 
     CloudProcessor cp(nh);

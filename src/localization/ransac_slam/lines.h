@@ -159,9 +159,11 @@ class LocationServer
 {
 public:
     Line_map lm;
+    double range_from_sonar;
 
 public:
-    LocationServer () {};
+    LocationServer (): range_from_sonar(0)
+                                       {};
     nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform map_to_cloud_tf);
 
 };

@@ -32,6 +32,26 @@ apf_min_angl: -25
 apf_max_angl:  25
 apf_better_q:  1   # 1 is more computationally demanding but gives less false alarms in door detection    
 
+
+# RANSAC SLAM configuration:
+ransac_slam/min_points_in_line: 50
+ransac_slam/min_points_in_cloud: 10
+ransac_slam/input_cloud_topic: '/sensors/kinect/depth/points'
+ransac_slam/output_cloud_topic: '/ransac_slam/flat_cloud'
+ransac_slam/shrink_order: 50
+ransac_slam/output_cloud_shrinked_topic: '/ransac_slam/shrinked_flat_cloud'
+ransac_slam/visualization_topic: '/ransac_slam/markers'
+ransac_slam/publish_clouds: true
+ransac_slam/fixed_frame: '/odom'
+ransac_slam/base_frame: '/base_stabilized'
+ransac_slam/output_frame: '/ransac_slam/tf_output'
+ransac_slam/publish_tf: true
+ransac_slam/use_sonar_data: true
+ransac_slam/input_sonar_topic: '/sonar_height'
+ransac_slam/output_odom_topic: '/ransac_slam/odom_out'
+
+
+
 # Move function euristic constants
 move_epsilon:  0.1
 
@@ -41,5 +61,7 @@ rot_epsilon: 5
 wall_ang_eps: 5
 angle_to_pass: 30
 
-
+# Manual control (on/off)
 keyboard_control: false
+
+

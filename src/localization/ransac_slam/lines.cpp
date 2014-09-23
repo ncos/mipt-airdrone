@@ -294,7 +294,7 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
 
     result_pose.pose.pose.position.x = 0;
     result_pose.pose.pose.position.y = 0;
-    result_pose.pose.pose.position.z = 0;
+    result_pose.pose.pose.position.z = this->range_from_sonar;
 
     tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0, 0, 0), result_pose.pose.pose.orientation);
     result_pose.pose.covariance =   boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
@@ -304,20 +304,6 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
                                                           (0)   (0)   (0)  (0) (1e6) (0)
                                                           (0)   (0)   (0)  (0)  (0)  (1e3);
 
-    result_pose.twist.twist.angular.x = 0;
-    result_pose.twist.twist.angular.y = 0;
-    result_pose.twist.twist.angular.z = 0;
-
-    result_pose.twist.twist.linear.x = 0;
-    result_pose.twist.twist.linear.y = 0;
-    result_pose.twist.twist.linear.z = 0;
-
-    result_pose.twist.covariance =  boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
-                                                          (0) (1e-3)  (0)  (0)  (0)  (0)
-                                                          (0)   (0)  (1e6) (0)  (0)  (0)
-                                                          (0)   (0)   (0) (1e6) (0)  (0)
-                                                          (0)   (0)   (0)  (0) (1e6) (0)
-                                                          (0)   (0)   (0)  (0)  (0)  (1e3);
 
     result_pose.child_frame_id  = fixed_frame;
     result_pose.header.frame_id = fixed_frame;
