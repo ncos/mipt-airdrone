@@ -87,6 +87,7 @@ void GazeboRosSonar::Load(sensors::SensorPtr _sensor, sdf::ElementPtr _sdf)
   range_.field_of_view = std::min(fabs((sensor_->GetAngleMax() - sensor_->GetAngleMin()).Radian()), fabs((sensor_->GetVerticalAngleMax() - sensor_->GetVerticalAngleMin()).Radian()));
   range_.max_range = sensor_->GetRangeMax();
   range_.min_range = sensor_->GetRangeMin();
+  range_.min_range = 0.3;
 
   // Make sure the ROS node for Gazebo has already been initialized
   if (!ros::isInitialized())
@@ -144,7 +145,6 @@ void GazeboRosSonar::Update()
     if (range_.range > range_.max_range) range_.range = range_.max_range;
   }
 
-  ROS_ERROR("Range %f", range_.range);
   publisher_.publish(range_);
 }
 
