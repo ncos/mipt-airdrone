@@ -69,7 +69,6 @@ public:
         if (use_sonar_data == false) this->sonar_sub.shutdown();
 
         try {
-            this->tf_listener.waitForTransform(base_frame, fixed_frame, ros::Time(0), ros::Duration(10.0) );
             this->tf_listener.waitForTransform(fixed_frame, kinect_depth_optical_frame, ros::Time(0), ros::Duration(10.0) );
         }
         catch (tf::TransformException &ex) {
@@ -131,12 +130,28 @@ private:
         }
         catch (tf::TransformException &ex) {
             ROS_ERROR("%s", ex.what());
-            ros::Duration(1.0).sleep();
+            fixed_to_base.setIdentity();
+            base_to_cloud.setIdentity();
         }
+
 
         nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);
 
-        //this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), loc_srv.get_crn_wall_left(), 10, BLUE);
+        ROS_INFO("matched: %lu", this->loc_srv.matched_dbg.size());
+        if (this->loc_srv.matched_dbg.size() > 0) {
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(0).l1, 10 + 0, BLUE);
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(0).l2, 10 + 1, BLUE);
+        }
+        if (this->loc_srv.matched_dbg.size() > 1) {
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(1).l1, 10 + 2, GOLD);
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(1).l2, 10 + 3, GOLD);
+        }
+        if (this->loc_srv.matched_dbg.size() > 2) {
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(2).l1, 10 + 4, CYAN);
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(2).l2, 10 + 5, CYAN);
+        }
+
+
 
         if (publish_clouds) {
             this->pub_laser_cloud.publish(this->laser_cloud);
@@ -178,7 +193,7 @@ int main(int argc, char** argv)
     if (!nh.getParam("ransac_slam/output_frame", output_frame)) output_frame = "/ransac_slam/tf_output";
     if (!nh.getParam("ransac_slam/publish_tf", publish_tf)) publish_tf = true;
     if (!nh.getParam("ransac_slam/use_sonar_data", use_sonar_data)) use_sonar_data = true;
-    if (!nh.getParam("ransac_slam/input_sonar_topic", input_sonar_topic)) input_sonar_topic = "/sonar_height";
+    if (!nh.getParam("ransac_slam/input_sonar_topic", input_sonar_topic)) input_sonar_topic = "/sensors/sonar_height";
     if (!nh.getParam("ransac_slam/output_odom_topic", output_odom_topic)) output_odom_topic = "/ransac_slam/odom_out";
 
 

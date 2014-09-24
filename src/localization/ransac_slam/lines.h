@@ -42,7 +42,7 @@ public:
 
     static double len(pcl::PointXYZ p1) {
         return sqrt(dot(p1, p1));
-    }
+    };
 
     static pcl::PointXYZ to_e(pcl::PointXYZ p1) {
         pcl::PointXYZ result;
@@ -50,7 +50,7 @@ public:
         result.y = p1.y / len(p1);
         result.z = p1.z / len(p1);
         return result;
-    }
+    };
 };
 
 
@@ -160,11 +160,14 @@ class LocationServer
 public:
     Line_map lm;
     double range_from_sonar;
+    std::vector<BruteForceMatcher::Pair> matched_dbg;
 
 public:
-    LocationServer (): range_from_sonar(0)
-                                       {};
+    LocationServer (): range_from_sonar(0)                                   {};
     nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base, tf::Transform base_to_cloud);
+
+private:
+    void estimate_motion(BruteForceMatcher::Pair pair, double &delta_yaw);
 
 };
 
