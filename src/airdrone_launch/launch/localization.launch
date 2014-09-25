@@ -1,7 +1,7 @@
 <launch>
   <arg name="input_depth_points_topic"   default="/sensors/kinect/depth/points"/>
   <arg name="fixed_frame"                default="/odom"/>
-  <arg name="base_footprint_frame"            default="/base_footprint"/>
+  <arg name="base_footprint_frame"       default="/base_footprint_"/>
   <arg name="base_stabilized_frame"      default="/base_stabilized"/>
   <arg name="base_link_frame"            default="/base_link"/>
   <arg name="kinect_depth_optical_frame" default="/kinect_depth_optical_frame"/>
@@ -10,25 +10,25 @@
 
   <node pkg="ransac_slam" name="ransac_slam" type="ransac_slam_nd" output="screen" required="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
-    <param name="ransac_slam/input_cloud_topic"           value="$(arg input_depth_points_topic)"/>
-    <param name="ransac_slam/publish_clouds"              value="true"/>
-    <param name="ransac_slam/output_cloud_topic"          value="/ransac_slam/flat_cloud"/>
-    <param name="ransac_slam/output_cloud_shrinked_topic" value="/ransac_slam/shrinked_flat_cloud"/>
-    <param name="ransac_slam/visualization_topic"         value="/ransac_slam/markers"/>
-    <param name="ransac_slam/fixed_frame"                 value="$(arg fixed_frame)"/>
-    <param name="ransac_slam/base_frame"                  value="$(arg base_stabilized_frame)"/>
-    <param name="ransac_slam/publish_tf"                  value="true"/>
-    <param name="ransac_slam/output_frame"                value="/ransac_slam/tf_output"/>
-    <param name="ransac_slam/use_sonar_data"              value="true"/>
-    <param name="ransac_slam/input_sonar_topic"           value="$(arg input_sonar_topic)"/>
-    <param name="ransac_slam/output_odom_topic"           value="/ransac_slam/odom_out"/>
-    <param name="ransac_slam/kinect_depth_optical_frame"  value="$(arg kinect_depth_optical_frame)"/>
+    <param name="input_cloud_topic"           value="$(arg input_depth_points_topic)"/>
+    <param name="publish_clouds"              value="true"/>
+    <param name="output_cloud_topic"          value="/ransac_slam/flat_cloud"/>
+    <param name="output_cloud_shrinked_topic" value="/ransac_slam/shrinked_flat_cloud"/>
+    <param name="visualization_topic"         value="/ransac_slam/markers"/>
+    <param name="fixed_frame"                 value="$(arg fixed_frame)"/>
+    <param name="base_frame"                  value="$(arg base_stabilized_frame)"/>
+    <param name="publish_tf"                  value="true"/>
+    <param name="output_frame"                value="/ransac_slam/tf_output"/>
+    <param name="use_sonar_data"              value="true"/>
+    <param name="input_sonar_topic"           value="$(arg input_sonar_topic)"/>
+    <param name="output_odom_topic"           value="/ransac_slam/odom_out"/>
+    <param name="kinect_depth_optical_frame"  value="$(arg kinect_depth_optical_frame)"/>
   </node>
 
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
     <param name="output_frame"   value="$(arg fixed_frame)"/>
     <param name="freq"           value="30.0"/>
-    <param name="sensor_timeout" value="10"/>
+    <param name="sensor_timeout" value="1"/>
     <param name="publish_tf"     value="false" />
     <param name="odom_used"      value="false"/>
     <param name="imu_used"       value="false"/>
@@ -38,13 +38,13 @@
     <remap from="/vo"            to="/ransac_slam/odom_out" />
     <remap from="/imu_data"      to="$(arg input_imu_topic)" />
   </node>
-<!--
-  <node pkg="tf_manager" type="tf_manager_nd" name="airdrone_tf_manager">
-    <param name="tf_manager/input_pose_topic"             value="/robot_pose_ekf/odom"/>
-    <param name="tf_manager/fixed_frame"                  value="$(arg fixed_frame)"/>
-    <param name="tf_manager/base_footprint_frame"         value="$(arg base_footprint_frame)"/>
-    <param name="tf_manager/base_stabilized_frame"        value="$(arg base_stabilized_frame)"/>
-    <param name="tf_manager/base_link_frame"              value="$(arg base_link_frame)"/>
+
+  <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager">
+    <param name="input_pose_topic"             value="/robot_pose_ekf/odom"/>
+    <param name="fixed_frame"                  value="$(arg fixed_frame)"/>
+    <param name="base_footprint_frame"         value="$(arg base_footprint_frame)"/>
+    <param name="base_stabilized_frame"        value="$(arg base_stabilized_frame)"/>
+    <param name="base_link_frame"              value="$(arg base_link_frame)"/>
   </node>
--->
+
 </launch>

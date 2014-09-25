@@ -2,7 +2,7 @@
   <include file="$(find airdrone_launch)/launch/localization.launch">
     <param name="input_depth_points_topic"   value="/sensors/kinect/depth/points"/>
     <param name="fixed_frame"                value="/odom"/>
-    <param name="base_footprint_frame"       value="/base_footprint"/>
+    <param name="base_footprint_frame"       value="/base_footprint_"/>
     <param name="base_stabilized_frame"      value="/base_stabilized"/>
     <param name="base_link_frame"            value="/base_link"/>
     <param name="kinect_depth_optical_frame" value="/kinect_depth_optical_frame"/>

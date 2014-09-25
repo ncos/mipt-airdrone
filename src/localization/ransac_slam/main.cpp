@@ -134,7 +134,6 @@ private:
             base_to_cloud.setIdentity();
         }
 
-
         nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);
 
         ROS_INFO("matched: %lu", this->loc_srv.matched_dbg.size());
