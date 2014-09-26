@@ -17,6 +17,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <sensor_msgs/Range.h>
 #include <nav_msgs/Odometry.h>
+#include <ransac_slam/LineMap.h>
 
 #include "lines.h"
 #include "da_vinci.h" // Draw in Rviz
@@ -37,6 +38,7 @@ std::string base_frame;
 std::string kinect_depth_optical_frame;
 std::string output_frame;
 std::string output_odom_topic;
+std::string output_lm_topic;
 bool publish_tf;
 bool use_sonar_data;
 std::string input_sonar_topic;
@@ -49,7 +51,7 @@ private:
     pcl::PointCloud<pcl::PointXYZ>::Ptr laser_cloud_shrinked;
     ros::Subscriber cloud_sub, sonar_sub;
     ros::Publisher pub_laser_cloud, pub_laser_cloud_shrinked;
-    ros::Publisher pub_odom_out;
+    ros::Publisher pub_odom_out, pub_line_map;
     tf::TransformListener tf_listener;
     tf::TransformBroadcaster tf_broadcaster;
     LocationServer loc_srv;
@@ -66,6 +68,8 @@ public:
         this->pub_laser_cloud = n.advertise<pcl::PointCloud<pcl::PointXYZ> > (output_cloud_topic, 1);
         this->pub_laser_cloud_shrinked = n.advertise<pcl::PointCloud<pcl::PointXYZ> > (output_cloud_shrinked_topic, 1);
         this->pub_odom_out = n.advertise<nav_msgs::Odometry> (output_odom_topic, 1);
+        this->pub_line_map = n.advertise<ransac_slam::LineMap> (output_lm_topic, 1);
+
         if (use_sonar_data == false) this->sonar_sub.shutdown();
 
         try {
@@ -151,18 +155,42 @@ private:
         }
 
 
-
+        this->publishLineMap();
         if (publish_clouds) {
             this->pub_laser_cloud.publish(this->laser_cloud);
             this->pub_laser_cloud_shrinked.publish(this->laser_cloud_shrinked);
         }
-
         this->pub_odom_out.publish(map_to_cloud);
     }
 
 
     void sonarCallback (const sensor_msgs::Range range_msg) {
         this->loc_srv.range_from_sonar = range_msg.range;
+    }
+
+    void publishLineMap() {
+        ransac_slam::LineMap lm;
+        lm.number = this->loc_srv.lm.lines.size();
+
+        for (int i = 0; i < lm.number; ++i) {
+            geometry_msgs::Point32 point;
+            point.x = this->loc_srv.lm.lines.at(i).fdir_vec.x;
+            point.y = this->loc_srv.lm.lines.at(i).fdir_vec.y;
+            point.z = this->loc_srv.lm.lines.at(i).fdir_vec.z;
+            point.x *= this->loc_srv.lm.lines.at(i).distance;
+            point.y *= this->loc_srv.lm.lines.at(i).distance;
+            point.z *= this->loc_srv.lm.lines.at(i).distance;
+            lm.dfdirs.push_back(point);
+            point.x = this->loc_srv.lm.lines.at(i).ldir_vec.x;
+            point.y = this->loc_srv.lm.lines.at(i).ldir_vec.y;
+            point.z = this->loc_srv.lm.lines.at(i).ldir_vec.z;
+            lm.ldirs.push_back (point);
+        }
+
+        if (lm.number != 0)
+            lm.header.frame_id = this->loc_srv.lm.lines.at(0).frame;
+        lm.header.stamp = ros::Time::now();
+        this->pub_line_map.publish(lm);
     }
 };
 
@@ -194,6 +222,7 @@ int main(int argc, char** argv)
     if (!nh.getParam("ransac_slam/use_sonar_data", use_sonar_data)) use_sonar_data = true;
     if (!nh.getParam("ransac_slam/input_sonar_topic", input_sonar_topic)) input_sonar_topic = "/sensors/sonar_height";
     if (!nh.getParam("ransac_slam/output_odom_topic", output_odom_topic)) output_odom_topic = "/ransac_slam/odom_out";
+    if (!nh.getParam("ransac_slam/output_lm_topic", output_lm_topic)) output_lm_topic = "/ransac_slam/lm";
 
 
     CloudProcessor cp(nh);

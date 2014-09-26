@@ -163,7 +163,8 @@ public:
     std::vector<BruteForceMatcher::Pair> matched_dbg;
 
 public:
-    LocationServer (): range_from_sonar(0)                                   {};
+    LocationServer (): range_from_sonar(0)
+                                        {};
     nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base, tf::Transform base_to_cloud);
 
 private:

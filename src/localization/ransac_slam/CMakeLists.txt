@@ -21,8 +21,17 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(OpenCV REQUIRED)
 
 
+add_message_files(
+  FILES
+  LineMap.msg
+)
 
-catkin_package()
+generate_messages(   
+  DEPENDENCIES std_msgs sensor_msgs geometry_msgs
+)  
+
+
+catkin_package(CATKIN_DEPENDS message_runtime sensor_msgs std_msgs geometry_msgs)
 
 ###########
 ## Build ##
@@ -44,8 +53,7 @@ add_executable(ransac_slam_nd ${SOURCES})
 target_link_libraries(ransac_slam_nd	 	${catkin_LIBRARIES} 
 						${OpenCV_LIBS} 
 						${PCL_LIBRARIES})
-
-#add_dependencies(ransac_slam_nd ${PROJECT_NAME}_gencpp)
+add_dependencies(ransac_slam_nd ${PROJECT_NAME}_gencpp)
 
 
 

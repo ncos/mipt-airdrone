@@ -8,6 +8,7 @@
     <param name="kinect_depth_optical_frame" value="/kinect_depth_optical_frame"/>
     <param name="input_sonar_topic"          value="/sensors/sonar_height"/>
     <param name="input_imu_topic"            value="/sensors/apm/imu"/>
+    <param name="output_lm_topic"            value="/ransac_slam/lm"/>
   </include>
 
   <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"></node>

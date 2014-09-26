@@ -264,7 +264,7 @@ unsigned int BruteForceMatcher::get_best_fit(Line_param &line, std::vector<Line_
     for (unsigned int i = 0; i < lines.size(); ++i) {
         if (lines[i].frame != line.frame) {
             ROS_ERROR("ransac_slam/lines.cpp: Unable to compare\
-                      lines with different frames! ('%s' and '%s')", lines[i].frame.c_str(), line.frame.c_str());
+                       lines with different frames! ('%s' and '%s')", lines[i].frame.c_str(), line.frame.c_str());
             return i;
         }
         double err_ = LineMetrics::get_error(line, lines[i]);
@@ -318,8 +318,6 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
                                                           (0)   (0)   (0) (1e6) (0)  (0)
                                                           (0)   (0)   (0)  (0) (1e6) (0)
                                                           (0)   (0)   (0)  (0)  (0)  (1e3);
-
-
     result_pose.child_frame_id  = base_frame;
     result_pose.header.frame_id = fixed_frame;
     result_pose.header.stamp = ros::Time::now();
@@ -339,6 +337,7 @@ void LocationServer::estimate_rotation(std::vector<BruteForceMatcher::Pair> &mat
         delta_yaw += asin(delta_yaw_sin) * 180 / M_PI;
     }
     delta_yaw /= divider;
+    ROS_INFO("%f", delta_yaw);
 };
 
 void LocationServer::estimate_shift(std::vector<BruteForceMatcher::Pair> &matched, pcl::PointXYZ &shift)

@@ -66,10 +66,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        base_stabilized:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         flow_camera_link:
           Alpha: 1
           Show Axes: false
@@ -122,31 +118,33 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base_footprint:
-          Value: false
+          Value: true
+        base_footprint_:
+          Value: true
         base_link:
-          Value: false
+          Value: true
         base_stabilized:
-          Value: false
+          Value: true
         flow_camera_link:
-          Value: false
+          Value: true
         flow_camera_optical_frame:
-          Value: false
+          Value: true
         kinect_depth_frame:
-          Value: false
+          Value: true
         kinect_depth_optical_frame:
-          Value: false
+          Value: true
         kinect_link:
-          Value: false
+          Value: true
         kinect_rgb_frame:
-          Value: false
+          Value: true
         kinect_rgb_optical_frame:
-          Value: false
+          Value: true
         odom:
-          Value: false
+          Value: true
         quadrotor_visual:
-          Value: false
+          Value: true
         sonar_link:
-          Value: false
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -155,6 +153,8 @@ Visualization Manager:
       Tree:
         odom:
           base_footprint:
+            {}
+          base_footprint_:
             base_stabilized:
               base_link:
                 flow_camera_link:
@@ -167,17 +167,17 @@ Visualization Manager:
                   kinect_rgb_frame:
                     kinect_rgb_optical_frame:
                       {}
+                quadrotor_visual:
+                  {}
                 sonar_link:
                   {}
-              quadrotor_visual:
-                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -0.707321
-        Min Value: -1.9146
+        Max Value: 1.81697
+        Min Value: -0.565046
         Value: true
       Axis: X
       Channel Name: intensity
@@ -207,7 +207,8 @@ Visualization Manager:
       Marker Topic: /ransac_slam/markers
       Name: Marker
       Namespaces:
-        {}
+        line_ns: true
+        vec_ns: true
       Queue Size: 100
       Value: true
     - Alpha: 0.7
@@ -218,14 +219,14 @@ Visualization Manager:
       Name: Map
       Topic: ""
       Value: false
-    - Angle Tolerance: 0.001
+    - Angle Tolerance: 0.0001
       Class: rviz/Odometry
       Color: 255; 25; 0
       Enabled: true
       Keep: 1
       Length: 1
       Name: Odometry
-      Position Tolerance: 0.001
+      Position Tolerance: 0.0001
       Topic: /ransac_slam/odom_out
       Value: true
   Enabled: true
@@ -252,22 +253,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.47869
+      Distance: 3.32025
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -1.28473
-        Y: 0.510895
-        Z: -0.162457
+        X: 0.317405
+        Y: -0.329831
+        Z: -0.474217
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.819797
+      Pitch: 1.5698
       Target Frame: base_stabilized
       Value: Orbit (rviz)
-      Yaw: 0.340403
+      Yaw: 0.0204029
     Saved: ~
 Window Geometry:
   Displays:
