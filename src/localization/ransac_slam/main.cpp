@@ -134,8 +134,8 @@ private:
         }
         catch (tf::TransformException &ex) {
             ROS_ERROR("%s", ex.what());
-            fixed_to_base.setIdentity();
-            base_to_cloud.setIdentity();
+            //fixed_to_base.setIdentity();
+            //base_to_cloud.setIdentity();
         }
 
         nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);

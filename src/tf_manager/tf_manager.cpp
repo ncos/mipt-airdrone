@@ -9,13 +9,20 @@ std::string fixed_frame;
 std::string base_footprint_frame;
 std::string base_stabilized_frame;
 std::string base_link_frame;
-
+int publish_rate;
 
 class TfHandle
 {
 private:
     ros::Subscriber sub_ekf;
     tf::TransformBroadcaster tf_broadcaster;
+
+    tf::Transform transform_odom2base_footprint;
+    tf::Transform transform_base_footprint2base_stabilized;
+    tf::Transform transform_base_stabilized2base_link;
+
+    ros::Rate r;
+
 
     void split_pose_ekf(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg_in)
     {
@@ -28,38 +35,45 @@ private:
         // (http://library.isr.ist.utl.pt/docs/roswiki/hector_slam(2f)Tutorials(2f)SettingUpForYourRobot.html)
         // the link may change with time
         // base_footprint
-        tf::Transform transform_odom2base_footprint;
-        transform_odom2base_footprint.setOrigin( tf::Vector3(msg_in->pose.pose.position.x,
-                                                             msg_in->pose.pose.position.y,
-                                                             0.0) );
+        this->transform_odom2base_footprint.setOrigin( tf::Vector3(msg_in->pose.pose.position.x, msg_in->pose.pose.position.y, 0.0) );
+        this->transform_odom2base_footprint.setRotation(tf::createQuaternionFromRPY(0, 0, yaw));
 
-        tf::Quaternion q = tf::createQuaternionFromRPY(0, 0, yaw);
-        transform_odom2base_footprint.setRotation(q);
-        this->tf_broadcaster.sendTransform(tf::StampedTransform(transform_odom2base_footprint, msg_in->header.stamp,
-                                                                                                  fixed_frame, base_footprint_frame));
 
         // base_stabilized
-        tf::Transform transform_base_footprint2base_stabilized;
         transform_base_footprint2base_stabilized.setOrigin( tf::Vector3(0.0, 0.0, msg_in->pose.pose.position.z) );
-
         transform_base_footprint2base_stabilized.setRotation(tf::createQuaternionFromRPY(0, 0, 0));
-        this->tf_broadcaster.sendTransform(tf::StampedTransform(transform_base_footprint2base_stabilized, msg_in->header.stamp,
-                                                                                        base_footprint_frame, base_stabilized_frame));
+
 
         // base_link
-        tf::Transform transform_base_stabilized2base_link;
         transform_base_stabilized2base_link.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
         transform_base_stabilized2base_link.setRotation(tf::createQuaternionFromRPY(roll, pitch, 0));
-        this->tf_broadcaster.sendTransform(tf::StampedTransform(transform_base_stabilized2base_link, msg_in->header.stamp,
-                                                                                             base_stabilized_frame, base_link_frame));
+    }
+
+    void spin()
+    {
+        ros::spinOnce();
+
+        this->tf_broadcaster.sendTransform(tf::StampedTransform(transform_odom2base_footprint, ros::Time::now(),
+                                                                                                          fixed_frame, base_footprint_frame));
+        this->tf_broadcaster.sendTransform(tf::StampedTransform(transform_base_footprint2base_stabilized, ros::Time::now(),
+                                                                                                base_footprint_frame, base_stabilized_frame));
+        this->tf_broadcaster.sendTransform(tf::StampedTransform(transform_base_stabilized2base_link, ros::Time::now(),
+                                                                                                     base_stabilized_frame, base_link_frame));
+        this->r.sleep();
     }
 
 public:
-    TfHandle(ros::NodeHandle nh)
+    TfHandle(ros::NodeHandle nh): r(publish_rate)
     {
-        this->sub_ekf = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped> (input_pose_topic, 1, &TfHandle::split_pose_ekf, this);
-    }
+        this->transform_odom2base_footprint.setIdentity();
+        this->transform_base_footprint2base_stabilized.setIdentity();
+        this->transform_base_stabilized2base_link.setIdentity();
 
+        this->sub_ekf = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped> (input_pose_topic, 1, &TfHandle::split_pose_ekf, this);
+        while (ros::ok()) {
+            this->spin();
+        }
+    }
 };
 
 
@@ -74,9 +88,10 @@ int main(int argc, char** argv)
     if (!node.getParam("tf_manager/base_footprint_frame", base_footprint_frame)) base_footprint_frame = "/base_footprint";
     if (!node.getParam("tf_manager/base_stabilized_frame", base_stabilized_frame)) base_stabilized_frame = "/base_stabilized";
     if (!node.getParam("tf_manager/base_link_frame", base_link_frame)) base_link_frame = "/base_link";
+    if (!node.getParam("tf_manager/publish_rate", publish_rate)) publish_rate = 50;
 
     TfHandle tf_handle(node);
+
     ros::spin();
-    
     return 0;
 };
