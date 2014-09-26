@@ -313,7 +313,9 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
     result_pose.pose.pose.position.z = this->range_from_sonar;
 
 
-    tf::quaternionTFToMsg(fixed_to_base.getRotation() * tf::createQuaternionFromRPY(0, 0, delta_yaw * M_PI / 180.0), result_pose.pose.pose.orientation);
+    tf::Quaternion res = fixed_to_base.getRotation() * tf::createQuaternionFromRPY(0, 0, delta_yaw * M_PI / 180.0);
+    ROS_INFO("x=%f; y=%f, z=%f, w=%f", res.x(), res.y(), res.z(), res.w());
+    tf::quaternionTFToMsg(res, result_pose.pose.pose.orientation);
 
     result_pose.pose.covariance =   boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
                                                           (0) (1e-3)  (0)  (0)  (0)  (0)
