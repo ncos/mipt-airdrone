@@ -23,6 +23,8 @@
 #include <action_server/SwitchSideAction.h>
 #include <action_server/ApproachWallAction.h>
 #include <action_server/MiddlePassAction.h>
+#include <action_server/TakeoffAction.h>
+#include <action_server/LandingAction.h>
 
 // Mutex is necessary to avoid control races between task handlers and cloud callback
 // cloud callback (or callback) is needed to renew information about point cloud and external sensors
@@ -49,6 +51,7 @@ double ang_P = 0.0, ang_I = 0.0, ang_D = 0.0;
 
 double target_dist     = 0.0;
 double target_angl     = 0.0;
+double target_height   = 0.0;
 double movement_speed  = 0.0;
 double angle_of_kinect = 0.0;
 double apf_min_width   = 0.0;
@@ -61,7 +64,8 @@ double move_epsilon    = 0.0;
 double rot_epsilon     = 0.0;
 double wall_ang_eps    = 0.0;
 double angle_to_pass   = 0.0;
-
+std::string base_footprint_frame;
+std::string base_stabilized_frame;
 
 class ActionServer
 {
@@ -74,6 +78,8 @@ public:
         as_switch_side  (nh_, "SwitchSideAS",   boost::bind(&ActionServer::switchSideCB,   this, _1), false),
         as_approach_wall(nh_, "ApproachWallAS", boost::bind(&ActionServer::approachWallCB, this, _1), false),
         as_middle_pass  (nh_, "MiddlePassAS",   boost::bind(&ActionServer::middlePassCB,   this, _1), false),
+        as_takeoff      (nh_, "TakeoffAS",      boost::bind(&ActionServer::takeoffCB,      this, _1), false),
+        as_landing      (nh_, "LandingAS",      boost::bind(&ActionServer::landingCB,      this, _1), false),
 		on_left_side (true)
     {
         as_move_along   .start();
@@ -83,6 +89,8 @@ public:
         as_switch_side  .start();
         as_approach_wall.start();
         as_middle_pass  .start();
+        as_takeoff      .start();
+        as_landing      .start();
     }
 
     ~ActionServer(void) {}
@@ -541,6 +549,47 @@ public:
         return;
     }
 
+
+    void takeoffCB(const action_server::TakeoffGoalConstPtr  &goal) {
+        action_server::TakeoffResult result_;
+        ros::Rate r(60);
+
+
+        msn_srv->set_height(target_height);
+
+        bool all_done = false;
+        while (!all_done) {
+            msn_srv->lock();
+            all_done = msn_srv->height_done;
+            msn_srv->unlock();
+            r.sleep();
+        }
+
+        result_.success = true;
+        as_takeoff.setSucceeded(result_);
+        return;
+    }
+
+
+    void landingCB(const action_server::LandingGoalConstPtr  &goal) {
+        action_server::LandingResult result_;
+        ros::Rate r(60);
+
+        msn_srv->set_height(0.0);
+
+        bool all_done = false;
+        while (!all_done) {
+            msn_srv->lock();
+            all_done = msn_srv->on_floor;
+            msn_srv->unlock();
+            r.sleep();
+        }
+
+        result_.success = true;
+        as_landing.setSucceeded(result_);
+        return;
+    }
+
 private:
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.
     actionlib::SimpleActionServer<action_server::MoveAlongAction>    as_move_along;
@@ -550,6 +599,8 @@ private:
     actionlib::SimpleActionServer<action_server::SwitchSideAction>   as_switch_side;
     actionlib::SimpleActionServer<action_server::ApproachWallAction> as_approach_wall;
     actionlib::SimpleActionServer<action_server::MiddlePassAction>   as_middle_pass;
+    actionlib::SimpleActionServer<action_server::TakeoffAction>      as_takeoff;
+    actionlib::SimpleActionServer<action_server::LandingAction>      as_landing;
     //
     bool on_left_side; // Reference side of the wall
 };
@@ -592,6 +643,9 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     if (!msn_srv->move_done || !msn_srv->rot_done)
         msn_srv->move_step();
 
+    msn_srv->altitude_step();
+    if (msn_srv->on_floor && msn_srv->vert_vel < 0)
+        msn_srv->clear_cmd();
     msn_srv->spin_once();
 
     //map_srv->track(pcl::PointXYZ(0, 0, 0));
@@ -627,9 +681,10 @@ int main( int argc, char** argv )
     if (!nh.getParam("PID_vel_D", vel_D)) ROS_ERROR("Failed to get param 'PID_vel_D'");
 
 
-    if (!nh.getParam("distance_to_wall", target_dist)) ROS_ERROR("Failed to get param 'distance_to_wall'");
-    if (!nh.getParam("angle_to_wall",    target_angl)) ROS_ERROR("Failed to get param 'angle_to_wall'");
-    if (!nh.getParam("movement_speed",   movement_speed)) ROS_ERROR("Failed to get param 'movement_speed'");
+    if (!nh.getParam("distance_to_wall", target_dist))     ROS_ERROR("Failed to get param 'distance_to_wall'");
+    if (!nh.getParam("angle_to_wall",    target_angl))     ROS_ERROR("Failed to get param 'angle_to_wall'");
+    if (!nh.getParam("base_height",      target_height))   ROS_ERROR("Failed to get param 'base_height'");
+    if (!nh.getParam("movement_speed",   movement_speed))  ROS_ERROR("Failed to get param 'movement_speed'");
     if (!nh.getParam("angle_of_kinect",  angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
 
 
@@ -644,6 +699,9 @@ int main( int argc, char** argv )
     if (!nh.getParam("rot_epsilon",   rot_epsilon))   ROS_ERROR("Failed to get param 'rot_epsilon'");
     if (!nh.getParam("wall_ang_eps",  wall_ang_eps))  ROS_ERROR("Failed to get param 'wall_ang_eps'");
 
+
+    if (!nh.getParam("base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "base_footprint";
+    if (!nh.getParam("base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "base_stabilized";
 
     input_topic      = nh.resolveName("/shrinker/depth/laser_points");
     output_topic_vel = nh.resolveName("/cmd_vel_2");
