@@ -6,6 +6,7 @@
 #include <geometry_msgs/Twist.h>
 #include <boost/thread/mutex.hpp>
 #include <geometry_msgs/PoseStamped.h>
+#include <tf/transform_listener.h>
 
 #include <vector>
 #include <cmath>
@@ -23,6 +24,9 @@ extern double apf_max_dist;
 extern double apf_min_angl;
 extern double apf_max_angl;
 extern double apf_better_q;
+extern std::string base_footprint_frame;
+extern std::string base_stabilized_frame;
+
 
 enum PassageType {
     ortogonal, parrallel, single_wall, undefined, non_valid
@@ -65,7 +69,7 @@ public:
     void renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud);
     bool passage_on_line(Line_param &line, Passage &passage);
     Line_param *get_best_line(pcl::PointXYZ &point, Line_map &linemap);
-    std::vector<Line_param> get_best_line_vector(pcl::PointXYZ &point, Line_map &linemap);
+    Line_param *get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap);
 
 private:
     void add_passage(double point1x, double point1y, double point2x, double point2y);
@@ -111,44 +115,6 @@ public:
 };
 
 
-
-
-class MotionServer
-{
-private:
-	PID pid_ang;
-	PID pid_vel;
-	Line_param *ref_wall;
-	boost::shared_ptr<boost::mutex> mutex;
-	bool tracking_on;
-
-public:
-	double ref_dist, ref_ang;
-	geometry_msgs::Twist base_cmd, buf_cmd;
-
-public:
-	MotionServer (boost::shared_ptr<boost::mutex> _mutex) : mutex(_mutex),
-        ref_wall(NULL), ref_dist(0), ref_ang(0), tracking_on(true)
-	{}
-	~MotionServer ();
-	void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
-	void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
-	void set_ref_wall (Line_param *wall);
-	void track ();
-	void untrack ();
-	void set_angles_current ();
-	bool rotate(double angle);
-	bool move_parallel(double vel);
-	bool move_perpendicular(double shift);
-	void spin_once();
-	void clear_cmd();
-	void lock() {this->mutex->lock(); }
-	void unlock() {this->mutex->unlock(); }
-	void set_target_angle (double angle) {this->ref_ang  = angle; }
-	void set_target_dist  (double dist ) {this->ref_dist = dist;  }
-};
-
-
 class MappingServer
 {
 private:
@@ -183,6 +149,99 @@ private:
 };
 
 
+class MotionServer
+{
+private:
+    PID pid_ang;
+    PID pid_vel;
+    Line_param *ref_wall;
+    boost::shared_ptr<boost::mutex> mutex;
+    bool tracking_on;
+    pcl::PointXYZ move_target;
+    double move_vel;
+    double move_phi;
+    double move_rot_vel;
+
+    // Utility variables
+    boost::shared_ptr<MappingServer> map_srv;
+    double move_epsilon;
+    double move_rot_epsilon;
+    double prev_angl;
+    pcl::PointXYZ prev_pos;
+    double height_epsilon;
+    double prev_height;
+    tf::TransformListener listener;
+
+public:
+    double ref_dist, ref_ang;
+    geometry_msgs::Twist base_cmd, buf_cmd;
+    bool move_done;
+    bool rot_done;
+    double target_height;
+    double height;
+    double vert_vel;
+    bool height_done;
+    bool on_floor;
+    ros::Publisher pub_mrk;
+    visualization_msgs::Marker height_text;
+
+public:
+    MotionServer (boost::shared_ptr<boost::mutex> _mutex, boost::shared_ptr<MappingServer> _map_srv) :
+        mutex(_mutex), map_srv (_map_srv), ref_wall(NULL), ref_dist(0), ref_ang(0), tracking_on(true),
+        move_target (pcl::PointXYZ(0, 0, 0)), move_vel (0), move_phi (0),
+        move_rot_vel (0), move_epsilon (0.1), move_rot_epsilon (0), prev_angl (0),
+        prev_pos (pcl::PointXYZ (0, 0, 0)), move_done (true), rot_done (true), height_done (true),
+        vert_vel (0), height_epsilon (0.1), on_floor (true), height (0)
+    {
+        ros::NodeHandle nh;
+        std::string output_topic_mrk = nh.resolveName("visualization_marker");
+
+        pub_mrk = nh.advertise<visualization_msgs::Marker >(output_topic_mrk, 5 );
+
+        if (!nh.getParam("base_height", target_height)) ROS_ERROR("Failed to get param 'base_height'");
+
+        height_text.header.frame_id = "/kinect_link";
+        height_text.ns = "text_ns";
+        height_text.action = visualization_msgs::Marker::ADD;
+        height_text.id = 100;
+        height_text.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+        height_text.scale.z = 0.2;
+        height_text.pose.position.z = 1;
+        height_text.color.r = 1.0;
+        height_text.color.g = 0.0;
+        height_text.color.b = 0.0;
+        height_text.color.a = 0.3;
+        height_text.text    = "Initializing altitude controller...";
+        height_text.lifetime = ros::Duration(0.2);
+
+        tf::StampedTransform transform;
+        this->listener.waitForTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), ros::Duration(10.0) );
+        listener.lookupTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), transform);
+        this->target_height = this->prev_height = transform.getOrigin().z();
+    }
+    ~MotionServer ();
+    void set_pid_vel  (double P, double I, double D) {this->pid_vel.set_PID(P, I, D); }
+    void set_pid_ang  (double P, double I, double D) {this->pid_ang.set_PID(P, I, D); }
+    void set_ref_wall (Line_param *wall);
+    void track ();
+    void untrack ();
+    void set_angles_current ();
+    bool rotate(double angle);
+    bool move_parallel(double vel);
+    bool move_perpendicular(double shift);
+    void spin_once();
+    void clear_cmd();
+    void lock() {this->mutex->lock(); }
+    void unlock() {this->mutex->unlock(); }
+    void set_target_angle (double angle) {this->ref_ang  = angle; }
+    void set_target_dist  (double dist ) {this->ref_dist = dist;  }
+    void move(pcl::PointXYZ target, double vel, double phi, double rot_vel);
+    void move_step();
+    void set_height(double height);
+    void altitude_step();
+};
+
+
 struct Passage_type
 {
     int type;
@@ -196,7 +255,6 @@ struct Passage_type
                       opposite_exist(false), middle_exist(false) {}
 
     int recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side);
-
 };
 
 #endif // PASSAGEFINDER_H

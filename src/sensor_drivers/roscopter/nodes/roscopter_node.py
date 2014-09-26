@@ -3,6 +3,7 @@ import os
 import sys
 import struct
 import time
+import serial
 
 import roslib; roslib.load_manifest('roscopter')
 import rospy
@@ -37,6 +38,10 @@ parser.add_option("--enable-control",dest="enable_control", default=True, help="
 (opts, args) = parser.parse_args()
 
 import mavutil
+
+# Close connection if exist
+serialport = serial.Serial(opts.device)
+serialport.close()
 
 # create a mavlink serial instance
 master = mavutil.mavlink_connection(opts.device, baud=opts.baudrate)
@@ -112,11 +117,16 @@ def wait_until_ready():
 
 def mainloop():
     rospy.init_node('roscopter')
-
     wait_until_ready()
-    print ("Arming...");
-    master.arducopter_arm()
-    master.motors_armed_wait()
+   
+    print("Waiting 3s...")
+    rospy.sleep(3)
+
+#    if(not master.motors_armed()):
+#        print ("Arming...");
+#        master.arducopter_arm()
+#        master.motors_armed_wait()
+    
     print ("Arducopter is armed");
 
     #define service callbacks
@@ -124,11 +134,11 @@ def mainloop():
     disarm_service = rospy.Service('disarm', Empty, set_disarm)
 
     while not rospy.is_shutdown():
-        if(not master.motors_armed()):
-            print ("Arducopter lost arm. Arming...");
-            master.arducopter_arm()
-            master.motors_armed_wait()
-            print ("...armed")
+#        if(not master.motors_armed()):
+#            print ("Arducopter lost arm. Arming...");
+#            master.arducopter_arm()
+#            master.motors_armed_wait()
+#            print ("...armed")
 
         rospy.sleep(0.001)
         msg = master.recv_match(blocking=False)
@@ -172,7 +182,6 @@ def mainloop():
 
 
 wait_heartbeat(master)
-
 print("Sending all stream request for rate %u" % opts.rate)
 master.mav.request_data_stream_send(
     master.target_system,
@@ -180,7 +189,6 @@ master.mav.request_data_stream_send(
     mavutil.mavlink.MAV_DATA_STREAM_ALL,
     opts.rate,
     1)
-
 if __name__ == '__main__':
     try:
         mainloop()

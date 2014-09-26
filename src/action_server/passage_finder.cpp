@@ -197,18 +197,23 @@ double Advanced_Passage_finder::sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2)
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
 };
 
-std::vector<Line_param> Advanced_Passage_finder::get_best_line_vector(pcl::PointXYZ &point, Line_map &linemap) {
-    const double eps = 0.2; // How close should be the passage border to the line
-    const int min_quality = 1;
-
-    std::vector<Line_param> ret;
-
-    int best_quality = 0, best_i = 0;
-    for (int i = 0; i < linemap.lines.size(); ++i) {
-            ret.push_back(linemap.lines.at(i));
+Line_param* Advanced_Passage_finder::get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap) {
+    Line_param *pass_line_op;
+    Line_param *pass_line = this->get_best_line(pass_point_kin, linemap);
+    double scalar_mul = 2;
+    if (pass_line != NULL) {
+        for (int i = 0; i < linemap.lines.size(); ++i) {
+            double tmp = pass_line->ldir_vec.cmd.x * linemap.lines.at(i).ldir_vec.cmd.x +
+                         pass_line->ldir_vec.cmd.y * linemap.lines.at(i).ldir_vec.cmd.y;
+            if (tmp < scalar_mul) {
+                scalar_mul = tmp;
+                pass_line_op = &linemap.lines.at(i);
+            }
+        }
     }
-
-    return ret;
+    else
+        return NULL;
+    return pass_line_op;
 }
 
 // *****************************************
@@ -399,6 +404,7 @@ void MotionServer::spin_once()
         double vel_k = - this->pid_vel.get_output(this->ref_dist, this->ref_wall->distance);
         this->base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + this->buf_cmd.linear.x;
         this->base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + this->buf_cmd.linear.y;
+        this->base_cmd.linear.z  += this->buf_cmd.linear.z;
 	}
 	else {
 	    this->base_cmd.linear.x  += this->buf_cmd.linear.x;
@@ -411,8 +417,120 @@ void MotionServer::spin_once()
 	}
 };
 
+void MotionServer::move(pcl::PointXYZ target, double vel, double phi, double rot_vel) {
+    this->lock();
+    if (isnan(target.x) || isnan(target.y) || isnan(phi)) {
+        this->move_done = true;
+        this->rot_done = true;
+        this->unlock();
+        return;
+    }
+
+    this->move_target = target;
+    this->move_vel = vel;
+    this->move_phi = phi;
+    this->move_rot_vel = rot_vel;
+    this->move_done = false;
+    this->rot_done = false;
+    this->prev_angl = this->map_srv->get_global_angle();
+    this->prev_pos = this->map_srv->get_global_positon();
+    this->untrack();
+
+    this->unlock();
+}
+
+void MotionServer::set_height(double height) {
+    this->lock();
+    if (isnan(height)) {
+        this->height_done = true;
+        this->unlock();
+        return;
+    }
+
+    this->target_height = height;
+    this->height_done = false;
+
+    this->unlock();
+}
+
+void MotionServer::move_step() {
+    this->untrack();
+
+    double current_angl       = this->map_srv->get_global_angle();
+    pcl::PointXYZ current_pos = this->map_srv->get_global_positon();
+    double delta_angl  = this->map_srv->diff(current_angl, prev_angl);
+    pcl::PointXYZ shift = this->map_srv->diff(current_pos, prev_pos);
+    this->prev_angl = current_angl;
+    this->prev_pos  = current_pos;
+
+    // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
+    this->move_target.x = this->move_target.x - shift.x;
+    this->move_target.y = this->move_target.y - shift.y;
+    this->move_target = this->map_srv->rotate(this->move_target, -delta_angl);
 
 
+    double len = sqrt (this->move_target.x * this->move_target.x +
+                       this->move_target.y * this->move_target.y);
+
+    if (len < this->move_epsilon) {
+        move_done = true;
+    }
+    else {
+        this->buf_cmd.linear.x = this->move_target.x * this->move_vel / len;
+        this->buf_cmd.linear.y = this->move_target.y * this->move_vel / len;
+        this->buf_cmd.angular.z = 0;
+    }
+    //TODO: conform sign of phi and rot_vel
+    if (this->move_phi < this->move_rot_epsilon) {
+        rot_done = true;
+    }
+    else {
+        this->move_phi -= fabs(delta_angl) < 180 ? fabs(delta_angl) : 360 - fabs(delta_angl);
+        this->move_phi = this->move_phi > 360 ? (this->move_phi - 360) : this->move_phi;
+        this->buf_cmd.angular.z = this->move_rot_vel;
+    }
+}
+
+void MotionServer::altitude_step() {
+    PID pid_vel(1, 0.5, 0.5);
+
+    tf::StampedTransform transform;
+    try {
+        this->listener.lookupTransform(base_footprint_frame, base_stabilized_frame,
+                                        ros::Time(0), transform);
+    }
+    catch (tf::TransformException &ex) {
+        ROS_ERROR("Unable to transform: %s",ex.what());
+        ros::Duration(0.1).sleep();
+    }
+
+    double tmp_vel = pid_vel.get_output(this->target_height, transform.getOrigin().z());
+
+    this->height = transform.getOrigin().z();
+
+    if (fabs(this->target_height - this->height) < this->height_epsilon) {
+        this->height_done = true;
+    }
+
+    if (fabs(this->prev_height - this->height) < this->height_epsilon / 10 &&
+        fabs(this->vert_vel) > this->height_epsilon) {
+        this->on_floor = true;
+    }
+    else {
+        this->on_floor = false;
+    }
+
+    if (!(this->on_floor && tmp_vel < 0)) {
+        this->buf_cmd.linear.z = tmp_vel;
+    }
+
+    this->vert_vel = tmp_vel;
+
+    char text[20];
+    sprintf(text, "Height = %f", this->height);
+    this->height_text.text = text;
+    this->pub_mrk.publish(this->height_text);
+}
 
 // *****************************************
 //              Mapping server
@@ -592,8 +710,10 @@ pcl::PointXYZ MappingServer::rotate(const pcl::PointXYZ vec, double angle)
 };
 
 
-//              Passage type recognition
 
+// *****************************************
+//              Passage type recognition
+// *****************************************
 int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Line_map lm, bool on_left_side) {
     this->type = non_valid;
     this->pass_exist = false;
@@ -617,28 +737,12 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
     double pass_point_ang = on_left_side ? apf->passages.at(0).left_ang :
                                            apf->passages.at(0).rght_ang;
     Line_param *pass_line = apf->get_best_line(pass_point_kin, lm);
-    std::vector<Line_param> op_pl = apf->get_best_line_vector(pass_point_kin_op, lm);
-    Line_param *pass_line_op = NULL;
+    Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, lm);
 
-    double scalar_mul = 2;
-    if (pass_line != NULL) {
-        for (int i = 0; i < op_pl.size(); i++) {
-            double tmp = pass_line->ldir_vec.cmd.x * op_pl.at(i).ldir_vec.cmd.x +
-                         pass_line->ldir_vec.cmd.y * op_pl.at(i).ldir_vec.cmd.y;
-            ROS_INFO("Scal: %f", tmp);
-            if (tmp < scalar_mul) {
-                scalar_mul = tmp;
-                pass_line_op = &op_pl.at(i);
-            }
-        }
-    }
-
-    ROS_INFO("|| %d || %d ||", pass_line != NULL, pass_line_op != NULL);
-
+    double scalar_mul = NAN;
     if (pass_line != NULL && pass_line_op != NULL) {
-        ROS_INFO("%f | %f || %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
-                                       pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y);
-
+        scalar_mul = pass_line->ldir_vec.cmd.x * pass_line_op->ldir_vec.cmd.x +
+                     pass_line->ldir_vec.cmd.y * pass_line_op->ldir_vec.cmd.y;
     }
 
     if(pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
@@ -662,9 +766,6 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
         return single_wall;
     }
 
-    ROS_INFO("%d | %d | %d | %d | %f", this->pass_exist, this->closest_exist,
-                                       this->opposite_exist, this->middle_exist,
-                                       fabs(scalar_mul));
 
     if (this->pass_exist && this->closest_exist && this->opposite_exist &&
         fabs(scalar_mul) <= 1 && fabs(scalar_mul) < 0.1) {

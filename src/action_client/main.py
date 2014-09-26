@@ -103,7 +103,7 @@ def main():
         
         
         smach.StateMachine.add('Pause', PauseState (),
-                               transitions={'continue':'Move along',
+                               transitions={'continue':'Takeoff',
                                             'abort'   :'aborted'})
         
 
@@ -112,7 +112,7 @@ def main():
         smach.StateMachine.add('Move along',
                                smach_ros.SimpleActionState('MoveAlongAS',
                                                            MoveAlongAction,
-                                                           goal =  MoveAlongGoal(vel=-0.6),
+                                                           goal =  MoveAlongGoal(vel=-1.0),
                                                            result_cb = move_along_result_cb,
                                                            outcomes=['aborted', 'succeeded', 'wall_found']),
                                transitions={'aborted'   :'aborted',
@@ -169,6 +169,22 @@ def main():
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Move along'} )
+        
+        smach.StateMachine.add('Takeoff',
+                               smach_ros.SimpleActionState('TakeoffAS',
+                                                           TakeoffAction,
+                                                           goal =  TakeoffGoal(),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Move along'} )
+        
+        smach.StateMachine.add('Landing',
+                               smach_ros.SimpleActionState('LandingAS',
+                                                           LandingAction,
+                                                           goal =  LandingGoal(),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Pause'} )
                 
     # Create and start the introspection server
     # This is for debug purpose

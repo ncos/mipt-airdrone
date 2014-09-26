@@ -52,4 +52,7 @@ angle_to_pass: 30
 # Manual control (on/off)
 keyboard_control: true
 
+# Frames for transform for height control
+base_stabilized_frame: 'base_stabilized'
+base_footprint_frame: 'base_footprint'
 
