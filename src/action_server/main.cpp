@@ -23,6 +23,8 @@
 #include <action_server/SwitchSideAction.h>
 #include <action_server/ApproachWallAction.h>
 #include <action_server/MiddlePassAction.h>
+#include <action_server/TakeoffAction.h>
+#include <action_server/LandingAction.h>
 
 // Mutex is necessary to avoid control races between task handlers and cloud callback
 // cloud callback (or callback) is needed to renew information about point cloud and external sensors
@@ -49,6 +51,7 @@ double ang_P = 0.0, ang_I = 0.0, ang_D = 0.0;
 
 double target_dist     = 0.0;
 double target_angl     = 0.0;
+double target_height   = 0.0;
 double movement_speed  = 0.0;
 double angle_of_kinect = 0.0;
 double apf_min_width   = 0.0;
@@ -61,7 +64,8 @@ double move_epsilon    = 0.0;
 double rot_epsilon     = 0.0;
 double wall_ang_eps    = 0.0;
 double angle_to_pass   = 0.0;
-
+std::string base_footprint_frame;
+std::string base_stabilized_frame;
 
 class ActionServer
 {
@@ -74,6 +78,8 @@ public:
         as_switch_side  (nh_, "SwitchSideAS",   boost::bind(&ActionServer::switchSideCB,   this, _1), false),
         as_approach_wall(nh_, "ApproachWallAS", boost::bind(&ActionServer::approachWallCB, this, _1), false),
         as_middle_pass  (nh_, "MiddlePassAS",   boost::bind(&ActionServer::middlePassCB,   this, _1), false),
+        as_takeoff      (nh_, "TakeoffAS",      boost::bind(&ActionServer::takeoffCB,      this, _1), false),
+        as_landing      (nh_, "LandingAS",      boost::bind(&ActionServer::landingCB,      this, _1), false),
 		on_left_side (true)
     {
         as_move_along   .start();
@@ -83,6 +89,8 @@ public:
         as_switch_side  .start();
         as_approach_wall.start();
         as_middle_pass  .start();
+        as_takeoff      .start();
+        as_landing      .start();
     }
 
     ~ActionServer(void) {}
@@ -265,73 +273,6 @@ public:
         loc_srv->unlock();
     }
 
-    //TODO: Add cases for NAN input
-    bool move(pcl::PointXYZ target, double vel, double phi, double rot_vel)
-    {
-        if (isnan(target.x) || isnan(target.y) || isnan(phi)) {
-            return false;
-        }
-        bool move_done = false, rot_done = false;
-        ros::Rate r(60);
-        double prev_angl = map_srv->get_global_angle();
-        pcl::PointXYZ prev_pos = map_srv->get_global_positon();
-        //pcl::PointXYZ target (dir.x, dir.y, 0);
-
-        msn_srv->untrack();
-        msn_srv->unlock();
-
-        while (true)
-        {
-            msn_srv->lock();
-
-            double current_angl       = map_srv->get_global_angle();
-            pcl::PointXYZ current_pos = map_srv->get_global_positon();
-            double delta_angl  = map_srv->diff(current_angl, prev_angl);
-            pcl::PointXYZ shift = map_srv->diff(current_pos, prev_pos);
-            prev_angl = current_angl;
-            prev_pos  = current_pos;
-
-            // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
-            target.x = target.x - shift.x;
-            target.y = target.y - shift.y;
-            target = map_srv->rotate(target, -delta_angl);
-
-
-            double len = sqrt (target.x * target.x + target.y * target.y);
-            if (len < move_epsilon) {
-                move_done = true;
-            }
-            else {
-                msn_srv->buf_cmd.linear.x = target.x * vel / len;
-                msn_srv->buf_cmd.linear.y = target.y * vel / len;
-                msn_srv->buf_cmd.angular.z = 0;
-                davinci->draw_point_cmd(target.x, target.y, 666, GOLD);
-            }
-            //TODO: conform sign of phi and rot_vel
-            if (phi < 1) {
-                rot_done = true;
-            }
-            else {
-                phi -= fabs(delta_angl) < 180 ? fabs(delta_angl) : 360 - fabs(delta_angl);
-                phi = phi > 360 ? (phi - 360) : phi;
-                msn_srv->buf_cmd.angular.z = rot_vel;
-            }
-
-            if (rot_done && move_done) {
-                msn_srv->unlock();
-                break;
-            }
-
-
-            ROS_INFO("vel: %f | %f",msn_srv->buf_cmd.linear.x,
-                                    msn_srv->buf_cmd.linear.y);
-            ROS_INFO("%f | %f | %f", len, phi, delta_angl);
-
-            msn_srv->unlock();
-            r.sleep();
-        }
-        return true;
-    }
 
     void approachDoorCB(const action_server::ApproachDoorGoalConstPtr  &goal)
     {
@@ -370,7 +311,6 @@ public:
 
         double pass_point_ang = 0;
 
-        ROS_INFO("AD Stage #1");
         msn_srv->unlock();
         while (1) {
             msn_srv->lock();
@@ -391,12 +331,8 @@ public:
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
-			    ROS_INFO("Pass found");
-			    ROS_INFO("%f | %f | %f", pass_point_ang, loc_srv->get_ref_wall()->angle, fabs(loc_srv->get_ref_wall()->angle) - fabs(pass_point_ang));
-			    ROS_INFO("Pass type: %d", pt->recognize(apf, loc_srv->lm, this->on_left_side));
                 if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
                     if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
-                        ROS_INFO("Done type recognition");
                         msn_srv->unlock();
                         break;
                     }
@@ -404,28 +340,22 @@ public:
 			            (!this->on_left_side && pass_point_ang > 0)) {
 			            double wall_to_pass_angle = fabs(loc_srv->get_ref_wall()->angle) -
 			                                        fabs(pass_point_ang);
-
 			            if (fabs(wall_to_pass_angle - angle_to_pass) < rot_epsilon) {
-                            ROS_INFO("Done turn");
                             msn_srv->unlock();
                             break;
 			            }
 			            else if (fabs(wall_to_pass_angle) >= angle_to_pass) {
-			                ROS_INFO("Forw");
 			                msn_srv->move_parallel(vel);
 			            }
 			            else {
-			                ROS_INFO("Backw");
 			                msn_srv->move_parallel(-vel);
 			            }
 			        }
                     else {
-                        ROS_INFO("Angle to pass");
                         msn_srv->move_parallel(vel);
                     }
 			    }
                 else {
-                    ROS_INFO("Angle to wall");
                     msn_srv->move_parallel(0);
                 }
 			}
@@ -438,34 +368,15 @@ public:
 			r.sleep();
 		}
         msn_srv->lock();
-        ROS_INFO("DEBUG 5");
         pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                  apf->passages.at(0).kin_left;
         pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
                                               apf->passages.at(0).kin_rght;
 
         pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
-        std::vector<Line_param> op_pl = apf->get_best_line_vector(pass_point_kin_op, loc_srv->lm);
-        Line_param *pass_line_op = NULL;
-
-        double scalar_mul = 2;
-        if (pass_line != NULL) {
-            for (int i = 0; i < op_pl.size(); i++) {
-                double tmp = pass_line->ldir_vec.cmd.x * op_pl.at(i).ldir_vec.cmd.x +
-                             pass_line->ldir_vec.cmd.y * op_pl.at(i).ldir_vec.cmd.y;
-                if (tmp < scalar_mul) {
-                    scalar_mul = tmp;
-                    pass_line_op = &op_pl.at(i);
-                }
-            }
-        }
-
+        Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
-            ROS_INFO("Try full_pass");
-                ROS_INFO("Use full_pass");
                 loc_srv->track_wall(pass_line_op);
-                ROS_INFO("WALL: %f | %f | %f | %f | %f", pass_line->ldir_vec.cmd.x, pass_line->ldir_vec.cmd.y,
-                                               pass_line_op->ldir_vec.cmd.x, pass_line_op->ldir_vec.cmd.y, scalar_mul);
                 msn_srv->unlock();
                 result_.ortog_pass = true;
                 as_approach_door.setSucceeded(result_);
@@ -477,14 +388,12 @@ public:
 
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == parrallel &&
             apf->passages.at(0).left_ang * apf->passages.at(0).rght_ang < 0) {
-            ROS_INFO("Middle pass");
             msn_srv->unlock();
             result_.middle_pass = true;
             as_approach_door.setSucceeded(result_);
             return;
         }
 
-        ROS_INFO("DEBUG 6");
         msn_srv->unlock();
         result_.success = true;
         as_approach_door.setSucceeded(result_);
@@ -496,6 +405,7 @@ public:
         // TODO: Change for door on left sight
         action_server::PassDoorResult   result_;
         action_server::PassDoorFeedback feedback_;
+        ros::Rate r(60);
 
         msn_srv->lock();
 
@@ -523,97 +433,46 @@ public:
         }
 
 		if (pass_line == NULL || isnan(pass_point_cmd.x) || isnan(pass_point_cmd.y)){
-			ROS_ERROR("Wrong pass dist");
+			ROS_ERROR("Wrong pass distance");
 			as_pass_door.setAborted(result_);
 			return;
 		}
+
+		double vel[3] = {0.75, 0.75, 0.75};
+		double angle[3] = {60, 60, 40};
+		std::vector<int> stage_num;
 
 		int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
 		pcl::PointXYZ vec (0, 0, 0);
 		vec.x = pass_line->ldir_vec.cmd.x * side_sign * 1.5 * target_dist;
 		vec.y = pass_line->ldir_vec.cmd.y * side_sign * 1.5 * target_dist;
-		int stage_one_num = map_srv->track(vec) - 1;
+		stage_num.push_back(map_srv->track(vec) - 1);
 
 
-		vec.x = pass_line->fdir_vec.cmd.x * 2 * target_dist;
-		vec.y = pass_line->fdir_vec.cmd.y * 2 * target_dist;
-		int stage_two_num = map_srv->track(vec) - 1;
+		vec.x = pass_line->fdir_vec.cmd.x * 1.75 * target_dist;
+		vec.y = pass_line->fdir_vec.cmd.y * 1.75 * target_dist;
+		stage_num.push_back(map_srv->track(vec) - 1);
 
 		vec.x = -pass_line->ldir_vec.cmd.x * side_sign * 1.5 * target_dist;
         vec.y = -pass_line->ldir_vec.cmd.y * side_sign * 1.5 * target_dist;
-        int stage_three_num = map_srv->track(vec) - 1;
+        stage_num.push_back(map_srv->track(vec) - 1);
 
-        vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_one_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                            map_srv->tracked_points.at(stage_one_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
+        msn_srv->unlock();
+        for (int i = 0; i < stage_num.size(); i++) {
+            msn_srv->lock();
+            vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_num.at(i)).x - map_srv->tracked_points.at(start_pos_num).x,
+                                map_srv->tracked_points.at(stage_num.at(i)).y - map_srv->tracked_points.at(start_pos_num).y, 0);
 
-        if (this->move (vec, 0.4, 60, rot_vel) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
+            msn_srv->unlock();
+            msn_srv->move (vec, vel[i], angle[i], rot_vel);
+            bool all_done = false;
+            while (!all_done) {
+                msn_srv->lock();
+                all_done = msn_srv->move_done && msn_srv->rot_done;
+                msn_srv->unlock();
+                r.sleep();
+            }
         }
-
-        vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_two_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                            map_srv->tracked_points.at(stage_two_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-
-        if (this->move (vec, 0.4, 60, rot_vel) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-
-        vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_three_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                            map_srv->tracked_points.at(stage_three_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-
-        if (this->move (vec, 0.4, 40, rot_vel) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-
-
-/*
-		// Start action
-        ROS_INFO("PD Stage #1");
-        pcl::PointXYZ vec (0, 0, 0);
-        double side_sign = (this->on_left_side) ? 1 : -1;
-        vec.x = ( pass_point_cmd.x + pass_point_cmd.y * side_sign) / sqrt(1.7);
-        vec.y = (-pass_point_cmd.x * side_sign+ pass_point_cmd.y) / sqrt(1.7); // WTF? why '-'
-
-        map_srv->track(vec) - 1;
-        ROS_INFO("Vec1: %f\t %f", vec.x, vec.y);
-        int pass_pos_num  = map_srv->track(pcl::PointXYZ (pass_point_cmd.x, pass_point_cmd.y, 0)) - 1;
-        int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
-
-        double rot_vel1 = this->on_left_side ? 0.5 : -0.5;
-        if (this->move (vec, 0.4, 70, rot_vel1) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-
-        ROS_INFO("PD Stage #2");
-        //vec = pcl::PointXYZ (map_srv->tracked_points.at(pass_pos_num).x - map_srv->tracked_points.at(start_pos_num).x,
-        //                     map_srv->tracked_points.at(pass_pos_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-        // 70 and 40 angle
-
-        map_srv->track(vec);
-
-
-        pcl::PointXYZ pass_vec (map_srv->tracked_points.at(pass_pos_num).x - map_srv->tracked_points.at(start_pos_num).x,
-                                map_srv->tracked_points.at(pass_pos_num).y - map_srv->tracked_points.at(start_pos_num).y, 0);
-
-        vec.x = pass_vec.x;
-        vec.y = pass_vec.y;
-
-        map_srv->track(vec);
-        ROS_INFO("Vec2: %f\t %f", vec.x, vec.y);
-        double rot_vel2 = this->on_left_side ? 0.5 : -0.5;
-        if (this->move (vec, 0.5, 30, rot_vel2) == false) {
-            ROS_ERROR("Move function caused error");
-            as_pass_door.setAborted(result_);
-            return;
-        }
-        */
 
         msn_srv->unlock();
         result_.success = true;
@@ -628,7 +487,6 @@ public:
 
     	this->on_left_side = !this->on_left_side;
     	target_angl *= -1;
-    	//msn_srv->ref_ang = target_angl;
 
     	msn_srv->unlock();
     	result_.success = true;
@@ -660,6 +518,7 @@ public:
 
     void middlePassCB(const action_server::MiddlePassGoalConstPtr  &goal) {
         action_server::MiddlePassResult result_;
+        ros::Rate r(60);
         msn_srv->lock();
 
         pcl::PointXYZ pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
@@ -674,14 +533,60 @@ public:
         pcl::PointXYZ vec (apf->passages.at(0).cmd_middle.x - offset_x,
                            apf->passages.at(0).cmd_middle.y - offset_y, 0);
         tmp = map_srv->track(vec) - 1;
-        if (this->move (vec, 0.6, 0, 0) == false) {
-            ROS_ERROR("Move function caused error");
-            as_middle_pass.setAborted(result_);
-            return;
+
+        msn_srv->unlock();
+        msn_srv->move (vec, 0.6, 0, 0);
+        bool all_done = false;
+        while (!all_done) {
+            msn_srv->lock();
+            all_done = msn_srv->move_done && msn_srv->rot_done;
+            msn_srv->unlock();
+            r.sleep();
         }
 
         msn_srv->unlock();
         as_middle_pass.setSucceeded(result_);
+        return;
+    }
+
+
+    void takeoffCB(const action_server::TakeoffGoalConstPtr  &goal) {
+        action_server::TakeoffResult result_;
+        ros::Rate r(60);
+
+
+        msn_srv->set_height(target_height);
+
+        bool all_done = false;
+        while (!all_done) {
+            msn_srv->lock();
+            all_done = msn_srv->height_done;
+            msn_srv->unlock();
+            r.sleep();
+        }
+
+        result_.success = true;
+        as_takeoff.setSucceeded(result_);
+        return;
+    }
+
+
+    void landingCB(const action_server::LandingGoalConstPtr  &goal) {
+        action_server::LandingResult result_;
+        ros::Rate r(60);
+
+        msn_srv->set_height(0.0);
+
+        bool all_done = false;
+        while (!all_done) {
+            msn_srv->lock();
+            all_done = msn_srv->on_floor;
+            msn_srv->unlock();
+            r.sleep();
+        }
+
+        result_.success = true;
+        as_landing.setSucceeded(result_);
         return;
     }
 
@@ -694,6 +599,8 @@ private:
     actionlib::SimpleActionServer<action_server::SwitchSideAction>   as_switch_side;
     actionlib::SimpleActionServer<action_server::ApproachWallAction> as_approach_wall;
     actionlib::SimpleActionServer<action_server::MiddlePassAction>   as_middle_pass;
+    actionlib::SimpleActionServer<action_server::TakeoffAction>      as_takeoff;
+    actionlib::SimpleActionServer<action_server::LandingAction>      as_landing;
     //
     bool on_left_side; // Reference side of the wall
 };
@@ -733,6 +640,12 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
         davinci->draw_vec(apf->passages.at(i).kin_rght.x,   apf->passages.at(i).kin_rght.y,   i*3 + 2, BLUE);
     }
 
+    if (!msn_srv->move_done || !msn_srv->rot_done)
+        msn_srv->move_step();
+
+    msn_srv->altitude_step();
+    if (msn_srv->on_floor && msn_srv->vert_vel < 0)
+        msn_srv->clear_cmd();
     msn_srv->spin_once();
 
     //map_srv->track(pcl::PointXYZ(0, 0, 0));
@@ -768,9 +681,10 @@ int main( int argc, char** argv )
     if (!nh.getParam("PID_vel_D", vel_D)) ROS_ERROR("Failed to get param 'PID_vel_D'");
 
 
-    if (!nh.getParam("distance_to_wall", target_dist)) ROS_ERROR("Failed to get param 'distance_to_wall'");
-    if (!nh.getParam("angle_to_wall",    target_angl)) ROS_ERROR("Failed to get param 'angle_to_wall'");
-    if (!nh.getParam("movement_speed",   movement_speed)) ROS_ERROR("Failed to get param 'movement_speed'");
+    if (!nh.getParam("distance_to_wall", target_dist))     ROS_ERROR("Failed to get param 'distance_to_wall'");
+    if (!nh.getParam("angle_to_wall",    target_angl))     ROS_ERROR("Failed to get param 'angle_to_wall'");
+    if (!nh.getParam("base_height",      target_height))   ROS_ERROR("Failed to get param 'base_height'");
+    if (!nh.getParam("movement_speed",   movement_speed))  ROS_ERROR("Failed to get param 'movement_speed'");
     if (!nh.getParam("angle_of_kinect",  angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
 
 
@@ -786,6 +700,9 @@ int main( int argc, char** argv )
     if (!nh.getParam("wall_ang_eps",  wall_ang_eps))  ROS_ERROR("Failed to get param 'wall_ang_eps'");
 
 
+    if (!nh.getParam("base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "base_footprint";
+    if (!nh.getParam("base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "base_stabilized";
+
     input_topic      = nh.resolveName("/shrinker/depth/laser_points");
     output_topic_vel = nh.resolveName("/cmd_vel_2");
 
@@ -796,8 +713,8 @@ int main( int argc, char** argv )
     davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
     mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
-    msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr));
     map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer (nh, "/ground_truth_to_tf/pose"));
+    msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr, map_srv));
     apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
     pt        = boost::shared_ptr<Passage_type>   (new Passage_type ());
 

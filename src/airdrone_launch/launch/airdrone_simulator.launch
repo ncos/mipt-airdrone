@@ -11,9 +11,6 @@
   </include>
 
   <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"></node>
-  <node pkg="altitude_cntrl" name="altitude_controller" type="altitude_cntrl_nd" output="screen" required="true">
-    <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
-  </node>
 	
   <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="screen" required="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
