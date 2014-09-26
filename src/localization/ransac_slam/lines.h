@@ -167,8 +167,8 @@ public:
     nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base, tf::Transform base_to_cloud);
 
 private:
-    void estimate_motion(BruteForceMatcher::Pair pair, double &delta_yaw);
-
+    void estimate_rotation(std::vector<BruteForceMatcher::Pair> matched, double &delta_yaw);
+    void estimate_shift(BruteForceMatcher::Pair pair, double &delta_yaw);
 };
 
 

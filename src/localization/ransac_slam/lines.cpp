@@ -297,21 +297,12 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
     this->matched_dbg = matched;
 
 
-    double delta_yaw = 0;
-    for (int i = 0; i < matched.size(); ++i) {
-        double dy = 0;
-        this->estimate_motion(matched.at(i), dy);
-        delta_yaw += dy;
-    }
-    delta_yaw /= matched.size();
-
-
-
-
     result_pose.pose.pose.position.x = fixed_to_base.getOrigin().x();
     result_pose.pose.pose.position.y = fixed_to_base.getOrigin().y();
     result_pose.pose.pose.position.z = this->range_from_sonar;
 
+    double delta_yaw = 0;
+    this->estimate_rotation(matched, delta_yaw);
 
     tf::quaternionTFToMsg(fixed_to_base.getRotation() * tf::createQuaternionFromRPY(0, 0, delta_yaw * M_PI / 180.0), result_pose.pose.pose.orientation);
 
@@ -330,9 +321,13 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
 };
 
 
-void LocationServer::estimate_motion(BruteForceMatcher::Pair pair, double &delta_yaw)
+void LocationServer::estimate_rotation(std::vector<BruteForceMatcher::Pair> matched, double &delta_yaw)
 {
-    delta_yaw = pair.l1.angle - pair.l2.angle;
+    delta_yaw = 0;
+    for (int i = 0; i < matched.size(); ++i) {
+        delta_yaw += matched.at(i).l1.angle - matched.at(i).l2.angle;
+    }
+    delta_yaw /= matched.size();
 };
 
 
