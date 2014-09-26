@@ -25,6 +25,7 @@ public:
     void draw_line   (std::string frame, Line_param *lp, int id, POINT_COLOR color);
     void draw_line   (std_msgs::Header header, Line_param *lp, int id, POINT_COLOR color);
     void draw_e_vec  (std::string frame, pcl::PointXYZ point, int id, POINT_COLOR color);
+    void draw_vec    (std::string frame, pcl::PointXYZ start, pcl::PointXYZ end, int id, POINT_COLOR color);
     void draw_vec    (std::string frame, pcl::PointXYZ point, int id, POINT_COLOR color);
     void clear_inf(std::string frame);
     ~DaVinci();

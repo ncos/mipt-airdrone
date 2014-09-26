@@ -303,14 +303,13 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
     pcl::PointXYZ shift(0.0, 0.0, 0.0);
     this->estimate_shift(matched, shift);
 
-    result_pose.pose.pose.position.x = fixed_to_base.getOrigin().x();
-    result_pose.pose.pose.position.y = fixed_to_base.getOrigin().y();
+    result_pose.pose.pose.position.x = fixed_to_base.getOrigin().x() + shift.x;
+    result_pose.pose.pose.position.y = fixed_to_base.getOrigin().y() + shift.y;
     result_pose.pose.pose.position.z = this->range_from_sonar;
 
 
 
     tf::Quaternion res = fixed_to_base.getRotation() * tf::createQuaternionFromRPY(0, 0, delta_yaw * M_PI / 180.0);
-    ROS_INFO("x=%f; y=%f, z=%f, w=%f", res.x(), res.y(), res.z(), res.w());
     tf::quaternionTFToMsg(res, result_pose.pose.pose.orientation);
 
     result_pose.pose.covariance =   boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
@@ -331,10 +330,15 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
 void LocationServer::estimate_rotation(std::vector<BruteForceMatcher::Pair> &matched, double &delta_yaw)
 {
     delta_yaw = 0;
+    int divider = 0;
     for (int i = 0; i < matched.size(); ++i) {
-        delta_yaw += matched.at(i).l1.angle - matched.at(i).l2.angle;
+        if (matched.at(i).err > 10) continue;
+        pcl::PointXYZ cr = VectorMath::cross(matched.at(i).l1.fdir_vec, matched.at(i).l2.fdir_vec);
+        double delta_yaw_sin = cr.y;
+        divider ++;
+        delta_yaw += asin(delta_yaw_sin) * 180 / M_PI;
     }
-    delta_yaw /= matched.size();
+    delta_yaw /= divider;
 };
 
 void LocationServer::estimate_shift(std::vector<BruteForceMatcher::Pair> &matched, pcl::PointXYZ &shift)
