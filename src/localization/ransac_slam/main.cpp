@@ -136,7 +136,7 @@ private:
 
         nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);
 
-        ROS_INFO("matched: %lu", this->loc_srv.matched_dbg.size());
+        //ROS_INFO("matched: %lu", this->loc_srv.matched_dbg.size());
         if (this->loc_srv.matched_dbg.size() > 0) {
             this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(0).l1, 10 + 0, BLUE);
             this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(0).l2, 10 + 1, BLUE);
