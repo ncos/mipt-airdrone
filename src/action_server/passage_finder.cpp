@@ -500,8 +500,7 @@ void MotionServer::altitude_step() {
                                         ros::Time(0), transform);
     }
     catch (tf::TransformException &ex) {
-        ROS_ERROR("Unable to transform: %s",ex.what());
-        ros::Duration(0.1).sleep();
+        ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what());
     }
 
     double tmp_vel = pid_vel.get_output(this->target_height, transform.getOrigin().z());

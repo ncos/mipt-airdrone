@@ -337,7 +337,7 @@ void LocationServer::estimate_rotation(std::vector<BruteForceMatcher::Pair> &mat
         delta_yaw += asin(delta_yaw_sin) * 180 / M_PI;
     }
     delta_yaw /= divider;
-    ROS_INFO("%f", delta_yaw);
+    //ROS_INFO("%f", delta_yaw);
 };
 
 void LocationServer::estimate_shift(std::vector<BruteForceMatcher::Pair> &matched, pcl::PointXYZ &shift)

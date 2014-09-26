@@ -215,8 +215,19 @@ public:
         height_text.lifetime = ros::Duration(0.2);
 
         tf::StampedTransform transform;
-        this->listener.waitForTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), ros::Duration(10.0) );
-        listener.lookupTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), transform);
+        try {
+            this->listener.waitForTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), ros::Duration(10.0) );
+        }
+        catch (tf::TransformException &ex) {
+            ROS_ERROR("Action Server Node: (wait) Unable to transform: %s", ex.what());
+        }
+
+        try {
+            this->listener.lookupTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), transform);
+        }
+        catch (tf::TransformException &ex) {
+            ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what());
+        }
         this->target_height = this->prev_height = transform.getOrigin().z();
     }
     ~MotionServer ();

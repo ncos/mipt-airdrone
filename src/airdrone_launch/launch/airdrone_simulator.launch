@@ -1,17 +1,22 @@
 <launch>
+  <arg name="fixed_frame"           default="/odom"/>
+  <arg name="base_footprint_frame"  default="/base_footprint_"/>
+  <arg name="base_stabilized_frame" default="/base_stabilized"/>
+  <arg name="base_link_frame"       default="/base_link"/>
+
   <include file="$(find airdrone_launch)/launch/localization.launch">
     <param name="input_depth_points_topic"   value="/sensors/kinect/depth/points"/>
-    <param name="fixed_frame"                value="/odom"/>
-    <param name="base_footprint_frame"       value="/base_footprint_"/>
-    <param name="base_stabilized_frame"      value="/base_stabilized"/>
-    <param name="base_link_frame"            value="/base_link"/>
+    <param name="fixed_frame"                value="$(arg fixed_frame)"/>
+    <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
+    <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
+    <param name="base_link_frame"            value="$(arg base_link_frame)"/>
     <param name="kinect_depth_optical_frame" value="/kinect_depth_optical_frame"/>
     <param name="input_sonar_topic"          value="/sensors/sonar_height"/>
     <param name="input_imu_topic"            value="/sensors/apm/imu"/>
     <param name="output_lm_topic"            value="/ransac_slam/lm"/>
   </include>
 
-  <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"></node>
+  <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"/>
 	
   <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="screen" required="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
@@ -19,10 +24,9 @@
 	
   <node pkg="action_server"  name="action_server"       type="action_server_nd"  output="screen">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
+    <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
+    <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
   </node>
+
   <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"></node>
-	
-  <!--
-  <node pkg="smach_viewer"  name="smach_viewer"       type="smach_viewer.py"></node>
-  -->
 </launch>            

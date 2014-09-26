@@ -39,7 +39,6 @@ ransac_slam/min_points_in_cloud: 10
 ransac_slam/shrink_order: 50
 
 
-
 # Move function euristic constants
 move_epsilon:  0.1
 
@@ -50,9 +49,4 @@ wall_ang_eps: 5
 angle_to_pass: 30
 
 # Manual control (on/off)
-keyboard_control: true
-
-# Frames for transform for height control
-base_stabilized_frame: 'base_stabilized'
-base_footprint_frame: 'base_footprint'
-
+keyboard_control: false

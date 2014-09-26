@@ -402,7 +402,6 @@ public:
 
 
     void passDoorCB(const action_server::PassDoorGoalConstPtr  &goal) {
-        // TODO: Change for door on left sight
         action_server::PassDoorResult   result_;
         action_server::PassDoorFeedback feedback_;
         ros::Rate r(60);
@@ -700,8 +699,8 @@ int main( int argc, char** argv )
     if (!nh.getParam("wall_ang_eps",  wall_ang_eps))  ROS_ERROR("Failed to get param 'wall_ang_eps'");
 
 
-    if (!nh.getParam("base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "base_footprint";
-    if (!nh.getParam("base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "base_stabilized";
+    if (!nh.getParam("action_server/base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "base_footprint_";
+    if (!nh.getParam("action_server/base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "base_stabilized";
 
     input_topic      = nh.resolveName("/shrinker/depth/laser_points");
     output_topic_vel = nh.resolveName("/cmd_vel_2");

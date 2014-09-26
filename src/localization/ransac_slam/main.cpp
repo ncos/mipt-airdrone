@@ -73,10 +73,11 @@ public:
         if (use_sonar_data == false) this->sonar_sub.shutdown();
 
         try {
-            this->tf_listener.waitForTransform(fixed_frame, kinect_depth_optical_frame, ros::Time(0), ros::Duration(10.0) );
+            this->tf_listener.waitForTransform(fixed_frame, base_frame,                ros::Time(0), ros::Duration(10.0) );
+            this->tf_listener.waitForTransform(base_frame, kinect_depth_optical_frame, ros::Time(0), ros::Duration(10.0) );
         }
         catch (tf::TransformException &ex) {
-            ROS_ERROR("%s", ex.what());
+            ROS_ERROR("Ransac SLAM Node: (wait) %s", ex.what());
             ros::Duration(1.0).sleep();
         }
     }
@@ -105,7 +106,7 @@ private:
 
     void rgbdCallback (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud) {
         if(cloud->points.size() < min_points_in_cloud) {
-            ROS_ERROR("rgbdCallback: The input cloud size is %lu points! \
+            ROS_ERROR("Ransac SLAM Node: rgbdCallback: The input cloud size is %lu points! \
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
 
@@ -122,20 +123,23 @@ private:
 
         std::sort (this->laser_cloud->points.begin(), this->laser_cloud->points.end(), this->cloud_cmp_class); // Sorting by angle
         if(this->laser_cloud->points.size() < min_points_in_cloud) {
-            ROS_ERROR("rgbdCallback: The cloud size after processing is %lu points! \
+            ROS_ERROR("Ransac SLAM Node: rgbdCallback: The cloud size after processing is %lu points! \
                       (this is too little to provide an adequate position estimation)", this->laser_cloud->points.size());
         }
         this->update_shrinked_cloud(shrink_order);
 
+        if ("/" + this->laser_cloud->header.frame_id != kinect_depth_optical_frame) {
+            ROS_ERROR("Ransac SLAM Node: rgbdCallback: this->laser_cloud->header.frame_id != kinect_depth_optical_frame! \
+                      (%s != %s)", ("/" + this->laser_cloud->header.frame_id).c_str(), kinect_depth_optical_frame.c_str());
+        }
+
         tf::StampedTransform fixed_to_base, base_to_cloud;
         try {
             this->tf_listener.lookupTransform(fixed_frame, base_frame, ros::Time(0), fixed_to_base);
-            this->tf_listener.lookupTransform(base_frame, this->laser_cloud->header.frame_id, ros::Time(0), base_to_cloud);
+            this->tf_listener.lookupTransform(base_frame, kinect_depth_optical_frame, ros::Time(0), base_to_cloud);
         }
         catch (tf::TransformException &ex) {
-            ROS_ERROR("%s", ex.what());
-            //fixed_to_base.setIdentity();
-            //base_to_cloud.setIdentity();
+            ROS_ERROR("Ransac SLAM Node: (lookup) %s", ex.what());
         }
 
         nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);
