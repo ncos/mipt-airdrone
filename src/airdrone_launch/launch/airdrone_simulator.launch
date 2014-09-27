@@ -6,7 +6,7 @@
   <arg name="base_link_frame"       default="/base_link"/>
   <arg name="ideal_tf"              default="true" />
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
-  <param name="keyboard_control"    value="false"/>
+  <param name="keyboard_control"    value="true"/>
   <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
 
   <!-- start robot state publisher -->
@@ -14,21 +14,6 @@
     <param name="publish_frequency" type="double" value="50.0" />
   </node>
 
-  <!-- start visual odometry and fixed->base_link tf publish -->
-  <group unless="$(arg ideal_tf)">
-    <include file="$(find airdrone_launch)/launch/localization.launch">
-      <arg name="input_depth_points_topic"   value="/sensors/kinect/depth/points"/>
-      <arg name="fixed_frame"                value="$(arg fixed_frame)"/>
-      <arg name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
-      <arg name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
-      <arg name="base_link_frame"            value="$(arg base_link_frame)"/>
-      <arg name="kinect_depth_optical_frame" value="/kinect_depth_optical_frame"/>
-      <arg name="input_sonar_topic"          value="/sensors/sonar_height"/>
-      <arg name="input_imu_topic"            value="/sensors/apm/imu"/>
-      <arg name="output_lm_topic"            value="/ransac_slam/lm"/>
-    </include>
-  </group>
-     
   <!-- publish ideal fixed->base_link tf publish (the data is taken from gazebo) -->
   <group if="$(arg ideal_tf)">
     <node name="ground_truth_to_tf" pkg="airdrone_gazebo" type="message_to_tf" output="screen">
@@ -41,12 +26,42 @@
     </node>
   </group>
 
+  <!-- publish tfs basing on visual odometry -->
+  <group unless="$(arg ideal_tf)">
+    <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager">
+      <param name="input_pose_topic"         value="/robot_pose_ekf/odom"/>
+      <param name="fixed_frame"              value="$(arg fixed_frame)"/>
+      <param name="base_footprint_frame"     value="$(arg base_footprint_frame)"/>
+      <param name="base_stabilized_frame"    value="$(arg base_stabilized_frame)"/>
+      <param name="base_link_frame"          value="$(arg base_link_frame)"/>
+      <param name="publish_rate"             value="50"/>
+    </node>
+  </group>
+
+
+
+
+
+  <!-- start visual odometry (the result is being published into '/robot_pose_ekf/odom' topic) -->
+  <include file="$(find airdrone_launch)/launch/localization.launch">
+    <arg name="input_depth_points_topic"     value="/sensors/kinect/depth/points"/>
+    <arg name="fixed_frame"                  value="$(arg fixed_frame)"/>
+    <arg name="base_footprint_frame"         value="$(arg base_footprint_frame)"/>
+    <arg name="base_stabilized_frame"        value="$(arg base_stabilized_frame)"/>
+    <arg name="base_link_frame"              value="$(arg base_link_frame)"/>
+    <arg name="kinect_depth_optical_frame"   value="/kinect_depth_optical_frame"/>
+    <arg name="input_sonar_topic"            value="/sensors/sonar_height"/>
+    <arg name="input_imu_topic"              value="/sensors/apm/imu"/>
+    <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
+  </include>
+
   <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"/>	
   <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="screen" required="true"/>
   <node pkg="action_server"  name="action_server"       type="action_server_nd"  output="screen">
     <param name="fixed_frame"                value="$(arg fixed_frame)"/>
     <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
     <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
+    <param name="input_lm_topic"             value="/ransac_slam/lm"/>
   </node>
-  <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"/>
+  <node pkg="action_client"  name="action_client"       type="main.py"           output="log"/>
 </launch>            

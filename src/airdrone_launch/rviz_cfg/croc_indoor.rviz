@@ -113,6 +113,8 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        base_footprint:
+          Value: true
         base_footprint_:
           Value: true
         base_link:
@@ -146,6 +148,8 @@ Visualization Manager:
       Show Names: true
       Tree:
         odom:
+          base_footprint:
+            {}
           base_footprint_:
             base_stabilized:
               base_link:
@@ -168,8 +172,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -15.3671
-        Min Value: -17.8103
+        Max Value: -15.9237
+        Min Value: -17.9533
         Value: true
       Axis: X
       Channel Name: intensity
@@ -190,18 +194,27 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.01
       Style: Flat Squares
-      Topic: /shrinker/depth/laser_points
+      Topic: /ransac_slam/flat_cloud
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /visualization_marker
-      Name: Marker
+      Marker Topic: visualization_marker
+      Name: Marker (action server)
       Namespaces:
         line_ns: true
         point_ns: true
         text_ns: true
+        vec_ns: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /ransac_slam/markers
+      Name: Marker (ransac slam)
+      Namespaces:
+        line_ns: true
         vec_ns: true
       Queue Size: 100
       Value: true
@@ -216,13 +229,13 @@ Visualization Manager:
     - Angle Tolerance: 0.0001
       Class: rviz/Odometry
       Color: 255; 25; 0
-      Enabled: false
+      Enabled: true
       Keep: 1
       Length: 1
       Name: Odometry
       Position Tolerance: 0.0001
       Topic: /ransac_slam/odom_out
-      Value: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -247,16 +260,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.2413
+      Distance: 10.4931
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.317405
-        Y: -0.329831
-        Z: -0.474217
+        X: 1.80852
+        Y: 6.354
+        Z: -0.475844
       Name: Current View
       Near Clip Distance: 0.01
       Pitch: 1.5698
@@ -281,4 +294,4 @@ Window Geometry:
     collapsed: true
   Width: 1855
   X: 55
-  Y: 332
+  Y: 312
