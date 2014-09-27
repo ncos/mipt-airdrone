@@ -49,4 +49,4 @@ wall_ang_eps: 5
 angle_to_pass: 30
 
 # Manual control (on/off)
-keyboard_control: false
+keyboard_control: true

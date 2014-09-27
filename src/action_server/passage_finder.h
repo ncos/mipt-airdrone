@@ -24,6 +24,7 @@ extern double apf_max_dist;
 extern double apf_min_angl;
 extern double apf_max_angl;
 extern double apf_better_q;
+extern std::string fixed_frame;
 extern std::string base_footprint_frame;
 extern std::string base_stabilized_frame;
 
@@ -119,7 +120,7 @@ class MappingServer
 {
 private:
     boost::shared_ptr<boost::mutex> mutex;
-    ros::Subscriber sub;
+    tf::TransformListener tf_listener;
     pcl::PointXYZ position_prev; // In gazebo
     pcl::PointXYZ offset_cmd, distance; // Real copter
     double delta_phi, prev_phi;
@@ -132,20 +133,21 @@ public:
     std::vector<pcl::PointXYZ> tracked_points;
 
 public:
-    MappingServer (ros::NodeHandle _nh, std::string inp_topic);
+    MappingServer ();
     pcl::PointXYZ get_global_positon();
     double get_global_angle();
     double diff(double a, double b);
     pcl::PointXYZ diff(pcl::PointXYZ a, pcl::PointXYZ b);
     int track (pcl::PointXYZ p);
     pcl::PointXYZ rotate(const pcl::PointXYZ vec, double angle);
+    void spin_once ();
+
 
 private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
-    void callback (const geometry_msgs::PoseStamped pos_msg);
     void add_visited ();
-    double get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg);
+    double get_angl_from_quaternion (const tf::Quaternion q);
 };
 
 
@@ -164,13 +166,13 @@ private:
 
     // Utility variables
     boost::shared_ptr<MappingServer> map_srv;
+    tf::TransformListener tf_listener;
     double move_epsilon;
     double move_rot_epsilon;
     double prev_angl;
     pcl::PointXYZ prev_pos;
     double height_epsilon;
     double prev_height;
-    tf::TransformListener listener;
 
 public:
     double ref_dist, ref_ang;
@@ -215,19 +217,12 @@ public:
         height_text.lifetime = ros::Duration(0.2);
 
         tf::StampedTransform transform;
-        try {
-            this->listener.waitForTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), ros::Duration(10.0) );
-        }
-        catch (tf::TransformException &ex) {
-            ROS_ERROR("Action Server Node: (wait) Unable to transform: %s", ex.what());
-        }
+        try {this->tf_listener.waitForTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), ros::Duration(10.0) ); }
+        catch (tf::TransformException &ex) {ROS_ERROR("Action Server Node: (wait) Unable to transform: %s", ex.what()); }
 
-        try {
-            this->listener.lookupTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), transform);
-        }
-        catch (tf::TransformException &ex) {
-            ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what());
-        }
+        try {this->tf_listener.lookupTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), transform); }
+        catch (tf::TransformException &ex) {ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what()); }
+
         this->target_height = this->prev_height = transform.getOrigin().z();
     }
     ~MotionServer ();

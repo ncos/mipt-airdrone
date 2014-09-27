@@ -1,32 +1,51 @@
 <launch>
+  <!-- global names and parameters -->
   <arg name="fixed_frame"           default="/odom"/>
   <arg name="base_footprint_frame"  default="/base_footprint_"/>
   <arg name="base_stabilized_frame" default="/base_stabilized"/>
   <arg name="base_link_frame"       default="/base_link"/>
+  <arg name="ideal_tf"              default="true" />
+  <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
+  <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
 
-  <include file="$(find airdrone_launch)/launch/localization.launch">
-    <param name="input_depth_points_topic"   value="/sensors/kinect/depth/points"/>
+  <!-- start robot state publisher -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen" >
+    <param name="publish_frequency" type="double" value="50.0" />
+  </node>
+
+  <!-- start visual odometry and fixed->base_link tf publish -->
+  <group unless="$(arg ideal_tf)">
+    <include file="$(find airdrone_launch)/launch/localization.launch">
+      <arg name="input_depth_points_topic"   value="/sensors/kinect/depth/points"/>
+      <arg name="fixed_frame"                value="$(arg fixed_frame)"/>
+      <arg name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
+      <arg name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
+      <arg name="base_link_frame"            value="$(arg base_link_frame)"/>
+      <arg name="kinect_depth_optical_frame" value="/kinect_depth_optical_frame"/>
+      <arg name="input_sonar_topic"          value="/sensors/sonar_height"/>
+      <arg name="input_imu_topic"            value="/sensors/apm/imu"/>
+      <arg name="output_lm_topic"            value="/ransac_slam/lm"/>
+    </include>
+  </group>
+     
+  <!-- publish ideal fixed->base_link tf publish -->
+  <group if="$(arg ideal_tf)">
+    <node name="ground_truth_to_tf" pkg="airdrone_gazebo" type="message_to_tf" output="screen">
+      <param name="odometry_topic"           value="ground_truth/state" />
+      <param name="frame_id"                 value="$(arg fixed_frame)" />
+      <param name="footprint_frame_id"       value="$(arg base_footprint_frame)" />
+      <param name="stabilized_frame_id"      value="$(arg base_stabilized_frame)" />
+      <param name="child_frame_id"           value="$(arg base_link_frame)" />
+      <param name="tf_prefix"                value="$(arg tf_prefix)"/>
+    </node>
+  </group>
+
+  <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"/>	
+  <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="screen" required="true"/>
+  <node pkg="action_server"  name="action_server"       type="action_server_nd"  output="screen">
     <param name="fixed_frame"                value="$(arg fixed_frame)"/>
     <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
     <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
-    <param name="base_link_frame"            value="$(arg base_link_frame)"/>
-    <param name="kinect_depth_optical_frame" value="/kinect_depth_optical_frame"/>
-    <param name="input_sonar_topic"          value="/sensors/sonar_height"/>
-    <param name="input_imu_topic"            value="/sensors/apm/imu"/>
-    <param name="output_lm_topic"            value="/ransac_slam/lm"/>
-  </include>
-
-  <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="screen" required="true"/>
-	
-  <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="screen" required="true">
-    <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
   </node>
-	
-  <node pkg="action_server"  name="action_server"       type="action_server_nd"  output="screen">
-    <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
-    <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
-    <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
-  </node>
-
-  <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"></node>
+  <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"/>
 </launch>            

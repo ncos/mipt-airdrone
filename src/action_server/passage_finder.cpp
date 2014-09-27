@@ -257,7 +257,6 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
 	this->lm.renew(cloud);
     this->ref_wall = this->lm.get_best_fit(this->stm.angle, this->stm.distance);
 
-
     if (!this->ref_wall->found) { this->lost_ref_wall = true; ROS_WARN("Lost ref_wall"); }
     else this->lost_ref_wall = false;
     double d_angle = this->stm.angle - this->ref_wall->angle;
@@ -495,13 +494,8 @@ void MotionServer::altitude_step() {
     PID pid_vel(1, 0.5, 0.5);
 
     tf::StampedTransform transform;
-    try {
-        this->listener.lookupTransform(base_footprint_frame, base_stabilized_frame,
-                                        ros::Time(0), transform);
-    }
-    catch (tf::TransformException &ex) {
-        ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what());
-    }
+    try { this->tf_listener.lookupTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), transform); }
+    catch (tf::TransformException &ex) { ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what()); }
 
     double tmp_vel = pid_vel.get_output(this->target_height, transform.getOrigin().z());
 
@@ -534,7 +528,7 @@ void MotionServer::altitude_step() {
 // *****************************************
 //              Mapping server
 // *****************************************
-MappingServer::MappingServer(ros::NodeHandle _nh, std::string inp_topic)
+MappingServer::MappingServer()
 {
     init_flag =   false; // Look into class defenition
     offset_cmd.x    = 0;
@@ -546,46 +540,50 @@ MappingServer::MappingServer(ros::NodeHandle _nh, std::string inp_topic)
     delta_phi       = 0;
     rotation_cnt    = 0;
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
-    std::string topic = _nh.resolveName(inp_topic);
-    sub = _nh.subscribe<geometry_msgs::PoseStamped> (topic, 1,  &MappingServer::callback, this);
+
+    try { this->tf_listener.waitForTransform(fixed_frame, base_footprint_frame, ros::Time(0), ros::Duration(10.0) ); }
+    catch (tf::TransformException &ex) { ROS_ERROR("Action Server Node: (wait) Unable to transform: %s", ex.what()); }
 };
 
 
-double MappingServer::get_angl_from_quaternion (const geometry_msgs::PoseStamped pos_msg)
+double MappingServer::get_angl_from_quaternion (const tf::Quaternion q)
 {
-    double vec_len = sqrt(pos_msg.pose.orientation.x * pos_msg.pose.orientation.x +
-                          pos_msg.pose.orientation.y * pos_msg.pose.orientation.y +
-                          pos_msg.pose.orientation.z * pos_msg.pose.orientation.z);
+    double vec_len = 1;//q.x * q.x + q.y * q.y + q.z * q.z;
     double angle = 0;
 
     if (vec_len != 0 ) {
-            angle = 2.0 * atan2(pos_msg.pose.orientation.z, pos_msg.pose.orientation.w) * 180 / M_PI;
+        //angle = 2.0 * atan2(float(q.z), float(q.w)) * 180 / M_PI;
     }
     else {
         angle = 0;
     }
     if (angle < 0)
         angle += 360;
+    //ROS_INFO("Quaternoin (g/a): %f, %f", angle, vec_len);
     return angle;
 };
 
 
-void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
+void MappingServer::spin_once()
 {
     this->lock();
 
+    tf::StampedTransform transform;
+    try { this->tf_listener.lookupTransform(fixed_frame, base_footprint_frame, ros::Time(0), transform); }
+    catch (tf::TransformException &ex) { ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what()); }
+
     if (this->init_flag == false) {
-        this->position_prev.x = pos_msg.pose.position.x;
-        this->position_prev.y = pos_msg.pose.position.y;
-        this->position_prev.z = 0;
-        this->prev_phi  = this->get_angl_from_quaternion (pos_msg);
+        this->position_prev.x = transform.getOrigin().x();
+        this->position_prev.y = transform.getOrigin().y();
+        this->position_prev.z = transform.getOrigin().z();
+        this->prev_phi  = this->get_angl_from_quaternion (transform.getRotation());
         this->init_flag = true;
         this->unlock();
         return;
     }
+    ROS_INFO("Quaternoin: %f, %f", transform.getRotation().getAngle() * 180.0 / M_PI, transform.getRotation().length2());
 
-
-    this->delta_phi = this->get_angl_from_quaternion (pos_msg) - this->prev_phi;
+    this->delta_phi = this->get_angl_from_quaternion (transform.getRotation()) - this->prev_phi;
     if (this->delta_phi > 300) {
         this->delta_phi -= 360;
         this->rotation_cnt --;
@@ -595,13 +593,13 @@ void MappingServer::callback (const geometry_msgs::PoseStamped pos_msg)
         this->delta_phi += 360;
         this->rotation_cnt ++;
     }
-    this->prev_phi = this->get_angl_from_quaternion (pos_msg);
+    this->prev_phi = this->get_angl_from_quaternion (transform.getRotation());
 
 
-    pcl::PointXYZ position (pos_msg.pose.position.x, pos_msg.pose.position.y, 0);
+    pcl::PointXYZ position (transform.getOrigin().x(), transform.getOrigin().y(), transform.getOrigin().z());
     pcl::PointXYZ offset (position.x - this->position_prev.x, position.y - this->position_prev.y, 0);
 
-    this->offset_cmd = this->rotate(offset, -(this->get_angl_from_quaternion (pos_msg) + angle_of_kinect));
+    this->offset_cmd = this->rotate(offset, -(this->get_angl_from_quaternion (transform.getRotation()) + angle_of_kinect));
 
     this->distance.x += this->offset_cmd.x;
     this->distance.y += this->offset_cmd.y;
@@ -694,6 +692,7 @@ pcl::PointXYZ MappingServer::diff(pcl::PointXYZ a, pcl::PointXYZ b)
     pcl::PointXYZ c;
     c.x = a.x - b.x;
     c.y = a.y - b.y;
+    c.z = a.z - b.z;
     return c;
 };
 
@@ -780,5 +779,5 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
 
     this->type = undefined;
     return undefined;
-}
+};
 

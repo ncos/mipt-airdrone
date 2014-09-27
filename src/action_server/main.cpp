@@ -64,8 +64,10 @@ double move_epsilon    = 0.0;
 double rot_epsilon     = 0.0;
 double wall_ang_eps    = 0.0;
 double angle_to_pass   = 0.0;
+std::string fixed_frame;
 std::string base_footprint_frame;
 std::string base_stabilized_frame;
+
 
 class ActionServer
 {
@@ -622,6 +624,7 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
 
     loc_srv->spin_once(cloud);
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
+    map_srv->spin_once();
     apf->renew(cloud);
 
 
@@ -673,20 +676,14 @@ int main( int argc, char** argv )
     if (!nh.getParam("PID_ang_P", ang_P)) ROS_ERROR("Failed to get param 'PID_ang_P'");
     if (!nh.getParam("PID_ang_I", ang_I)) ROS_ERROR("Failed to get param 'PID_ang_I'");
     if (!nh.getParam("PID_ang_D", ang_D)) ROS_ERROR("Failed to get param 'PID_ang_D'");
-
-
     if (!nh.getParam("PID_vel_P", vel_P)) ROS_ERROR("Failed to get param 'PID_vel_P'");
     if (!nh.getParam("PID_vel_I", vel_I)) ROS_ERROR("Failed to get param 'PID_vel_I'");
     if (!nh.getParam("PID_vel_D", vel_D)) ROS_ERROR("Failed to get param 'PID_vel_D'");
-
-
     if (!nh.getParam("distance_to_wall", target_dist))     ROS_ERROR("Failed to get param 'distance_to_wall'");
     if (!nh.getParam("angle_to_wall",    target_angl))     ROS_ERROR("Failed to get param 'angle_to_wall'");
     if (!nh.getParam("base_height",      target_height))   ROS_ERROR("Failed to get param 'base_height'");
     if (!nh.getParam("movement_speed",   movement_speed))  ROS_ERROR("Failed to get param 'movement_speed'");
     if (!nh.getParam("angle_of_kinect",  angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
-
-
     if (!nh.getParam("apf_min_width", apf_min_width)) ROS_ERROR("Failed to get param 'apf_min_width'");
     if (!nh.getParam("apf_min_dist",  apf_min_dist))  ROS_ERROR("Failed to get param 'apf_min_dist'");
     if (!nh.getParam("apf_max_dist",  apf_max_dist))  ROS_ERROR("Failed to get param 'apf_max_dist'");
@@ -697,10 +694,9 @@ int main( int argc, char** argv )
     if (!nh.getParam("angle_to_pass", angle_to_pass)) ROS_ERROR("Failed to get param 'angle_to_pass'");
     if (!nh.getParam("rot_epsilon",   rot_epsilon))   ROS_ERROR("Failed to get param 'rot_epsilon'");
     if (!nh.getParam("wall_ang_eps",  wall_ang_eps))  ROS_ERROR("Failed to get param 'wall_ang_eps'");
-
-
-    if (!nh.getParam("action_server/base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "base_footprint_";
-    if (!nh.getParam("action_server/base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "base_stabilized";
+    if (!nh.getParam("action_server/fixed_frame",            fixed_frame))           fixed_frame  = "/odom";
+    if (!nh.getParam("action_server/base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "/base_footprint_";
+    if (!nh.getParam("action_server/base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "/base_stabilized";
 
     input_topic      = nh.resolveName("/shrinker/depth/laser_points");
     output_topic_vel = nh.resolveName("/cmd_vel_2");
@@ -712,7 +708,7 @@ int main( int argc, char** argv )
     davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
     mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     loc_srv   = boost::shared_ptr<LocationServer> (new LocationServer(mutex_ptr));
-    map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer (nh, "/ground_truth_to_tf/pose"));
+    map_srv   = boost::shared_ptr<MappingServer>  (new MappingServer ());
     msn_srv   = boost::shared_ptr<MotionServer>   (new MotionServer  (mutex_ptr, map_srv));
     apf       = boost::shared_ptr<Advanced_Passage_finder> (new Advanced_Passage_finder());
     pt        = boost::shared_ptr<Passage_type>   (new Passage_type ());
