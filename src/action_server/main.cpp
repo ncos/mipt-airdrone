@@ -26,6 +26,9 @@
 #include <action_server/TakeoffAction.h>
 #include <action_server/LandingAction.h>
 
+// Message files
+#include <ransac_slam/LineMap.h>
+
 // Mutex is necessary to avoid control races between task handlers and cloud callback
 // cloud callback (or callback) is needed to renew information about point cloud and external sensors
 #include <boost/thread/mutex.hpp>
@@ -38,9 +41,6 @@ boost::shared_ptr<MotionServer>   msn_srv;
 boost::shared_ptr<MappingServer>  map_srv;
 boost::shared_ptr<Advanced_Passage_finder> apf;
 boost::shared_ptr<Passage_type> pt;
-
-std::string input_topic;
-std::string output_topic_vel;
 
 ros::Subscriber sub;
 ros::Publisher  pub_vel;
@@ -67,6 +67,8 @@ double angle_to_pass   = 0.0;
 std::string fixed_frame;
 std::string base_footprint_frame;
 std::string base_stabilized_frame;
+std::string input_lm_topic;
+std::string output_vel_topic;
 
 
 class ActionServer
@@ -602,7 +604,7 @@ private:
     actionlib::SimpleActionServer<action_server::MiddlePassAction>   as_middle_pass;
     actionlib::SimpleActionServer<action_server::TakeoffAction>      as_takeoff;
     actionlib::SimpleActionServer<action_server::LandingAction>      as_landing;
-    //
+
     bool on_left_side; // Reference side of the wall
 };
 
@@ -613,19 +615,18 @@ private:
 
 
 
-void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
+void callback(const ransac_slam::LineMap::ConstPtr& lines)
 {
     // Take control upon location and motion servers
     loc_srv->lock();
-
-    if(cloud->points.size() < 10) {
-        ROS_ERROR("AS: Cloud size = %lu", cloud->points.size());
+    if(lines->number == 0) {
+        ROS_ERROR("[action server]: no lines detected!");
     }
 
-    loc_srv->spin_once(cloud);
+    loc_srv->spin_once(lines);
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
     map_srv->spin_once();
-    apf->renew(cloud);
+    //apf->renew(cloud);
 
 
     davinci->draw_line(loc_srv->get_crn_wall_left(), 1, BLUE);
@@ -662,6 +663,8 @@ void callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
     msn_srv->clear_cmd();
 
     // Return control to task callback handlers
+
+
     loc_srv->unlock();
 };
 
@@ -697,12 +700,13 @@ int main( int argc, char** argv )
     if (!nh.getParam("action_server/fixed_frame",            fixed_frame))           fixed_frame  = "/odom";
     if (!nh.getParam("action_server/base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "/base_footprint_";
     if (!nh.getParam("action_server/base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "/base_stabilized";
+    if (!nh.getParam("action_server/input_lm_topic",   input_lm_topic)) input_lm_topic = "/ransac_slam/lm";
+    if (!nh.getParam("action_server/output_vel_topic", output_vel_topic)) output_vel_topic = "/cmd_vel_2";
 
-    input_topic      = nh.resolveName("/shrinker/depth/laser_points");
-    output_topic_vel = nh.resolveName("/cmd_vel_2");
 
-    sub     = nh.subscribe<pcl::PointCloud<pcl::PointXYZ> > (input_topic,      1, callback);
-    pub_vel = nh.advertise<geometry_msgs::Twist >           (output_topic_vel, 1 );
+
+    sub     = nh.subscribe<ransac_slam::LineMap>  (input_lm_topic,   1, callback);
+    pub_vel = nh.advertise<geometry_msgs::Twist > (output_vel_topic, 1);
 
 
     davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
@@ -717,7 +721,6 @@ int main( int argc, char** argv )
     msn_srv->set_pid_vel(vel_P, vel_I, vel_D);
 
     ActionServer action_server(nh);
-
 
 
     ros::spin ();

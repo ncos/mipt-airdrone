@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 				actionlib_msgs
 				tf
 				tf_conversions
+                                ransac_slam
 				std_msgs)
 
 find_package(OpenCV REQUIRED)
@@ -37,7 +38,7 @@ generate_messages(
 
 
 catkin_package(
-  CATKIN_DEPENDS actionlib_msgs
+  CATKIN_DEPENDS actionlib_msgs ransac_slam
 )
 
 ###########

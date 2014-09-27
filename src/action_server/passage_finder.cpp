@@ -112,7 +112,6 @@ void Advanced_Passage_finder::add_passage(double point1x, double point1y, double
 };
 
 
-
 bool Advanced_Passage_finder::passage_on_line(Line_param &line, Passage &passage)
 {
     const double eps = 0.1; // How close should be the passage border to the line
@@ -127,19 +126,14 @@ bool Advanced_Passage_finder::passage_on_line(Line_param &line, Passage &passage
 Line_param* Advanced_Passage_finder::get_best_line(pcl::PointXYZ &point, Line_map &linemap)
 {
     const double eps = 0.1; // How close should be the passage border to the line
-    const int min_quality = 1;
 
-    int best_quality = 0, best_i = 0;
+    int best_i = 0;
     for (int i = 0; i < linemap.lines.size(); ++i) {
-        if ((linemap.lines.at(i).distance_to_point(point.x, point.y) < eps)
-           && (linemap.lines.at(i).quality > best_quality))
-        {
-            best_quality = linemap.lines.at(i).quality;
+        if (linemap.lines.at(i).distance_to_point(point.x, point.y) < eps) {
             best_i = i;
         }
     }
 
-    if (best_quality < min_quality) return NULL;
     return &linemap.lines.at(best_i);
 };
 
@@ -197,6 +191,7 @@ double Advanced_Passage_finder::sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2)
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
 };
 
+
 Line_param* Advanced_Passage_finder::get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap) {
     Line_param *pass_line_op;
     Line_param *pass_line = this->get_best_line(pass_point_kin, linemap);
@@ -215,6 +210,9 @@ Line_param* Advanced_Passage_finder::get_best_opposite_line(pcl::PointXYZ pass_p
         return NULL;
     return pass_line_op;
 }
+
+
+
 
 // *****************************************
 // 				Location server
@@ -240,9 +238,10 @@ void LocationServer::track_wall(Line_param *wall)
 };
 
 
-void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
+
+void LocationServer::spin_once(const ransac_slam::LineMap::ConstPtr& lines)
 {
-    if (cloud->points.size() < 10) {
+    if(lines->number == 0) {
         ROS_WARN("The cloud is empty. Location server is unable to provide pose estimation. Skipping...");
         if (this->ref_wall != NULL) {
             this->ref_wall->found = false;
@@ -251,10 +250,10 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
     };
 
     if (this->ref_wall == NULL) {
-    	ROS_WARN("No ref_wall. Using random!");
+        ROS_WARN("No ref_wall. Using random!");
     };
 
-	this->lm.renew(cloud);
+    this->lm.renew(lines);
     this->ref_wall = this->lm.get_best_fit(this->stm.angle, this->stm.distance);
 
     if (!this->ref_wall->found) { this->lost_ref_wall = true; ROS_WARN("Lost ref_wall"); }
@@ -265,12 +264,9 @@ void LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& c
 
     this->yaw -= d_angle;
 
-	this->corner_wall_left = lm.get_closest(this->stm.angle + 90);
-	this->corner_wall_rght = lm.get_closest(this->stm.angle - 90);
+    this->corner_wall_left = lm.get_closest(this->stm.angle + 90);
+    this->corner_wall_rght = lm.get_closest(this->stm.angle - 90);
 };
-
-
-
 
 
 bool LocationServer::obstacle_detected_left ()
@@ -280,12 +276,13 @@ bool LocationServer::obstacle_detected_left ()
 };
 
 
-
 bool LocationServer::obstacle_detected_rght ()
 {
 	if (this->corner_wall_rght == NULL) return false;
 	return true;
 };
+
+
 
 
 // *****************************************

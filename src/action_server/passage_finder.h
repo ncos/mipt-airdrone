@@ -8,6 +8,9 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/transform_listener.h>
 
+// Message files
+#include <ransac_slam/LineMap.h>
+
 #include <vector>
 #include <cmath>
 
@@ -109,6 +112,7 @@ public:
 	Line_param  *get_crn_wall_left() {return this->corner_wall_left; }
 	Line_param  *get_crn_wall_rght() {return this->corner_wall_rght; }
 	void   spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud);
+    void   spin_once(const ransac_slam::LineMap::ConstPtr& lines);
 	bool   obstacle_detected_left ();
 	bool   obstacle_detected_rght ();
 	void   lock() {this->mutex->lock(); }

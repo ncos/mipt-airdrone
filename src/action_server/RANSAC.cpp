@@ -2,34 +2,19 @@
 
 
 
-void Line_map::renew (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud)
+
+void Line_map::renew (ransac_slam::LineMap::ConstPtr lines_msg)
 {
-	bool lines_cleared = false;
-	(*cloud_f).clear();
-	(*cloud_f) += *cloud;
+    this->lines.clear();
+    for (int i = 0; i < lines_msg->number; ++i) {
+        pcl::PointXYZ dfdir = pcl::PointXYZ(lines_msg->dfdirs.at(i).x, lines_msg->dfdirs.at(i).y, lines_msg->dfdirs.at(i).z);
+        pcl::PointXYZ ldir  = pcl::PointXYZ(lines_msg->ldirs.at(i).x,  lines_msg->ldirs.at(i).y,  lines_msg->ldirs.at(i).z);
 
-	int nr_points = (int) cloud_f->points.size ();
-
-	while (cloud_f->points.size () > 0.06 * nr_points)
-	{
-		// Segment the largest planar component from the remaining cloud
-	    seg.setInputCloud (cloud_f);
-	    seg.segment (*inliers, *coefficients);
-	    if (inliers->indices.size () <= MIN_POINTS_IN_LINE) break;
-	    else if (!lines_cleared) {lines.clear(); lines_cleared = true; }
-
-	    Line_param lp;
-	    lp.found = true;
-	    lp.renew(coefficients, cloud, inliers);
-
-	    lines.push_back(lp);
-
-	    // Create the filtering object
-	    extract.setInputCloud (cloud_f);
-	    extract.setIndices (inliers);
-	    extract.setNegative (true);
-	    extract.filter (*cloud_f);
-	}
+        Line_param lp;
+        lp.found = true;
+        lp.renew(dfdir, ldir);
+        this->lines.push_back(lp);
+    }
 };
 
 
