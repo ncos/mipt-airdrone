@@ -9,6 +9,10 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <stdlib.h>
+#include <stdio.h>
+
+
 
 #include <iostream>
 #include <stdio.h>
@@ -20,8 +24,7 @@ using namespace cv;
 
 
 
-void detectAndDisplay( Mat frame );
-int haar( int argc, char** argv );
+int detect( int argc, char** argv );
 
 
 #endif

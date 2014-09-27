@@ -13,7 +13,7 @@ int main (int argc, char** argv)
 
 
 
-	haar(argc, argv );
+	detect(argc, argv );
 
 	//ros::spin ();
 
