@@ -119,6 +119,7 @@ public:
 class MappingServer
 {
 private:
+    tf::StampedTransform prev_transform;
     boost::shared_ptr<boost::mutex> mutex;
     tf::TransformListener tf_listener;
     pcl::PointXYZ position_prev; // In gazebo

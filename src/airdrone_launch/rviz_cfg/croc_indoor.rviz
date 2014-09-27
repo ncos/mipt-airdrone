@@ -5,11 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /TF1
         - /TF1/Frames1
-        - /PointCloud21
-        - /Marker1
-        - /Odometry1
       Splitter Ratio: 0.67658
     Tree Height: 500
   - Class: rviz/Selection
@@ -117,8 +113,6 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base_footprint:
-          Value: true
         base_footprint_:
           Value: true
         base_link:
@@ -152,8 +146,6 @@ Visualization Manager:
       Show Names: true
       Tree:
         odom:
-          base_footprint:
-            {}
           base_footprint_:
             base_stabilized:
               base_link:
@@ -176,8 +168,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.0218711
-        Min Value: -2.34293
+        Max Value: -15.3671
+        Min Value: -17.8103
         Value: true
       Axis: X
       Channel Name: intensity
@@ -198,7 +190,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.01
       Style: Flat Squares
-      Topic: /ransac_slam/flat_cloud
+      Topic: /shrinker/depth/laser_points
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -208,6 +200,7 @@ Visualization Manager:
       Name: Marker
       Namespaces:
         line_ns: true
+        point_ns: true
         text_ns: true
         vec_ns: true
       Queue Size: 100
@@ -223,13 +216,13 @@ Visualization Manager:
     - Angle Tolerance: 0.0001
       Class: rviz/Odometry
       Color: 255; 25; 0
-      Enabled: true
+      Enabled: false
       Keep: 1
       Length: 1
       Name: Odometry
       Position Tolerance: 0.0001
       Topic: /ransac_slam/odom_out
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -254,7 +247,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 12.7149
+      Distance: 7.2413
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -288,4 +281,4 @@ Window Geometry:
     collapsed: true
   Width: 1855
   X: 55
-  Y: 342
+  Y: 332

@@ -548,18 +548,10 @@ MappingServer::MappingServer()
 
 double MappingServer::get_angl_from_quaternion (const tf::Quaternion q)
 {
-    double vec_len = 1;//q.x * q.x + q.y * q.y + q.z * q.z;
-    double angle = 0;
+    double angle = 2.0 * atan2(float(q.getZ()), float(q.getW())) * 180 / M_PI;
 
-    if (vec_len != 0 ) {
-        //angle = 2.0 * atan2(float(q.z), float(q.w)) * 180 / M_PI;
-    }
-    else {
-        angle = 0;
-    }
     if (angle < 0)
         angle += 360;
-    //ROS_INFO("Quaternoin (g/a): %f, %f", angle, vec_len);
     return angle;
 };
 
@@ -573,6 +565,7 @@ void MappingServer::spin_once()
     catch (tf::TransformException &ex) { ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what()); }
 
     if (this->init_flag == false) {
+        this->prev_transform = transform;
         this->position_prev.x = transform.getOrigin().x();
         this->position_prev.y = transform.getOrigin().y();
         this->position_prev.z = transform.getOrigin().z();
@@ -581,7 +574,8 @@ void MappingServer::spin_once()
         this->unlock();
         return;
     }
-    ROS_INFO("Quaternoin: %f, %f", transform.getRotation().getAngle() * 180.0 / M_PI, transform.getRotation().length2());
+
+
 
     this->delta_phi = this->get_angl_from_quaternion (transform.getRotation()) - this->prev_phi;
     if (this->delta_phi > 300) {
@@ -597,26 +591,31 @@ void MappingServer::spin_once()
 
 
     pcl::PointXYZ position (transform.getOrigin().x(), transform.getOrigin().y(), transform.getOrigin().z());
-    pcl::PointXYZ offset (position.x - this->position_prev.x, position.y - this->position_prev.y, 0);
+    pcl::PointXYZ offset (position.x - this->position_prev.x, position.y - this->position_prev.y, position.z - this->position_prev.z);
 
     this->offset_cmd = this->rotate(offset, -(this->get_angl_from_quaternion (transform.getRotation()) + angle_of_kinect));
 
     this->distance.x += this->offset_cmd.x;
     this->distance.y += this->offset_cmd.y;
+    this->distance.z += this->offset_cmd.z;
     this->position_prev.x = position.x;
     this->position_prev.y = position.y;
+    this->position_prev.z = position.z;
+    this->prev_transform = transform;
 
 
     for (int i = 0; i < this->tracked_points.size(); ++i) {
         this->tracked_points.at(i)   = this->rotate(this->tracked_points.at(i), -this->delta_phi);
         this->tracked_points.at(i).x = this->tracked_points.at(i).x - this->offset_cmd.x;
         this->tracked_points.at(i).y = this->tracked_points.at(i).y - this->offset_cmd.y;
+        this->tracked_points.at(i).z = this->tracked_points.at(i).z - this->offset_cmd.z;
     }
 
     for (int i = 0; i < this->visited_points.size(); ++i) {
         this->visited_points.at(i)   = this->rotate(this->visited_points.at(i), -this->delta_phi);
         this->visited_points.at(i).x = this->visited_points.at(i).x - this->offset_cmd.x;
         this->visited_points.at(i).y = this->visited_points.at(i).y - this->offset_cmd.y;
+        this->visited_points.at(i).z = this->visited_points.at(i).z - this->offset_cmd.z;
     }
 
 

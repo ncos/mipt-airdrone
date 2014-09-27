@@ -6,6 +6,7 @@
   <arg name="base_link_frame"       default="/base_link"/>
   <arg name="ideal_tf"              default="true" />
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
+  <param name="keyboard_control"    value="false"/>
   <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
 
   <!-- start robot state publisher -->
@@ -28,7 +29,7 @@
     </include>
   </group>
      
-  <!-- publish ideal fixed->base_link tf publish -->
+  <!-- publish ideal fixed->base_link tf publish (the data is taken from gazebo) -->
   <group if="$(arg ideal_tf)">
     <node name="ground_truth_to_tf" pkg="airdrone_gazebo" type="message_to_tf" output="screen">
       <param name="odometry_topic"           value="ground_truth/state" />
