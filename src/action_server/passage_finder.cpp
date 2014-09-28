@@ -699,16 +699,25 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
     }
 
 
+    ROS_INFO("Rec: %d | %d | %d | %f", this->closest_exist, this->middle_exist,
+                                   this->opposite_exist, fabs(scalar_mul));
+
     if (this->pass_exist && this->closest_exist && this->opposite_exist &&
         fabs(scalar_mul) <= 1 && fabs(scalar_mul) < 0.1) {
         this->type = ortogonal;
         return ortogonal;
     }
 
+    if (this->pass_exist && this->closest_exist && this->opposite_exist &&
+        fabs(scalar_mul) <= 1 && fabs(scalar_mul - 1) < 0.1) {
+        this->type = parallel;
+        return parallel;
+    }
+
     if (this->pass_exist && this->middle_exist &&
         fabs(scalar_mul) <= 1 && fabs(scalar_mul - 1) < 0.1) {
-        this->type = parrallel;
-        return parrallel;
+        this->type = middle;
+        return middle;
     }
 
     this->type = undefined;

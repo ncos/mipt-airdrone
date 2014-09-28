@@ -23,6 +23,7 @@
 #include <action_server/SwitchSideAction.h>
 #include <action_server/ApproachWallAction.h>
 #include <action_server/MiddlePassAction.h>
+#include <action_server/ParallPassAction.h>
 #include <action_server/TakeoffAction.h>
 #include <action_server/LandingAction.h>
 
@@ -76,6 +77,7 @@ public:
         as_switch_side  (nh_, "SwitchSideAS",   boost::bind(&ActionServer::switchSideCB,   this, _1), false),
         as_approach_wall(nh_, "ApproachWallAS", boost::bind(&ActionServer::approachWallCB, this, _1), false),
         as_middle_pass  (nh_, "MiddlePassAS",   boost::bind(&ActionServer::middlePassCB,   this, _1), false),
+        as_parall_pass  (nh_, "ParallPassAS",   boost::bind(&ActionServer::parallPassCB,   this, _1), false),
         as_takeoff      (nh_, "TakeoffAS",      boost::bind(&ActionServer::takeoffCB,      this, _1), false),
         as_landing      (nh_, "LandingAS",      boost::bind(&ActionServer::landingCB,      this, _1), false),
 		on_left_side (true)
@@ -87,6 +89,7 @@ public:
         as_switch_side  .start();
         as_approach_wall.start();
         as_middle_pass  .start();
+        as_parall_pass  .start();
         as_takeoff      .start();
         as_landing      .start();
     }
@@ -313,8 +316,11 @@ public:
         while (1) {
             msn_srv->lock();
             msn_srv->track();
-            if (apf->passages.empty())
-				break;
+            if (apf->passages.empty()) {
+                ROS_INFO("Pass is empty");
+                msn_srv->unlock();
+                break;
+            }
             pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
                                                   apf->passages.at(0).cmd_rght;
             pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
@@ -329,31 +335,41 @@ public:
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
+			    ROS_INFO("Pass exist");
+			    ROS_INFO("%f | %f | %f",fabs(loc_srv->get_ref_wall()->angle), fabs(pass_point_ang), loc_srv->get_ref_wall()->distance);
                 if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
+                    ROS_INFO("Correct target_angl");
                     if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
+                        ROS_INFO("Recognized");
                         msn_srv->unlock();
                         break;
                     }
 			        if (( this->on_left_side && pass_point_ang < 0) ||
 			            (!this->on_left_side && pass_point_ang > 0)) {
+			            ROS_INFO("Corr side from kin");
 			            double wall_to_pass_angle = fabs(loc_srv->get_ref_wall()->angle) -
 			                                        fabs(pass_point_ang);
-			            if (fabs(wall_to_pass_angle - angle_to_pass) < rot_epsilon) {
+			            if (fabs(pass_point_ang) < 1) {
+			                ROS_INFO("Approach done");
                             msn_srv->unlock();
                             break;
 			            }
 			            else if (fabs(wall_to_pass_angle) >= angle_to_pass) {
+			                ROS_INFO("Forw");
 			                msn_srv->move_parallel(vel);
 			            }
 			            else {
 			                msn_srv->move_parallel(-vel);
+			                ROS_INFO("Backw");
 			            }
 			        }
                     else {
+                        ROS_INFO("Change side from kin");
                         msn_srv->move_parallel(vel);
                     }
 			    }
                 else {
+                    ROS_INFO("Change target_ang");
                     msn_srv->move_parallel(0);
                 }
 			}
@@ -366,6 +382,7 @@ public:
 			r.sleep();
 		}
         msn_srv->lock();
+        ROS_INFO("Approach cycle exit");
         pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                  apf->passages.at(0).kin_left;
         pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
@@ -384,10 +401,17 @@ public:
         pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                  apf->passages.at(0).kin_left;
 
-        if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == parrallel &&
+        if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == middle &&
             apf->passages.at(0).left_ang * apf->passages.at(0).rght_ang < 0) {
             msn_srv->unlock();
             result_.middle_pass = true;
+            as_approach_door.setSucceeded(result_);
+            return;
+        }
+
+        if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == parallel) {
+            msn_srv->unlock();
+            result_.parall_pass = true;
             as_approach_door.setSucceeded(result_);
             return;
         }
@@ -546,6 +570,78 @@ public:
         return;
     }
 
+    void parallPassCB(const action_server::ParallPassGoalConstPtr  &goal) {
+        action_server::ParallPassResult result_;
+        ros::Rate r(60);
+
+        msn_srv->lock();
+
+        // Check for appropriate input parameters
+        pcl::PointXYZ pass_point_cmd (0, 0, 0);
+        pcl::PointXYZ pass_point_kin (0, 0, 0);
+        Line_param *pass_line = NULL;
+        double side_sign = NAN;
+        double rot_vel = NAN;
+        if (apf->passages.size() == 0) {
+            ROS_ERROR("No passage in PP");
+            msn_srv->unlock();
+            result_.success = true;
+            as_parall_pass.setSucceeded(result_);
+            return;
+        }
+        else {
+            pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
+                                                  apf->passages.at(0).cmd_rght;
+            pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
+                                                  apf->passages.at(0).kin_rght;
+            pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
+            side_sign = (this->on_left_side) ? 1 : -1;
+            rot_vel = this->on_left_side ? 0.5 : -0.5;
+        }
+
+        if (pass_line == NULL || isnan(pass_point_cmd.x) || isnan(pass_point_cmd.y)){
+            ROS_ERROR("Wrong pass distance");
+            as_parall_pass.setAborted(result_);
+            return;
+        }
+
+        double vel[2] = {0.75, 0.75};
+        double angle[2] = {0, 0};
+        std::vector<int> stage_num;
+
+        int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
+        pcl::PointXYZ vec (0, 0, 0);
+        vec.x = pass_line->ldir_vec.cmd.x * side_sign * 1.75 * target_dist;
+        vec.y = pass_line->ldir_vec.cmd.y * side_sign * 1.75 * target_dist;
+        stage_num.push_back(map_srv->track(vec) - 1);
+
+
+        vec.x = pass_line->fdir_vec.cmd.x * 1 * target_dist;
+        vec.y = pass_line->fdir_vec.cmd.y * 1 * target_dist;
+        stage_num.push_back(map_srv->track(vec) - 1);
+
+        msn_srv->unlock();
+        for (int i = 0; i < stage_num.size(); i++) {
+            msn_srv->lock();
+            vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_num.at(i)).x - map_srv->tracked_points.at(start_pos_num).x,
+                                map_srv->tracked_points.at(stage_num.at(i)).y - map_srv->tracked_points.at(start_pos_num).y, 0);
+
+            msn_srv->unlock();
+            msn_srv->move (vec, vel[i], angle[i], rot_vel);
+            bool all_done = false;
+            while (!all_done) {
+                msn_srv->lock();
+                all_done = msn_srv->move_done && msn_srv->rot_done;
+                msn_srv->unlock();
+                r.sleep();
+            }
+        }
+
+        msn_srv->unlock();
+        result_.success = true;
+        as_parall_pass.setSucceeded(result_);
+        return;
+    }
 
     void takeoffCB(const action_server::TakeoffGoalConstPtr  &goal) {
         action_server::TakeoffResult result_;
@@ -596,6 +692,7 @@ private:
     actionlib::SimpleActionServer<action_server::SwitchSideAction>   as_switch_side;
     actionlib::SimpleActionServer<action_server::ApproachWallAction> as_approach_wall;
     actionlib::SimpleActionServer<action_server::MiddlePassAction>   as_middle_pass;
+    actionlib::SimpleActionServer<action_server::ParallPassAction>   as_parall_pass;
     actionlib::SimpleActionServer<action_server::TakeoffAction>      as_takeoff;
     actionlib::SimpleActionServer<action_server::LandingAction>      as_landing;
 

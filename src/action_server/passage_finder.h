@@ -27,7 +27,7 @@ extern std::string base_stabilized_frame;
 
 
 enum PassageType {
-    ortogonal, parrallel, single_wall, undefined, non_valid
+    ortogonal, parallel, middle, single_wall, undefined, non_valid
 };
 
 

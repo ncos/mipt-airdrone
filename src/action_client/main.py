@@ -71,6 +71,9 @@ def approach_door_result_cb(userdata, status, result):
         if result.middle_pass == True:
             rospy.loginfo("approach_door_result_cb -> result.middle_pass == True")
             return 'middle_pass'
+        if result.parall_pass == True:
+            rospy.loginfo("approach_door_result_cb -> result.parall_pass == True")
+            return 'parall_pass'
         return 'aborted'
             
     rospy.loginfo("(approach_door_result_cb): This line should never be reached")
@@ -132,10 +135,11 @@ def main():
                                                            ApproachDoorAction,
                                                            goal =  ApproachDoorGoal(),
                                                            result_cb = approach_door_result_cb,
-                                                           outcomes=['aborted', 'succeeded', 'middle_pass', 'ortog_pass']),
+                                                           outcomes=['aborted', 'succeeded', 'parall_pass', 'middle_pass', 'ortog_pass']),
                                transitions={'aborted'     :'Pause',
                                             'ortog_pass'  :'Switch side',
                                             'middle_pass' :'Middle pass',
+                                            'parall_pass' :'Parall pass',
                                             'succeeded'   :'Pass door'} )
         
         smach.StateMachine.add('Pass door',
@@ -166,6 +170,14 @@ def main():
                                smach_ros.SimpleActionState('MiddlePassAS',
                                                            MiddlePassAction,
                                                            goal =  MiddlePassGoal(),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'Move along'} )
+        
+        smach.StateMachine.add('Parall pass',
+                               smach_ros.SimpleActionState('ParallPassAS',
+                                                           ParallPassAction,
+                                                           goal =  ParallPassGoal(),
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Move along'} )

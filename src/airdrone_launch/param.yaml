@@ -43,7 +43,7 @@ move_epsilon:  0.1
 
 
 # Move function euristic constants
-rot_epsilon: 5
-wall_ang_eps: 5
+rot_epsilon: 2
+wall_ang_eps: 2
 angle_to_pass: 30
 
