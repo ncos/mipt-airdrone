@@ -20,73 +20,16 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
 
+#include "advanced_types.h"
+#include "passage.h"
+
 extern int min_points_in_line;
 extern int min_points_in_cloud;
 extern std::string fixed_frame;
 extern std::string base_frame;
 
-class VectorMath
-{
-public:
-    static pcl::PointXYZ cross(pcl::PointXYZ p1, pcl::PointXYZ p2) {
-        pcl::PointXYZ result;
-        result.x = p1.y * p2.z - p1.z * p2.y;
-        result.y = p1.z * p2.x - p1.x * p2.z;
-        result.z = p1.x * p2.y - p1.y * p2.x;
-        return result;
-    };
-
-    static double dot(pcl::PointXYZ p1, pcl::PointXYZ p2) {
-        return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
-    };
-
-    static double len(pcl::PointXYZ p1) {
-        return sqrt(dot(p1, p1));
-    };
-
-    static pcl::PointXYZ to_e(pcl::PointXYZ p1) {
-        pcl::PointXYZ result;
-        result.x = p1.x / len(p1);
-        result.y = p1.y / len(p1);
-        result.z = p1.z / len(p1);
-        return result;
-    };
-};
 
 
-class Line_param
-{
-public:
-	bool found;
-	double distance;
-	int quality; // How good we can see this line
-	std::string frame;
-	std::vector<pcl::PointXYZ> kin_inliers;
-    pcl::PointXYZ ldir_vec; // direction to the left across the line
-    pcl::PointXYZ fdir_vec; // points to the line
-    pcl::PointXYZ r_vec;    // the point lying the line
-    double angle; // ldir angle with the 'x' frame axis
-
-	Line_param ();
-
-	void renew (pcl::ModelCoefficients::Ptr coefficients,
-			    pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud,
-			    pcl::PointIndices::Ptr inliers_idx);
-
-	double distance_to_point(pcl::PointXYZ p1);
-
-private:
-	void normalize(pcl::ModelCoefficients::Ptr coefficients);
-};
-
-
-class LineMetrics
-{
-public:
-    static double get_error (Line_param &l1, Line_param &l2);
-    static double get_error (Line_param &l, double angle, double distance);
-    static double get_error (double delta1, double delta2);
-};
 
 
 class Line_map
@@ -159,12 +102,12 @@ class LocationServer
 {
 public:
     Line_map lm;
+    AdvancedPassageFinder pf;
     double range_from_sonar;
-    std::vector<BruteForceMatcher::Pair> matched_dbg;
+    std::vector<BruteForceMatcher::Pair> match_list;
 
 public:
-    LocationServer (): range_from_sonar(0)
-                                        {};
+    LocationServer (): range_from_sonar(0) {};
     nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base, tf::Transform base_to_cloud);
 
 private:

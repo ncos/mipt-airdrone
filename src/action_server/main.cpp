@@ -54,12 +54,6 @@ double target_angl     = 0.0;
 double target_height   = 0.0;
 double movement_speed  = 0.0;
 double angle_of_kinect = 0.0;
-double apf_min_width   = 0.0;
-double apf_min_dist    = 0.0;
-double apf_max_dist    = 0.0;
-double apf_min_angl    = 0.0;
-double apf_max_angl    = 0.0;
-double apf_better_q    = 0.0;
 double move_epsilon    = 0.0;
 double rot_epsilon     = 0.0;
 double wall_ang_eps    = 0.0;
@@ -615,18 +609,17 @@ private:
 
 
 
-void callback(const ransac_slam::LineMap::ConstPtr& lines)
+void callback(const ransac_slam::LineMap::ConstPtr& lines_msg)
 {
-    // Take control upon location and motion servers
-    loc_srv->lock();
-    if(lines->number == 0) {
+    loc_srv->lock();  // Take control under location and motion servers
+    if(lines_msg->number == 0) {
         ROS_ERROR("[action server]: no lines detected!");
     }
 
-    loc_srv->spin_once(lines);
+    loc_srv->spin_once(lines_msg);
     msn_srv->set_ref_wall(loc_srv->get_ref_wall());
     map_srv->spin_once();
-    //apf->renew(cloud);
+    apf->renew(lines_msg);
 
 
     davinci->draw_line(loc_srv->get_crn_wall_left(), 1, BLUE);
@@ -651,21 +644,12 @@ void callback(const ransac_slam::LineMap::ConstPtr& lines)
         msn_srv->clear_cmd();
     msn_srv->spin_once();
 
-    //map_srv->track(pcl::PointXYZ(0, 0, 0));
     davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
-    // ------------
-    //msn_srv->base_cmd.linear.x = 0;
-    //msn_srv->base_cmd.linear.y = 0;
-    //msn_srv->base_cmd.angular.z = 0.1;
-    // ------------
+
 
     pub_vel.publish(msn_srv->base_cmd);
     msn_srv->clear_cmd();
-
-    // Return control to task callback handlers
-
-
-    loc_srv->unlock();
+    loc_srv->unlock();  // Return control to task callback handlers
 };
 
 
@@ -687,12 +671,6 @@ int main( int argc, char** argv )
     if (!nh.getParam("base_height",      target_height))   ROS_ERROR("Failed to get param 'base_height'");
     if (!nh.getParam("movement_speed",   movement_speed))  ROS_ERROR("Failed to get param 'movement_speed'");
     if (!nh.getParam("angle_of_kinect",  angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
-    if (!nh.getParam("apf_min_width", apf_min_width)) ROS_ERROR("Failed to get param 'apf_min_width'");
-    if (!nh.getParam("apf_min_dist",  apf_min_dist))  ROS_ERROR("Failed to get param 'apf_min_dist'");
-    if (!nh.getParam("apf_max_dist",  apf_max_dist))  ROS_ERROR("Failed to get param 'apf_max_dist'");
-    if (!nh.getParam("apf_min_angl",  apf_min_angl))  ROS_ERROR("Failed to get param 'apf_min_angl'");
-    if (!nh.getParam("apf_max_angl",  apf_max_angl))  ROS_ERROR("Failed to get param 'apf_max_angl'");
-    if (!nh.getParam("apf_better_q",  apf_better_q))  ROS_ERROR("Failed to get param 'apf_better_q'");
     if (!nh.getParam("move_epsilon",  move_epsilon))  ROS_ERROR("Failed to get param 'move_epsilon'");
     if (!nh.getParam("angle_to_pass", angle_to_pass)) ROS_ERROR("Failed to get param 'angle_to_pass'");
     if (!nh.getParam("rot_epsilon",   rot_epsilon))   ROS_ERROR("Failed to get param 'rot_epsilon'");

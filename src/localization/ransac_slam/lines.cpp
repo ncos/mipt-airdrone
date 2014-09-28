@@ -1,95 +1,6 @@
 #include "lines.h"
 
 
-// *****************************************
-//              Line param
-// *****************************************
-Line_param::Line_param () {
-    this->found = false;
-    this->ldir_vec = pcl::PointXYZ(NAN, NAN, NAN);
-    this->fdir_vec = pcl::PointXYZ(NAN, NAN, NAN);
-    this->r_vec    = pcl::PointXYZ(NAN, NAN, NAN);
-    this->found    = false;
-    this->angle    = NAN;
-    this->distance = NAN;
-    this->quality  = NAN; // How good we can see this line
-    this->frame    = "";
-};
-
-
-void Line_param::renew (pcl::ModelCoefficients::Ptr coefficients,
-                        pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud,
-                        pcl::PointIndices::Ptr inliers_idx)
-{
-    kin_inliers.clear();
-    normalize(coefficients);
-    this->frame = cloud->header.frame_id;
-    pcl::PointXYZ r = pcl::PointXYZ(coefficients->values[0], coefficients->values[1], coefficients->values[2]);
-    pcl::PointXYZ l = pcl::PointXYZ(coefficients->values[3], coefficients->values[4], coefficients->values[5]);
-    pcl::PointXYZ f;
-    // f = r - l(r, l)
-    l = VectorMath::to_e(l);
-    f.x = r.x - l.x * VectorMath::dot(r, l);
-    f.y = r.y - l.y * VectorMath::dot(r, l);
-    f.z = r.z - l.z * VectorMath::dot(r, l);
-    f = VectorMath::to_e(f);
-
-    this->r_vec    = r;
-    this->ldir_vec = l;
-    this->fdir_vec = f;
-
-    // TODO: this implementation only works for flat lines
-    if (this->ldir_vec.x == 0) {
-        if(this->ldir_vec.z < 0) this->angle = -90; // 5 = forward, 3 - to the right
-        else this->angle = 90;
-    }
-    else this->angle = atan(this->ldir_vec.z / fabs(this->ldir_vec.x))*180.0/M_PI;
-    if (this->angle > 0 && this->ldir_vec.x < 0) this->angle += 90;
-    if (this->angle < 0 && this->ldir_vec.x < 0) this->angle -= 90;
-
-    this->distance = this->distance_to_point(pcl::PointXYZ(0, 0, 0));
-
-    for (int i = 0; i < inliers_idx->indices.size(); ++i) {
-        pcl::PointXYZ point;
-        point.x = cloud->points.at(inliers_idx->indices.at(i)).x;
-        point.y = cloud->points.at(inliers_idx->indices.at(i)).y;
-        point.z = cloud->points.at(inliers_idx->indices.at(i)).z;
-        this->kin_inliers.push_back(point);
-    }
-
-    this->quality = this->kin_inliers.size();
-};
-
-
-double Line_param::distance_to_point(pcl::PointXYZ p1) {
-    pcl::PointXYZ M0M1;
-    M0M1.x = this->r_vec.x - p1.x;
-    M0M1.y = this->r_vec.y - p1.y;
-    M0M1.z = this->r_vec.z - p1.z;
-    pcl::PointXYZ d_vec = VectorMath::cross(M0M1, this->ldir_vec);
-    return VectorMath::len(d_vec);
-};
-
-
-void Line_param::normalize(pcl::ModelCoefficients::Ptr coefficients)
-{
-    // line direction coordinates in kinect frame:
-    double lx = coefficients->values[3]; // x is to the right
-    double ly = coefficients->values[5]; // y is forward !FOR KINECT!
-
-    // point on the line in kinect frame:
-    double rx = coefficients->values[0]; // x is to the right
-    double ry = coefficients->values[2]; // y is forward !FOR KINECT!
-
-    if (rx*ly - ry*lx > 0) {
-        lx = - lx;
-        ly = - ly;
-    }
-
-    coefficients->values[3] = lx;
-    coefficients->values[5] = ly;
-};
-
 
 // *****************************************
 //              Line map
@@ -184,26 +95,6 @@ void Line_map::sort_lines_d (double distance, std::vector<Line_param> &l)
 
 };
 
-// *****************************************
-//              Line metrics
-// *****************************************
-double LineMetrics::get_error (Line_param &l1, Line_param &l2)
-{
-    return LineMetrics::get_error(l1.angle - l2.angle, l1.distance - l2.distance);
-};
-
-double LineMetrics::get_error (Line_param &l, double angle, double distance)
-{
-    return LineMetrics::get_error(l.angle - angle, l.distance - distance);
-};
-
-double LineMetrics::get_error (double delta1, double delta2)
-{
-    double d1 = delta1, d2 = delta2;
-    if (isnan(delta1)) d1 = 0;
-    if (isnan(delta2)) d2 = 0;
-    return sqrt(d1 * d1 + d2 * d2);
-};
 
 // *****************************************
 //              Brute force matcher
@@ -289,12 +180,14 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
                                         to provide reliable pose estimation", cloud->points.size());
         return result_pose;
     }
+    this->pf.renew(cloud);
+
     std::vector<Line_param> lines_old = this->lm.lines;
     this->lm.renew(cloud);
     std::vector<BruteForceMatcher::Pair> matched;
     std::vector<Line_param> unmatched;
     BruteForceMatcher::match(lines_old, this->lm.lines, matched, unmatched);
-    this->matched_dbg = matched;
+    this->match_list = matched;
 
 
     double delta_yaw = 0;
@@ -318,6 +211,19 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
                                                           (0)   (0)   (0) (1e6) (0)  (0)
                                                           (0)   (0)   (0)  (0) (1e6) (0)
                                                           (0)   (0)   (0)  (0)  (0)  (1e3);
+    result_pose.twist.twist.angular.x = 0;
+    result_pose.twist.twist.angular.y = 0;
+    result_pose.twist.twist.angular.z = 0;
+    result_pose.twist.twist.linear.x  = 0;
+    result_pose.twist.twist.linear.y  = 0;
+    result_pose.twist.twist.linear.z  = 0;
+    result_pose.twist.covariance =  boost::assign::list_of(9000)  (0) (0)  (0)  (0)  (0)
+                                                          (0) (9000)  (0)  (0)  (0)  (0)
+                                                          (0)   (0)  (9000) (0)  (0)  (0)
+                                                          (0)   (0)   (0) (9000) (0)  (0)
+                                                          (0)   (0)   (0)  (0) (9000) (0)
+                                                          (0)   (0)   (0)  (0)  (0)  (9000);
+
     result_pose.child_frame_id  = base_frame;
     result_pose.header.frame_id = fixed_frame;
     result_pose.header.stamp = ros::Time::now();
@@ -337,7 +243,6 @@ void LocationServer::estimate_rotation(std::vector<BruteForceMatcher::Pair> &mat
         delta_yaw += asin(delta_yaw_sin) * 180 / M_PI;
     }
     delta_yaw /= divider;
-    //ROS_INFO("%f", delta_yaw);
 };
 
 void LocationServer::estimate_shift(std::vector<BruteForceMatcher::Pair> &matched, pcl::PointXYZ &shift)

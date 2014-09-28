@@ -24,19 +24,18 @@ distance_to_wall: 1.0
 angle_to_wall: 45.0
 
 
-# Advanced passage finder related constants:
-apf_min_width: 1.4
-apf_min_dist:  0.6
-apf_max_dist:  2.8
-apf_min_angl: -25
-apf_max_angl:  25
-apf_better_q:  1   # 1 is more computationally demanding but gives less false alarms in door detection    
 
 
 # RANSAC SLAM configuration:
 ransac_slam/min_points_in_line: 50
 ransac_slam/min_points_in_cloud: 10
 ransac_slam/shrink_order: 50
+ransac_slam/apf_min_width: 1.4
+ransac_slam/apf_min_dist:  0.6
+ransac_slam/apf_max_dist:  2.8
+ransac_slam/apf_min_angl: -25
+ransac_slam/apf_max_angl:  25
+ransac_slam/apf_better_q:  true
 
 
 # Move function euristic constants

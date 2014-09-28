@@ -6,7 +6,7 @@
   <arg name="base_link_frame"       default="/base_link"/>
   <arg name="ideal_tf"              default="true" />
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
-  <param name="keyboard_control"    value="true"/>
+  <param name="keyboard_control"    value="false"/>
   <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
 
   <!-- start robot state publisher -->

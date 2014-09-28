@@ -3,96 +3,34 @@
 // *****************************************
 //              Advanced Passage Finder
 // *****************************************
-
-void Advanced_Passage_finder::renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud)
+void Advanced_Passage_finder::renew(const ransac_slam::LineMap::ConstPtr& lines_msg)
 {
-    // cloud->points.at(0).x is "x" coordinate
-    // cloud->points.at(0).z is "y" coordinate
     this->passages.clear();
-
-
-    const int max_id = cloud->points.size() - 1;
-    const int min_id = 0;
-
-    if (cloud->points.size() < 2) return;
-
-
-    for (int i = 1; i < cloud->points.size(); ++i) {
-        if (apf_better_q == 0) {
-            if (this->sqrange(cloud->points.at(i - 1), cloud->points.at(i)) > apf_min_width * apf_min_width) {
-                this->add_passage(cloud->points.at(i - 1).x, cloud->points.at(i - 1).z, cloud->points.at(i).x, cloud->points.at(i).z);
-            }
-        }
-
-        if (apf_better_q == 1) {
-            if (this->sqrange(cloud->points.at(i - 1), cloud->points.at(i)) > apf_min_width * apf_min_width) {
-                bool edge_left = ((cloud->points.at(i - 1).z > apf_min_dist) && (cloud->points.at(i - 1).z < apf_max_dist));
-                bool edge_rght = ((cloud->points.at(i).z     > apf_min_dist) && (cloud->points.at(i).z     < apf_max_dist));
-
-                if (edge_left &&  edge_rght) {
-                    this->add_passage(cloud->points.at(i - 1).x, cloud->points.at(i - 1).z, cloud->points.at(i).x, cloud->points.at(i).z);
-                }
-
-                if (edge_left && !edge_rght) {
-                    pcl::PointXYZ rght = this->get_closest_rght(cloud, i - 1);
-                    if (this->sqrange(cloud->points.at(i - 1), rght) > apf_min_width * apf_min_width) {
-                        this->add_passage(cloud->points.at(i - 1).x, cloud->points.at(i - 1).z, rght.x, rght.z);
-                    }
-                }
-
-                if (!edge_left && edge_rght) {
-                    pcl::PointXYZ left = this->get_closest_left(cloud, i);
-                    if (this->sqrange(left, cloud->points.at(i)) > apf_min_width * apf_min_width) {
-                        this->add_passage(left.x, left.z, cloud->points.at(i).x, cloud->points.at(i).z);
-                    }
-                }
-            }
-        }
-
-
-
-        if (apf_better_q != 0 && apf_better_q != 1) {
-            ROS_WARN("Invalid 'apf_better_q' param (...= %f). Assuming it is zero", apf_better_q);
-            apf_better_q = 0;
-        }
-    }
-
-    // Check the leftmost and rightmost point (this is in case only one side of the passage is seen)
-    double left_ang = atan(cloud->points.at(min_id).x / cloud->points.at(min_id).z) * 180 / M_PI;  // The angle of the leftmost point
-    double rght_ang = atan(cloud->points.at(max_id).x / cloud->points.at(max_id).z) * 180 / M_PI;  // The angle of the rightmost point
-
-
-    // RIGHT (!important!) passage point detection
-    if ((cloud->points.at(min_id).z > apf_min_dist) && (cloud->points.at(min_id).z < apf_max_dist) && (left_ang > apf_min_angl)) {
-        // If this is the leftmost point, the passage is possibly even more at the left, so this point is the (supposedly)
-        // RIGHT point of the passage (if rotate left and look directly at the passage this point will be on the right)
-        add_passage(NAN, NAN, cloud->points.at(min_id).x, cloud->points.at(min_id).z);
-    }
-
-    // LEFT (!important!) passage point detection
-    if ((cloud->points.at(max_id).z > apf_min_dist) && (cloud->points.at(max_id).z < apf_max_dist) && (rght_ang < apf_max_angl)) {
-        // This is similar to the RIGHT point detection
-        add_passage(cloud->points.at(max_id).x, cloud->points.at(max_id).z, NAN, NAN);
+    for (int i = 0; i < lines_msg->pnumber; ++i) {
+        this->add_passage(lines_msg->header.frame_id,
+                 pcl::PointXYZ(lines_msg->pleft.at(i).x, lines_msg->pleft.at(i).y, lines_msg->pleft.at(i).z),
+                 pcl::PointXYZ(lines_msg->prght.at(i).x, lines_msg->prght.at(i).y, lines_msg->prght.at(i).z));
     }
 };
 
 
-void Advanced_Passage_finder::add_passage(double point1x, double point1y, double point2x, double point2y)
+void Advanced_Passage_finder::add_passage(std::string frame, pcl::PointXYZ point1, pcl::PointXYZ point2)
 {
     Passage new_passage;
 
-    if (!isnan(point1x) && !isnan(point1y) && !isnan(point2x) && !isnan(point2y))
+    if (!isnan(point1.x) && !isnan(point1.y) && !isnan(point1.x) &&
+        !isnan(point2.x) && !isnan(point2.y) && !isnan(point2.x))
         new_passage.is_nan = false;
 
-    new_passage.kin_left.x = point1x;
-    new_passage.kin_left.y = point1y;
-    new_passage.kin_rght.x = point2x;
-    new_passage.kin_rght.y = point2y;
+    new_passage.kin_left.x = point1.x;
+    new_passage.kin_left.y = point1.z;
+    new_passage.kin_rght.x = point2.x;
+    new_passage.kin_rght.y = point2.z;
 
-    new_passage.width = sqrt(pow(point1x - point2x, 2.0) + pow(point1y - point2y, 2.0));
+    new_passage.width = sqrt(pow(point1.x - point2.x, 2.0) + pow(point1.z - point2.z, 2.0));
 
-    new_passage.kin_middle.x = (point1x + point2x) / 2;
-    new_passage.kin_middle.y = (point1y + point2y) / 2;
+    new_passage.kin_middle.x = (point1.x + point2.x) / 2;
+    new_passage.kin_middle.y = (point1.z + point2.z) / 2;
 
     new_passage.left_ang = atan(new_passage.kin_left.x/new_passage.kin_left.y) * 180 / M_PI;
     new_passage.rght_ang = atan(new_passage.kin_rght.x/new_passage.kin_rght.y) * 180 / M_PI;

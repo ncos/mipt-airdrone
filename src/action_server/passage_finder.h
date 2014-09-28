@@ -21,12 +21,6 @@
 // The angle of kinect sensor regarding to the red (front) arm
 // Set in main.cpp:
 extern double angle_of_kinect;
-extern double apf_min_width;
-extern double apf_min_dist;
-extern double apf_max_dist;
-extern double apf_min_angl;
-extern double apf_max_angl;
-extern double apf_better_q;
 extern std::string fixed_frame;
 extern std::string base_footprint_frame;
 extern std::string base_stabilized_frame;
@@ -70,13 +64,13 @@ class Advanced_Passage_finder // Da ADVANCED Passage findr! (looks for holes in 
 {
 public:
     std::vector<Passage> passages;
-    void renew(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud);
+    void renew(const ransac_slam::LineMap::ConstPtr& lines_msg);
     bool passage_on_line(Line_param &line, Passage &passage);
     Line_param *get_best_line(pcl::PointXYZ &point, Line_map &linemap);
     Line_param *get_best_opposite_line(pcl::PointXYZ pass_point_kin, pcl::PointXYZ pass_point_kin_op, Line_map &linemap);
 
 private:
-    void add_passage(double point1x, double point1y, double point2x, double point2y);
+    void add_passage(std::string frame, pcl::PointXYZ point1, pcl::PointXYZ point2);
     double sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2);
     pcl::PointXYZ get_closest_left(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud, int point_id);
     pcl::PointXYZ get_closest_rght(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud, int point_id);
@@ -111,7 +105,6 @@ public:
 	Line_param  *get_ref_wall() {return this->ref_wall; }
 	Line_param  *get_crn_wall_left() {return this->corner_wall_left; }
 	Line_param  *get_crn_wall_rght() {return this->corner_wall_rght; }
-	void   spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud);
     void   spin_once(const ransac_slam::LineMap::ConstPtr& lines);
 	bool   obstacle_detected_left ();
 	bool   obstacle_detected_rght ();

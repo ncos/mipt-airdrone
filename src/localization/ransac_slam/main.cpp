@@ -24,7 +24,7 @@
 
 
 
-// Parameters from param.yaml
+// Input parameters
 int min_points_in_cloud;
 int min_points_in_line;
 std::string input_cloud_topic;
@@ -42,6 +42,13 @@ std::string output_lm_topic;
 bool publish_tf;
 bool use_sonar_data;
 std::string input_sonar_topic;
+double apf_min_width;
+double apf_min_dist;
+double apf_max_dist;
+double apf_min_angl;
+double apf_max_angl;
+bool apf_better_q;
+
 
 class CloudProcessor
 {
@@ -144,21 +151,7 @@ private:
 
         nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);
 
-        //ROS_INFO("matched: %lu", this->loc_srv.matched_dbg.size());
-        if (this->loc_srv.matched_dbg.size() > 0) {
-            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(0).l1, 10 + 0, BLUE);
-            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(0).l2, 10 + 1, BLUE);
-        }
-        if (this->loc_srv.matched_dbg.size() > 1) {
-            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(1).l1, 10 + 2, GOLD);
-            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(1).l2, 10 + 3, GOLD);
-        }
-        if (this->loc_srv.matched_dbg.size() > 2) {
-            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(2).l1, 10 + 4, CYAN);
-            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.matched_dbg.at(2).l2, 10 + 5, CYAN);
-        }
-
-
+        this->visualize();
         this->publishLineMap();
         if (publish_clouds) {
             this->pub_laser_cloud.publish(this->laser_cloud);
@@ -167,6 +160,38 @@ private:
         this->pub_odom_out.publish(map_to_cloud);
     }
 
+    void visualize() {
+        if (this->loc_srv.match_list.size() > 0) {
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.match_list.at(0).l1, 10 + 0, BLUE);
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.match_list.at(0).l2, 10 + 1, BLUE);
+        }
+        if (this->loc_srv.match_list.size() > 1) {
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.match_list.at(1).l1, 10 + 2, GOLD);
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.match_list.at(1).l2, 10 + 3, GOLD);
+        }
+        if (this->loc_srv.match_list.size() > 2) {
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.match_list.at(2).l1, 10 + 4, CYAN);
+            this->davinci.draw_line(pcl_conversions::fromPCL(laser_cloud->header), &this->loc_srv.match_list.at(2).l2, 10 + 5, CYAN);
+        }
+
+
+        AdvancedPassageFinder *apf = &(this->loc_srv.pf);
+        for (int i = 0; i < apf->passages.size(); ++i) {
+            this->davinci.draw_point(apf->passages.at(i).frame, pcl::PointXYZ(apf->passages.at(i).left.x,
+                                     apf->passages.at(i).left.y, apf->passages.at(i).left.z),     i*3 + 0, RED);
+            this->davinci.draw_point(apf->passages.at(i).frame, pcl::PointXYZ(apf->passages.at(i).middle.x,
+                                     apf->passages.at(i).middle.y, apf->passages.at(i).middle.z), i*3 + 1, GREEN);
+            this->davinci.draw_point(apf->passages.at(i).frame, pcl::PointXYZ(apf->passages.at(i).rght.x,
+                                     apf->passages.at(i).rght.y, apf->passages.at(i).rght.z),     i*3 + 2, BLUE);
+            this->davinci.draw_vec  (apf->passages.at(i).frame, pcl::PointXYZ(apf->passages.at(i).left.x,
+                                     apf->passages.at(i).left.y, apf->passages.at(i).left.z),     i*3 + 0, RED);
+            this->davinci.draw_vec  (apf->passages.at(i).frame, pcl::PointXYZ(apf->passages.at(i).middle.x,
+                                     apf->passages.at(i).middle.y, apf->passages.at(i).middle.z), i*3 + 1, GREEN);
+            this->davinci.draw_vec  (apf->passages.at(i).frame, pcl::PointXYZ(apf->passages.at(i).rght.x,
+                                     apf->passages.at(i).rght.y, apf->passages.at(i).rght.z),     i*3 + 2, BLUE);
+        }
+
+    }
 
     void sonarCallback (const sensor_msgs::Range range_msg) {
         this->loc_srv.range_from_sonar = range_msg.range;
@@ -174,7 +199,8 @@ private:
 
     void publishLineMap() {
         ransac_slam::LineMap lm;
-        lm.number = this->loc_srv.lm.lines.size();
+        lm.number  = this->loc_srv.lm.lines.size();
+        lm.pnumber = this->loc_srv.pf.passages.size();
 
         for (int i = 0; i < lm.number; ++i) {
             geometry_msgs::Point32 point;
@@ -191,8 +217,22 @@ private:
             lm.ldirs.push_back (point);
         }
 
+        for (int i = 0; i < lm.pnumber; ++i) {
+            geometry_msgs::Point32 point;
+            point.x = this->loc_srv.pf.passages.at(i).left.x;
+            point.y = this->loc_srv.pf.passages.at(i).left.y;
+            point.z = this->loc_srv.pf.passages.at(i).left.z;
+            lm.pleft.push_back(point);
+            point.x = this->loc_srv.pf.passages.at(i).rght.x;
+            point.y = this->loc_srv.pf.passages.at(i).rght.y;
+            point.z = this->loc_srv.pf.passages.at(i).rght.z;
+            lm.prght.push_back (point);
+        }
+
         if (lm.number != 0)
             lm.header.frame_id = this->loc_srv.lm.lines.at(0).frame;
+        if (lm.pnumber != 0)
+            lm.header.frame_id = this->loc_srv.pf.passages.at(0).frame;
         lm.header.stamp = ros::Time::now();
         this->pub_line_map.publish(lm);
     }
@@ -210,6 +250,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "ransac_slam");
     ros::NodeHandle nh;
 
+    // motion estimation
     if (!nh.getParam("ransac_slam/min_points_in_line", min_points_in_line)) min_points_in_line = 50;
     if (!nh.getParam("ransac_slam/min_points_in_cloud", min_points_in_cloud)) min_points_in_cloud = 10;
     if (!nh.getParam("ransac_slam/input_cloud_topic", input_cloud_topic)) input_cloud_topic = "/sensors/kinect/depth/points";
@@ -227,6 +268,14 @@ int main(int argc, char** argv)
     if (!nh.getParam("ransac_slam/input_sonar_topic", input_sonar_topic)) input_sonar_topic = "/sensors/sonar_height";
     if (!nh.getParam("ransac_slam/output_odom_topic", output_odom_topic)) output_odom_topic = "/ransac_slam/odom_out";
     if (!nh.getParam("ransac_slam/output_lm_topic", output_lm_topic)) output_lm_topic = "/ransac_slam/lm";
+    // passage searching
+    if (!nh.getParam("ransac_slam/apf_min_width", apf_min_width)) apf_min_width = 1.4;
+    if (!nh.getParam("ransac_slam/apf_min_dist",  apf_min_dist))  apf_min_dist  = 0.6;
+    if (!nh.getParam("ransac_slam/apf_max_dist",  apf_max_dist))  apf_max_dist  = 2.8;
+    if (!nh.getParam("ransac_slam/apf_min_angl",  apf_min_angl))  apf_min_angl  = -25;
+    if (!nh.getParam("ransac_slam/apf_max_angl",  apf_max_angl))  apf_max_angl  =  25;
+    if (!nh.getParam("ransac_slam/apf_better_q",  apf_better_q))  apf_better_q  = true;
+
 
 
     CloudProcessor cp(nh);

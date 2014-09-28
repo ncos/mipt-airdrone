@@ -47,7 +47,7 @@ add_definitions(${PCL_DEFINITIONS})
 
 
 
-set(SOURCES main.cpp lines.cpp lines.h da_vinci.cpp da_vinci.h)
+set(SOURCES main.cpp lines.cpp passage.h passage.cpp lines.h advanced_types.cpp advanced_types.h da_vinci.cpp da_vinci.h)
 
 add_executable(ransac_slam_nd ${SOURCES})
 target_link_libraries(ransac_slam_nd	 	${catkin_LIBRARIES} 
