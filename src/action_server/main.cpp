@@ -319,7 +319,9 @@ public:
             if (apf->passages.empty()) {
                 ROS_INFO("Pass is empty");
                 msn_srv->unlock();
-                break;
+                result_.part_failed = true;
+                as_approach_door.setSucceeded(result_);
+                return;
             }
             pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
                                                   apf->passages.at(0).cmd_rght;
@@ -349,7 +351,7 @@ public:
 			            ROS_INFO("Corr side from kin");
 			            double wall_to_pass_angle = fabs(loc_srv->get_ref_wall()->angle) -
 			                                        fabs(pass_point_ang);
-			            if (fabs(pass_point_ang) < 1) {
+			            if (fabs(wall_to_pass_angle - angle_to_pass) < rot_epsilon) {
 			                ROS_INFO("Approach done");
                             msn_srv->unlock();
                             break;
@@ -525,6 +527,8 @@ public:
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
             msn_srv->move_parallel(0);
+            ROS_INFO("%f | %f", loc_srv->get_ref_wall()->distance,
+                    fabs(loc_srv->get_ref_wall()->distance - target_dist));
             if (fabs(loc_srv->get_ref_wall()->distance - target_dist) <= move_epsilon)
                 break;
             msn_srv->unlock();

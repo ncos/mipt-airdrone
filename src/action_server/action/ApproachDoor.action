@@ -7,6 +7,7 @@ bool success
 bool ortog_pass
 bool middle_pass
 bool parall_pass
+bool part_failed
 float32 x
 float32 y
 ---

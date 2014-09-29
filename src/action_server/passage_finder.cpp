@@ -336,6 +336,8 @@ void MotionServer::spin_once()
 	    this->base_cmd.angular.z = - this->pid_ang.get_output(this->ref_ang, this->ref_wall->angle);
 
         double vel_k = - this->pid_vel.get_output(this->ref_dist, this->ref_wall->distance);
+        //vel_k = vel_k > 0.5 ? 0.5 : vel_k;
+        //vel_k = vel_k < -0.5 ? -0.5 : vel_k;
         this->base_cmd.linear.x  += vel_k * this->ref_wall->fdir_vec.cmd.x + this->buf_cmd.linear.x;
         this->base_cmd.linear.y  += vel_k * this->ref_wall->fdir_vec.cmd.y + this->buf_cmd.linear.y;
         this->base_cmd.linear.z  += this->buf_cmd.linear.z;

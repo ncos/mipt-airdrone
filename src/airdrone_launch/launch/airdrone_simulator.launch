@@ -59,5 +59,5 @@
     <param name="input_lm_topic"             value="/ransac_slam/lm"/>
     <param name="output_vel_topic"           value="/cmd_vel_2"/>
   </node>
-  <node pkg="action_client"  name="action_client"       type="main.py"           output="log"/>
+  <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"/>
 </launch>            
