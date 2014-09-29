@@ -16,6 +16,7 @@
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/extract_indices.h>
 #include <tf/tf.h>
+#include <tf/transform_listener.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
@@ -27,6 +28,7 @@ extern int min_points_in_line;
 extern int min_points_in_cloud;
 extern std::string fixed_frame;
 extern std::string base_frame;
+extern std::string kinect_depth_optical_frame;
 
 
 
@@ -108,7 +110,8 @@ public:
 
 public:
     LocationServer (): range_from_sonar(0) {};
-    nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base, tf::Transform base_to_cloud);
+    nav_msgs::Odometry spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform& fixed_to_base, tf::Transform& base_to_cloud, tf::Transform& fixed_to_cloud,
+                                 tf::TransformListener& tf_listener);
 
 private:
     void estimate_rotation(std::vector<BruteForceMatcher::Pair> &matched, double &delta_yaw);

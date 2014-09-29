@@ -82,6 +82,7 @@ public:
         try {
             this->tf_listener.waitForTransform(fixed_frame, base_frame,                ros::Time(0), ros::Duration(10.0) );
             this->tf_listener.waitForTransform(base_frame, kinect_depth_optical_frame, ros::Time(0), ros::Duration(10.0) );
+            this->tf_listener.waitForTransform(fixed_frame, kinect_depth_optical_frame, ros::Time(0), ros::Duration(10.0) );
         }
         catch (tf::TransformException &ex) {
             ROS_ERROR("Ransac SLAM Node: (wait) %s", ex.what());
@@ -140,16 +141,17 @@ private:
                       (%s != %s)", ("/" + this->laser_cloud->header.frame_id).c_str(), kinect_depth_optical_frame.c_str());
         }
 
-        tf::StampedTransform fixed_to_base, base_to_cloud;
+        tf::StampedTransform fixed_to_base, base_to_cloud, fixed_to_cloud;
         try {
             this->tf_listener.lookupTransform(fixed_frame, base_frame, ros::Time(0), fixed_to_base);
             this->tf_listener.lookupTransform(base_frame, kinect_depth_optical_frame, ros::Time(0), base_to_cloud);
+            this->tf_listener.lookupTransform(fixed_frame, kinect_depth_optical_frame, ros::Time(0), fixed_to_cloud);
         }
         catch (tf::TransformException &ex) {
             ROS_ERROR("Ransac SLAM Node: (lookup) %s", ex.what());
         }
 
-        nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud);
+        nav_msgs::Odometry map_to_cloud = this->loc_srv.spin_once(this->laser_cloud, fixed_to_base, base_to_cloud, fixed_to_cloud, this->tf_listener);
 
         this->visualize();
         this->publishLineMap();

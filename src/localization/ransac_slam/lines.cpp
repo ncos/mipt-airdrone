@@ -171,8 +171,10 @@ unsigned int BruteForceMatcher::get_best_fit(Line_param &line, std::vector<Line_
 // *****************************************
 //              Location server
 // *****************************************
-nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform fixed_to_base,
-                                                                                                    tf::Transform base_to_cloud)
+nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud, tf::Transform& fixed_to_base,
+                                                                                                    tf::Transform& base_to_cloud,
+                                                                                                    tf::Transform& fixed_to_cloud,
+                                                                                                    tf::TransformListener& tf_listener)
 {
     nav_msgs::Odometry result_pose;
     if (cloud->points.size() < min_points_in_cloud) {
@@ -189,12 +191,36 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
     BruteForceMatcher::match(lines_old, this->lm.lines, matched, unmatched);
     this->match_list = matched;
 
-
     double delta_yaw = 0;
     this->estimate_rotation(matched, delta_yaw);
 
     pcl::PointXYZ shift(0.0, 0.0, 0.0);
     this->estimate_shift(matched, shift);
+
+    // Rotating the shift vector:
+    geometry_msgs::PointStamped cloud_point_start, cloud_point_end;
+    geometry_msgs::PointStamped fixed_point_start, fixed_point_end;
+    cloud_point_end.header.frame_id = kinect_depth_optical_frame;
+    cloud_point_end.header.stamp = ros::Time();
+    cloud_point_end.point.x = shift.x;
+    cloud_point_end.point.y = shift.y;
+    cloud_point_end.point.z = shift.z;
+    cloud_point_start.header.frame_id = kinect_depth_optical_frame;
+    cloud_point_start.header.stamp = ros::Time();
+    cloud_point_start.point.x = 0;
+    cloud_point_start.point.y = 0;
+    cloud_point_start.point.z = 0;
+
+    try {
+       tf_listener.transformPoint(fixed_frame, cloud_point_start, fixed_point_start);
+       tf_listener.transformPoint(fixed_frame, cloud_point_end,   fixed_point_end);
+    }
+    catch(tf::TransformException& ex) {
+        ROS_ERROR("Received an exception trying to transform a point from \"kinect\" to \"odom\": %s", ex.what());
+    }
+    shift.x = fixed_point_end.point.x - fixed_point_start.point.x;
+    shift.y = fixed_point_end.point.y - fixed_point_start.point.y;
+    shift.z = fixed_point_end.point.z - fixed_point_start.point.z;
 
     result_pose.pose.pose.position.x = fixed_to_base.getOrigin().x() + shift.x;
     result_pose.pose.pose.position.y = fixed_to_base.getOrigin().y() + shift.y;
@@ -248,6 +274,48 @@ void LocationServer::estimate_rotation(std::vector<BruteForceMatcher::Pair> &mat
 void LocationServer::estimate_shift(std::vector<BruteForceMatcher::Pair> &matched, pcl::PointXYZ &shift)
 {
     shift = pcl::PointXYZ(0.0, 0.0, 0.0);
+    const double ortog_eps = 0.5;
+    unsigned int cnt1 = 0, cnt2 = 0;
+
+    pcl::PointXYZ shift1(NAN, NAN, NAN), shift2(0.0, 0.0, 0.0);
+
+    for (int i = 0; i < matched.size(); ++i) {
+        if (matched.at(i).err > 10) continue;
+        double d = matched.at(i).l1.distance - matched.at(i).l2.distance;
+        if (isnan(shift1.x)) {
+            shift1.x = matched.at(i).l2.fdir_vec.x * d;
+            shift1.y = matched.at(i).l2.fdir_vec.y * d;
+            shift1.z = matched.at(i).l2.fdir_vec.z * d;
+            cnt1 ++;
+            continue;
+        }
+        if (VectorMath::dot(shift1, matched.at(i).l2.fdir_vec) >= ortog_eps) {
+            shift1.x += matched.at(i).l2.fdir_vec.x * d;
+            shift1.y += matched.at(i).l2.fdir_vec.y * d;
+            shift1.z += matched.at(i).l2.fdir_vec.z * d;
+            cnt1 ++;
+        }
+        else {
+            shift2.x += matched.at(i).l2.fdir_vec.x * d;
+            shift2.y += matched.at(i).l2.fdir_vec.y * d;
+            shift2.z += matched.at(i).l2.fdir_vec.z * d;
+            cnt2 ++;
+        }
+    }
+    if (cnt1 != 0) {
+        shift1.x /= cnt1;
+        shift1.y /= cnt1;
+        shift1.z /= cnt1;
+    }
+    if (cnt2 != 0) {
+        shift2.x /= cnt2;
+        shift2.y /= cnt2;
+        shift2.z /= cnt2;
+    }
+
+    shift.x = shift1.x + shift2.x;
+    shift.y = shift1.y + shift2.y;
+    shift.z = shift1.z + shift2.z;
 };
 
 

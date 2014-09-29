@@ -31,11 +31,11 @@ Panels:
 Visualization Manager:
   Class: ""
   Displays:
-    - Alpha: 0.5
+    - Alpha: 0.2
       Cell Size: 1
       Class: rviz/Grid
       Color: 160; 160; 164
-      Enabled: false
+      Enabled: true
       Line Style:
         Line Width: 0.03
         Value: Lines
@@ -46,9 +46,9 @@ Visualization Manager:
         Y: 0
         Z: 0
       Plane: XY
-      Plane Cell Count: 10
+      Plane Cell Count: 1000
       Reference Frame: <Fixed Frame>
-      Value: false
+      Value: true
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
@@ -126,8 +126,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 11.2082
-        Min Value: 6.05265
+        Max Value: 2.91411
+        Min Value: 2.36002
         Value: true
       Axis: X
       Channel Name: intensity
@@ -213,22 +213,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 15.6282
+      Distance: 12.5406
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.24321
-        Y: 2.53958
-        Z: -0.13755
+        X: 2.95022
+        Y: -1.88999
+        Z: 0.745039
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.944797
+      Pitch: 1.5698
       Target Frame: base_stabilized
       Value: Orbit (rviz)
-      Yaw: 4.49859
+      Yaw: 4.75859
     Saved: ~
 Window Geometry:
   Displays:

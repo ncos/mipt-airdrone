@@ -578,7 +578,7 @@ int MappingServer::track (pcl::PointXYZ p)
 
 void MappingServer::add_visited ()
 {
-    const unsigned int max_size_ = 30;
+    const unsigned int max_size_ = 100;
     const double dist_ = 0.05;
 
     if (this->visited_points.size() > 0) {
