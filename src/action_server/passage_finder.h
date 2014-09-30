@@ -27,7 +27,17 @@ extern std::string base_stabilized_frame;
 
 
 enum PassageType {
-    ortogonal, parallel, middle, single_wall, undefined, non_valid
+    nv_ladder, ortogonal, parallel, middle, single_wall, undefined, non_valid
+};
+
+
+class VectorMath
+{
+public:
+    static pcl::PointXYZ cross(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    static double dot(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    static double len(pcl::PointXYZ p1);
+    static pcl::PointXYZ to_e(pcl::PointXYZ p1);
 };
 
 

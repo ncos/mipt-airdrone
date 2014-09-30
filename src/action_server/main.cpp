@@ -102,7 +102,7 @@ public:
         action_server::MoveAlongResult      result_;
         action_server::MoveAlongFeedback feedback_;
         ros::Rate r(60);
-
+        ROS_INFO("moveAlongCB->goal = %f", goal->vel);
         float vel = 0;
 
         if (this->on_left_side)
@@ -338,7 +338,7 @@ public:
             msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
 			    ROS_INFO("Pass exist");
-			    ROS_INFO("%f | %f | %f",fabs(loc_srv->get_ref_wall()->angle), fabs(pass_point_ang), loc_srv->get_ref_wall()->distance);
+			    ROS_INFO("%f | %f | %f", fabs(loc_srv->get_ref_wall()->angle), fabs(pass_point_ang), loc_srv->get_ref_wall()->distance);
                 if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
                     ROS_INFO("Correct target_angl");
                     if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
@@ -527,9 +527,8 @@ public:
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
             msn_srv->move_parallel(0);
-            ROS_INFO("%f | %f", loc_srv->get_ref_wall()->distance,
-                    fabs(loc_srv->get_ref_wall()->distance - target_dist));
-            if (fabs(loc_srv->get_ref_wall()->distance - target_dist) <= move_epsilon)
+            ROS_INFO("distance: %f | error: %f", loc_srv->get_ref_wall()->distance, loc_srv->get_ref_wall()->distance - target_dist);
+            if (loc_srv->get_ref_wall()->distance < target_dist)
                 break;
             msn_srv->unlock();
             r.sleep();
@@ -745,8 +744,18 @@ void callback(const ransac_slam::LineMap::ConstPtr& lines_msg)
         msn_srv->clear_cmd();
     msn_srv->spin_once();
 
-    davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
 
+
+    double vlen = VectorMath::len(pcl::PointXYZ(msn_srv->base_cmd.linear.x,
+                                                msn_srv->base_cmd.linear.y,
+                                                msn_srv->base_cmd.linear.z));
+    if (vlen > fabs(movement_speed)) {
+        msn_srv->base_cmd.linear.x = msn_srv->base_cmd.linear.x * fabs(movement_speed) / vlen;
+        msn_srv->base_cmd.linear.y = msn_srv->base_cmd.linear.y * fabs(movement_speed) / vlen;
+        msn_srv->base_cmd.linear.z = msn_srv->base_cmd.linear.z * fabs(movement_speed) / vlen;
+    }
+
+    davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
 
     pub_vel.publish(msn_srv->base_cmd);
     msn_srv->clear_cmd();

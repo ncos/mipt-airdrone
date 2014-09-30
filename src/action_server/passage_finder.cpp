@@ -1,5 +1,34 @@
 #include "passage_finder.h"
 
+
+// *****************************************
+//              Vector Math
+// *****************************************
+pcl::PointXYZ VectorMath::cross(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+    pcl::PointXYZ result;
+    result.x = p1.y * p2.z - p1.z * p2.y;
+    result.y = p1.z * p2.x - p1.x * p2.z;
+    result.z = p1.x * p2.y - p1.y * p2.x;
+    return result;
+};
+
+double VectorMath::dot(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+    return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
+};
+
+double VectorMath::len(pcl::PointXYZ p1) {
+    return sqrt(dot(p1, p1));
+};
+
+pcl::PointXYZ VectorMath::to_e(pcl::PointXYZ p1) {
+    pcl::PointXYZ result;
+    result.x = p1.x / len(p1);
+    result.y = p1.y / len(p1);
+    result.z = p1.z / len(p1);
+    return result;
+};
+
+
 // *****************************************
 //              Advanced Passage Finder
 // *****************************************
@@ -673,6 +702,8 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
     Line_param *pass_line = apf->get_best_line(pass_point_kin, lm);
     Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, lm);
 
+
+
     double scalar_mul = NAN;
     if (pass_line != NULL && pass_line_op != NULL) {
         scalar_mul = pass_line->ldir_vec.cmd.x * pass_line_op->ldir_vec.cmd.x +
@@ -699,7 +730,6 @@ int Passage_type::recognize (boost::shared_ptr<Advanced_Passage_finder> apf, Lin
         this->type = single_wall;
         return single_wall;
     }
-
 
     ROS_INFO("Rec: %d | %d | %d | %f", this->closest_exist, this->middle_exist,
                                    this->opposite_exist, fabs(scalar_mul));
