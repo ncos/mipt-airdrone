@@ -43,7 +43,7 @@ bool checkWhiteInEllipse(const RotatedRect ellipse, Mat threshold_output) {
             // count white
             if(0 < i && i < threshold_output.rows &&
                0 < j && j < threshold_output.cols &&
-               threshold_output.at<uchar>(i,j))
+               threshold_output.at<uchar>(i,j) > 150)
                 countWhite ++;
         }
     }
@@ -51,51 +51,35 @@ bool checkWhiteInEllipse(const RotatedRect ellipse, Mat threshold_output) {
     return countWhite > ((int)(0.8*count));
 }
 
-void detectAndDisplay( Mat frame , string window_name)
-{
-    std::vector<Rect> faces;
-    Mat frame_gray;
-    cvtColor( frame, frame_gray, CV_BGR2GRAY );
-    equalizeHist( frame_gray, frame_gray );
-    face_cascade.detectMultiScale( frame_gray, faces, 1.005);
-    std::cout << faces.size() << std::endl;
-    for( size_t i = 0; i < faces.size(); i++ )
-    {
-        Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
-        ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-    }
-    imshow( window_name, frame );
-}
-
 int detect( int argc, char** argv )
 {
-    //VideoCapture cap(0); // open the default camera
-    //if(!cap.isOpened())  // check if we succeeded
-    //    return -1;
+    VideoCapture cap(0); // open the default camera
+    if(!cap.isOpened())  // check if we succeeded
+        return -1;
 
     if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 
 
-    Mat edges;
     Mat orig_frame;
-    orig_frame = imread("/home/vsevolod/workspace/mipt-airdrone/src/localization/marker_detector/image.png"
-                         , CV_LOAD_IMAGE_COLOR);
-    if (!orig_frame.data) {
-        printf("--(!)Error getting picture\n"); return -1;
-    }
+    //orig_frame = imread("/home/vsevolod/workspace/mipt-airdrone/src/localization/marker_detector/image.png"
+    //                     , CV_LOAD_IMAGE_COLOR);
+    //if (!orig_frame.data) {
+    //    printf("--(!)Error getting picture\n"); return -1;
+    //}
 
     for(;;)
     {
 
-        //cap >> orig_frame; // get a new frame from camera
+        cap >> orig_frame; // get a new frame from camera
 
         Mat frame;
         frame = orig_frame.clone();
         resize(orig_frame, orig_frame, Size(480, 480), 0.3, 0.3, INTER_CUBIC);
-        Mat graysacale;
-        cvtColor(frame, graysacale, CV_BGR2GRAY);
-        edges = graysacale.clone();
+        Mat grayscale;
+        cvtColor(frame, grayscale, CV_BGR2GRAY);
 
+        Mat edges;
+        edges = grayscale.clone();
 
         Mat canny_output;
         double thresh = 10;
@@ -112,18 +96,18 @@ int detect( int argc, char** argv )
 
         for( int i = 0; i < contours.size(); i++ ) {
             minRect[i] = minAreaRect( Mat(contours[i]) );
-            if( contours[i].size() > 500 && contours[i].size() < 550)
+            if( contours[i].size() > 50)
                  minEllipse[i] = fitEllipse( Mat(contours[i]) );
         }
 
         Mat treshholded;
-        adaptiveThreshold(graysacale, treshholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C,
+        adaptiveThreshold(grayscale, treshholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C,
                                                         THRESH_BINARY, 7, 2);
 
         vector<RotatedRect> ellipseWithWhite;
         // Check percentage of white pixel inside ellipses
         for(unsigned int i = 0; i < minEllipse.size() ; i++) {
-            if(checkWhiteInEllipse(minEllipse.at(i), treshholded.clone()))
+            if(checkWhiteInEllipse(minEllipse.at(i), grayscale.clone()))
                 ellipseWithWhite.push_back(minEllipse.at(i));
         }
 
@@ -134,17 +118,13 @@ int detect( int argc, char** argv )
             ellipse(frame, ellipseWithWhite[i], Scalar(0, 0, 255), 2, 8);
         }
 
+        vector<Point2f> target_points;
+
         for( int i = 0; i< ellipseWithWhite.size(); i++ ) {
             Point2f corners_arr[4];
             ellipseWithWhite[i].points(corners_arr);
 
             vector<Point2f> corners_vec (corners_arr, corners_arr + sizeof(corners_arr) / sizeof(corners_arr[0]) );
-
-            circle(frame, corners_arr[0], 3, Scalar (255, 0, 0));
-            circle(frame, corners_arr[1], 3, Scalar (0, 255, 0));
-            circle(frame, corners_arr[2], 3, Scalar (0, 0, 255));
-            circle(frame, corners_arr[3], 3, Scalar (0, 255, 255));
-
 
             // Define the destination image
             Mat quad = Mat::zeros(300, 300, CV_8UC3);
@@ -166,14 +146,83 @@ int detect( int argc, char** argv )
 
             // Apply perspective transformation
             warpPerspective(orig_frame, quad, transmtx, quad.size());
-            imshow("quadrilateral", quad);
+            //imshow("quadrilateral", quad);
 
-            //detectAndDisplay(quad.clone(), "quad haar");
+            Mat edges_quad;
+            Canny(quad, edges_quad, 50, 200, 3);
+            Mat color_dst;
+            cvtColor(edges_quad, color_dst, CV_GRAY2BGR);
+            //imshow("canny quad", color_dst);
+
+            vector<Vec4i> lines;
+            HoughLinesP( edges_quad, lines, 1, CV_PI/180, 80, 30, 10 );
+
+            int ort_counter = 0;
+            double scalar_mul;
+            Point2f vec1, vec2;
+            double len1, len2;
+            if (lines.size() == 0)
+                continue;
+            for( int j = 0; j < lines.size() - 1; j++ ) {
+                vec1.x = lines[j][2] - lines[j][0];
+                vec1.y = lines[j][3] - lines[j][1];
+
+                len1 = sqrt (vec1.x * vec1.x + vec1.y * vec1.y);
+                if (!(len1 > 0))
+                    continue;
+                vec1.x /= len1;
+                vec1.y /= len1;
+
+                for( int k = j; k < lines.size(); k++ ) {
+                    vec2.x = lines[k][2] - lines[k][0];
+                    vec2.y = lines[k][3] - lines[k][1];
+
+                    len2 = sqrt (vec2.x * vec2.x + vec2.y * vec2.y);
+                    if (!(len2 > 0))
+                        continue;
+                    vec2.x /= len2;
+                    vec2.y /= len2;
+
+                    scalar_mul = vec1.x * vec2.x + vec1.y * vec2.y;
+                    if (fabs(scalar_mul) < 0.1)
+                        ort_counter++;
+
+                }
+            }
+
+            //imshow("line quad", color_dst);
+
+            std::cout << ort_counter << std::endl;
+            fflush(stdout);
+
+            if (ort_counter < 3) {
+                continue;
+            }
+
+           target_points.push_back(ellipseWithWhite[i].center);
+           std::cout << "Pushed" << std::endl;
         }
 
-        //detectAndDisplay(orig_frame.clone(), "orig haar");
 
+        Point2f final_target (0, 0);
+        std::cout << "Size targ " << target_points.size() << std::endl;
+        if (target_points.size() > 0) {
+            for (int i = 0; i < target_points.size(); i++) {
+                final_target += target_points[i];
+            }
+
+            final_target.x /= target_points.size();
+            final_target.y /= target_points.size();
+
+            std::cout << "Targ " << final_target.x << " " << final_target.y << std::endl;
+
+            circle(frame, final_target, 16, Scalar (255, 255, 0), 10);
+        }
         /// Show in a window
+
+
+        namedWindow( "grayscale", CV_WINDOW_AUTOSIZE );
+        imshow( "grayscale", grayscale );
 
         namedWindow( "treshholded", CV_WINDOW_AUTOSIZE );
         imshow( "treshholded", treshholded );

@@ -30,6 +30,7 @@ using namespace cv;
 
 
 int detect( int argc, char** argv );
+bool checkWhiteInEllipse(const RotatedRect ellipse, Mat threshold_output);
 
 
 #endif
