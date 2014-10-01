@@ -9,13 +9,13 @@ int main (int argc, char** argv)
 
 
     image_transport::ImageTransport it(nh);
-    //image_transport::Subscriber sub = it.subscribe("/flow_camera/flow_camera/image", 1, callback);
+    image_transport::Subscriber sub = it.subscribe("/flow_camera/flow_camera/image", 1, callback);
 
-    //cvNamedWindow("view");
+    cvNamedWindow("view");
 
-    //ros::spin();
+    ros::spin();
 
-    capture_image();
+    //capture_image();
 	//detect(argc, argv );
 
 	//ros::spin ();

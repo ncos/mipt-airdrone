@@ -28,9 +28,9 @@ void callback(const sensor_msgs::ImageConstPtr& msg) {
       return;
     }
 
-    //detect(cv_ptr->image);
-    //cv::imshow("view", cv_ptr->image);
-    //cv::waitKey(3);
+    detect(cv_ptr->image);
+    cv::imshow("view", cv_ptr->image);
+    cv::waitKey(3);
     /*
     sensor_msgs::CvBridge bridge;
     try
@@ -111,41 +111,64 @@ int detect( Mat orig_frame )
     Mat grayscale;
     cvtColor(frame, grayscale, CV_BGR2GRAY);
 
-    Mat edges;
-    edges = grayscale.clone();
+    Mat thresholded;
+    adaptiveThreshold(grayscale, thresholded, 255, ADAPTIVE_THRESH_MEAN_C,
+                                                    THRESH_BINARY_INV, 499, 20);
+    medianBlur(thresholded, thresholded, 5);
 
-    Mat canny_output;
-    double thresh = 10;
-    blur( edges, edges, Size(3,3) );
-    Canny( edges, canny_output, thresh, thresh * 2, 3);
+    namedWindow( "treshholded", CV_WINDOW_AUTOSIZE );
+    imshow( "treshholded", thresholded );
+
 
     vector<vector<Point> > contours;
-    vector<Vec4i> hierarchy;
-    findContours(canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+    findContours(thresholded, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 
-     /// Find the rotated rectangles and ellipses for each contour
-    vector<RotatedRect> minRect( contours.size() );
-    vector<RotatedRect> minEllipse( contours.size() );
+    vector<vector<Point> > minContours;
 
     for( int i = 0; i < contours.size(); i++ ) {
-        minRect[i] = minAreaRect( Mat(contours[i]) );
         if( contours[i].size() > 50)
-             minEllipse[i] = fitEllipse( Mat(contours[i]) );
-    }
-
-    Mat treshholded;
-    adaptiveThreshold(grayscale, treshholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C,
-                                                    THRESH_BINARY, 7, 2);
-
-    vector<RotatedRect> ellipseWithWhite;
-    // Check percentage of white pixel inside ellipses
-    for(unsigned int i = 0; i < minEllipse.size() ; i++) {
-        if(checkWhiteInEllipse(minEllipse.at(i), grayscale.clone()))
-            ellipseWithWhite.push_back(minEllipse.at(i));
+            minContours.push_back(contours[i]);
     }
 
     /// Draw contours + rotated rects + ellipses
     Mat drawing = Mat::zeros(frame.size(), CV_8UC3);
+    for( int i = 0; i< minContours.size(); i++ ) {
+        drawContours( frame, minContours, i, Scalar(0, 255, 255), 2, 8);
+    }
+
+    vector<vector<Point> > curves;
+    vector<Point> approxCurve;
+    for (int i = 0; i < minContours.size(); i++) {
+        double eps = minContours[i].size() * 0.005;
+        approxPolyDP(minContours[i], approxCurve, eps, true);
+        curves.push_back(approxCurve);
+    }
+
+    drawing = Mat::zeros(frame.size(), CV_8UC3);
+    for( int i = 0; i< curves.size(); i++ ) {
+        drawContours( frame, curves, i, Scalar(0, 0, 255), 2, 8);
+    }
+
+    vector<Vec4i> lines;
+    Mat canny_out;
+    Canny(thresholded, canny_out, 0, 255, 3, true);
+    imshow("canny_out", canny_out);
+    HoughLinesP(canny_out, lines, 1, CV_PI/180, 80, 30, 10);
+    for( size_t i = 0; i < lines.size(); i++ ) {
+        Vec4i l = lines[i];
+        line( frame, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255,0,0), 3, CV_AA);
+    }
+
+    /*
+    vector<RotatedRect> ellipseWithWhite;
+    // Check percentage of white pixel inside ellipses
+    for(unsigned int i = 0; i < minContours.size() ; i++) {
+        if(checkWhiteInEllipse(minContours.at(i), grayscale.clone()))
+            ellipseWithWhite.push_back(minContours.at(i));
+    }
+
+    /// Draw contours + rotated rects + ellipses
+    drawing = Mat::zeros(frame.size(), CV_8UC3);
     for( int i = 0; i< ellipseWithWhite.size(); i++ ) {
         // ellipse
         ellipse(frame, ellipseWithWhite[i], Scalar(0, 0, 255), 2, 8);
