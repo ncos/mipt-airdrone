@@ -4,7 +4,7 @@
   <arg name="base_footprint_frame"  default="/base_footprint_"/>
   <arg name="base_stabilized_frame" default="/base_stabilized"/>
   <arg name="base_link_frame"       default="/base_link"/>
-  <arg name="ideal_tf"              default="true" />
+  <arg name="ideal_tf"              default="false" />
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
   <param name="keyboard_control"    value="false"/>
   <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
@@ -50,6 +50,7 @@
     <arg name="input_sonar_topic"            value="/sensors/sonar_height"/>
     <arg name="input_imu_topic"              value="/sensors/apm/raw_imu"/>
     <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
+    <arg name="output_type"                  value="screen"/>
   </include>
 
   <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="screen" required="true"/>

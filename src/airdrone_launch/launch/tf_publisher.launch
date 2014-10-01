@@ -1,0 +1,12 @@
+<launch>  
+  <arg name="fixed_frame"                default="/odom"/>
+  <arg name="base_footprint_frame"       default="/base_footprint_"/>
+  <arg name="base_stabilized_frame"      default="/base_stabilized"/>
+  <arg name="base_link_frame"            default="/base_link"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="base_link2imu"          args="1 0 0 0 0 0 1 $(arg base_link_frame) imu_board_link       50" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2kinect"       args="1 0 0 0 0 0 1 $(arg base_link_frame) kinect_link          50" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2sonar"        args="1 0 0 0 0 0 1 $(arg base_link_frame) sonar_link           50" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2px4_flow"     args="1 0 0 0 0 0 1 $(arg base_link_frame) px4_flow_link        50" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2downward_cam" args="1 0 0 0 0 0 1 $(arg base_link_frame) downward_camera_link 50" />
+</launch>

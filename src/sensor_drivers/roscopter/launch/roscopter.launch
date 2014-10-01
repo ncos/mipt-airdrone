@@ -1,0 +1,21 @@
+<launch>
+  <arg name="device_name"      default="/dev/ttyACM0"/>
+  <arg name="input_rc_topic"   default="/apm/rc"/>
+  <arg name="output_imu_topic" default="/sensors/apm/imu"/>
+  <arg name="output_type"      default="log"/>
+
+  <node pkg="roscopter" name="roscopter" type="roscopter_node.py" args="--device=$(arg device_name)" respawn="true" output="$(arg output_type)">
+    <remap from="/gps"      to="/apm/internal/gps_topic" />
+    <remap from="/state"    to="/apm/internal/state_topic" />
+    <remap from="/vfr_hud"  to="/apm/internal/vfr_hud_topic" />
+    <remap from="/attitude" to="/apm/internal/attitude_topic" />
+    <remap from="/raw_imu"  to="/apm/internal/imu_topic" />
+    <remap from="/rc"       to="$(arg input_rc_topic)" />
+  </node>
+
+  <node pkg="roscopter" type="imu_transform_publish.py" name="roscopter_imu_transform" respawn="true" output="$(arg output_type)">
+    <remap from="/raw_imu"  to="/apm/internal/imu_topic" />
+    <remap from="/attitude" to="/apm/internal/attitude_topic" />
+    <remap from="/imu"      to="$(arg output_imu_topic)" />
+  </node>
+</launch>

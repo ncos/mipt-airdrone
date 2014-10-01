@@ -1,5 +1,17 @@
 <launch>
-    <node name="px4flow" pkg="px4flow" type="px4flow_node" output="screen" respawn="true" clear_params="true">
-        <rosparam file="$(find px4flow)/launch/px4flow_parameters.yaml"/>
-    </node>
+  <arg name="output_flow_topic"          default="/odom"/>
+  <arg name="output_sonar_topic"         default="/sensors/sonar_height"/>
+  <arg name="device_name"                default="/dev/ttyACM1"/>
+  <arg name="output_type"                default="log"/>
+  
+  <node name="px4flow" pkg="px4flow" type="px4flow_node" clear_params="true" respawn="true" output="$(arg output_type)">
+    <param name="serial_port" value="$(arg device_name)"/>
+    <param name="baudrate"    value="115200"/>
+    <remap from="/px4flow/opt_flow"     to="/px4flow/internal/opt_flow"/>
+    <remap from="/px4flow/camera_image" to="/px4flow/internal/camera_image"/>
+  </node>
+  <node name="flow_to_odom" pkg="flow_to_odom" type="flow_to_odom_nd" clear_params="true" respawn="true" output="$(arg output_type)">
+    <remap from="/px4flow/opt_flow"     to="/px4flow/internal/opt_flow"/>
+    <remap from="/odom" to="$(arg output_flow_topic)"/>
+  </node>
 </launch>
