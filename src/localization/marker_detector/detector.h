@@ -28,9 +28,10 @@ using namespace std;
 using namespace cv;
 
 
-
-int detect( int argc, char** argv );
+void callback(const sensor_msgs::ImageConstPtr& msg);
+int detect( Mat orig_frame );
 bool checkWhiteInEllipse(const RotatedRect ellipse, Mat threshold_output);
+void capture_image ();
 
 
 #endif
