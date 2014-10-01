@@ -4,7 +4,7 @@
   <arg name="base_footprint_frame"  default="/base_footprint_"/>
   <arg name="base_stabilized_frame" default="/base_stabilized"/>
   <arg name="base_link_frame"       default="/base_link"/>
-  <arg name="ideal_tf"              default="false" />
+  <arg name="ideal_tf"              default="true" />
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
   <param name="keyboard_control"    value="false"/>
   <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
@@ -60,5 +60,5 @@
     <param name="input_lm_topic"             value="/ransac_slam/lm"/>
     <param name="output_vel_topic"           value="/cmd_vel_2"/>
   </node>
-  <node pkg="action_client"  name="action_client"       type="main.py"           output="log"/>
+  <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"/>
 </launch>            

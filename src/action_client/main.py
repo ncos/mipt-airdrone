@@ -8,7 +8,7 @@ from action_client.msg import *
 from actionlib import *
 from actionlib.msg import *
 
-
+movement_speed = 0.0
 
 # Ask user whether we want to launch the quadrotor or not
 class PauseState(smach.State):
@@ -112,7 +112,7 @@ def main():
         smach.StateMachine.add('Move along',
                                smach_ros.SimpleActionState('MoveAlongAS',
                                                            MoveAlongAction,
-                                                           goal =  MoveAlongGoal(vel=-1.0),
+                                                           goal =  MoveAlongGoal(vel=movement_speed),
                                                            result_cb = move_along_result_cb,
                                                            outcomes=['aborted', 'succeeded', 'wall_found']),
                                transitions={'aborted'   :'aborted',
@@ -200,4 +200,13 @@ def main():
     #sis.stop()
 
 if __name__ == '__main__':
+    if not rospy.has_param('movement_speed'):
+        rospy.loginfo("movement_speed parameter was not specified. Terminating...")
+        exit()
+    
+    
+    movement_speed = rospy.get_param("movement_speed")
+    print "movement_speed =", movement_speed
+
+    
     main()
