@@ -188,8 +188,8 @@ def main():
                 
     # Create and start the introspection server
     # This is for debug purpose
-    sis = smach_ros.IntrospectionServer('introspection_server', sm0, '/STATE_MASHINE')
-    sis.start()
+    # sis = smach_ros.IntrospectionServer('introspection_server', sm0, '/STATE_MASHINE')
+    # sis.start()
 
 
     # Execute SMACH plan
@@ -197,7 +197,7 @@ def main():
     print("State mashine has finished with result ", outcome)
 
     rospy.spin()
-    sis.stop()
+    #sis.stop()
 
 if __name__ == '__main__':
     main()

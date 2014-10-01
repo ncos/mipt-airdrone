@@ -31,6 +31,16 @@ enum PassageType {
 };
 
 
+class VectorMath
+{
+public:
+    static pcl::PointXYZ cross(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    static double dot(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    static double len(pcl::PointXYZ p1);
+    static pcl::PointXYZ to_e(pcl::PointXYZ p1);
+};
+
+
 struct Passage
 {
 	double width;
