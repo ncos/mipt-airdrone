@@ -113,8 +113,16 @@ int detect( Mat orig_frame )
 
     Mat thresholded;
     adaptiveThreshold(grayscale, thresholded, 255, ADAPTIVE_THRESH_MEAN_C,
-                                                    THRESH_BINARY_INV, 499, 20);
-    medianBlur(thresholded, thresholded, 5);
+                      THRESH_BINARY, (orig_frame.cols + orig_frame.rows) / 32 - 1, -20);
+    medianBlur(thresholded, thresholded, 9);
+
+    int erosion_size = 7;
+    Mat element = getStructuringElement(cv::MORPH_CROSS,
+           cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
+           cv::Point(erosion_size, erosion_size) );
+
+    // Apply erosion or dilation on the image
+    erode(thresholded, thresholded, element);
 
     namedWindow( "treshholded", CV_WINDOW_AUTOSIZE );
     imshow( "treshholded", thresholded );
@@ -130,162 +138,98 @@ int detect( Mat orig_frame )
             minContours.push_back(contours[i]);
     }
 
+    /*
     /// Draw contours + rotated rects + ellipses
     Mat drawing = Mat::zeros(frame.size(), CV_8UC3);
     for( int i = 0; i< minContours.size(); i++ ) {
         drawContours( frame, minContours, i, Scalar(0, 255, 255), 2, 8);
     }
+    */
 
     vector<vector<Point> > curves;
     vector<Point> approxCurve;
     for (int i = 0; i < minContours.size(); i++) {
-        double eps = minContours[i].size() * 0.005;
+        double eps = minContours[i].size() * 0.0005;
         approxPolyDP(minContours[i], approxCurve, eps, true);
+        if (approxCurve.size() < 4)
+            continue;
         curves.push_back(approxCurve);
     }
 
-    drawing = Mat::zeros(frame.size(), CV_8UC3);
-    for( int i = 0; i< curves.size(); i++ ) {
-        drawContours( frame, curves, i, Scalar(0, 0, 255), 2, 8);
+
+    cv::Mat labels = cv::Mat::zeros(frame.size(), CV_8UC1);
+    std::vector<float> cont_avgs(curves.size(), 0.f); // This contains the averages of each contour
+
+    for (size_t i = 0; i < curves.size(); ++i)
+    {
+        // Labels starts at 1 because 0 means no contour
+        cv::drawContours(labels, curves, i, cv::Scalar(i+1), CV_FILLED);
     }
 
-    vector<Vec4i> lines;
-    Mat canny_out;
-    Canny(thresholded, canny_out, 0, 255, 3, true);
-    imshow("canny_out", canny_out);
-    HoughLinesP(canny_out, lines, 1, CV_PI/180, 80, 30, 10);
-    for( size_t i = 0; i < lines.size(); i++ ) {
-        Vec4i l = lines[i];
-        line( frame, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255,0,0), 3, CV_AA);
-    }
+    std::vector<float> counts(curves.size(), 0.f);
+    const int width = frame.rows;
+    for (int i = 0; i < frame.rows; ++i)
+    {
+        for (size_t j = 0; j < frame.cols; ++j)
+        {
+            uchar label = labels.data[i*width + j];
 
-    /*
-    vector<RotatedRect> ellipseWithWhite;
-    // Check percentage of white pixel inside ellipses
-    for(unsigned int i = 0; i < minContours.size() ; i++) {
-        if(checkWhiteInEllipse(minContours.at(i), grayscale.clone()))
-            ellipseWithWhite.push_back(minContours.at(i));
-    }
-
-    /// Draw contours + rotated rects + ellipses
-    drawing = Mat::zeros(frame.size(), CV_8UC3);
-    for( int i = 0; i< ellipseWithWhite.size(); i++ ) {
-        // ellipse
-        ellipse(frame, ellipseWithWhite[i], Scalar(0, 0, 255), 2, 8);
-    }
-
-    vector<Point2f> target_points;
-
-    for( int i = 0; i< ellipseWithWhite.size(); i++ ) {
-        Point2f corners_arr[4];
-        ellipseWithWhite[i].points(corners_arr);
-
-        vector<Point2f> corners_vec (corners_arr, corners_arr + sizeof(corners_arr) / sizeof(corners_arr[0]) );
-
-        // Define the destination image
-        Mat quad = Mat::zeros(300, 300, CV_8UC3);
-        Point2f quad_pts_arr [4];
-        quad_pts_arr[0] = Point2f(0, 0);
-        quad_pts_arr[1] = Point2f(quad.cols, 0);
-        quad_pts_arr[2] = Point2f(quad.cols, quad.rows);
-        quad_pts_arr[3] = Point2f(0, quad.rows);
-        // Corners of the destination image
-        vector<Point2f> quad_pts (quad_pts_arr, quad_pts_arr + sizeof(quad_pts_arr) / sizeof(quad_pts_arr[0]) );
-        //quad_pts.push_back(Point2f(0, 0));
-        //quad_pts.push_back(Point2f(quad.cols, 0));
-        //quad_pts.push_back(Point2f(quad.cols, quad.rows));
-        //quad_pts.push_back(Point2f(0, quad.rows));
-
-        // Get transformation matrix
-        //Mat transmtx = findHomography(corners_vec, quad_pts);
-        Mat transmtx = getPerspectiveTransform(corners_vec, quad_pts);
-
-        // Apply perspective transformation
-        warpPerspective(orig_frame, quad, transmtx, quad.size());
-        //imshow("quadrilateral", quad);
-
-        Mat edges_quad;
-        Canny(quad, edges_quad, 50, 200, 3);
-        Mat color_dst;
-        cvtColor(edges_quad, color_dst, CV_GRAY2BGR);
-        //imshow("canny quad", color_dst);
-
-        vector<Vec4i> lines;
-        HoughLinesP( edges_quad, lines, 1, CV_PI/180, 80, 30, 10 );
-
-        int ort_counter = 0;
-        double scalar_mul;
-        Point2f vec1, vec2;
-        double len1, len2;
-        if (lines.size() == 0)
-            continue;
-        for( int j = 0; j < lines.size() - 1; j++ ) {
-            vec1.x = lines[j][2] - lines[j][0];
-            vec1.y = lines[j][3] - lines[j][1];
-
-            len1 = sqrt (vec1.x * vec1.x + vec1.y * vec1.y);
-            if (!(len1 > 0))
-                continue;
-            vec1.x /= len1;
-            vec1.y /= len1;
-
-            for( int k = j; k < lines.size(); k++ ) {
-                vec2.x = lines[k][2] - lines[k][0];
-                vec2.y = lines[k][3] - lines[k][1];
-
-                len2 = sqrt (vec2.x * vec2.x + vec2.y * vec2.y);
-                if (!(len2 > 0))
-                    continue;
-                vec2.x /= len2;
-                vec2.y /= len2;
-
-                scalar_mul = vec1.x * vec2.x + vec1.y * vec2.y;
-                if (fabs(scalar_mul) < 0.1)
-                    ort_counter++;
-
+            if (label == 0)
+            {
+                continue;   // No contour
             }
+            else
+            {
+                label -= 1; // Make labels zero-indexed
+            }
+
+            uchar value = frame.data[i*width + j];
+            cont_avgs[label] += value;
+            ++counts[label];
         }
+    }
 
-        //imshow("line quad", color_dst);
+    for (int i = 0; i < cont_avgs.size(); ++i)
+    {
+        cont_avgs[i] /= counts[i];
+    }
 
-        std::cout << ort_counter << std::endl;
-        fflush(stdout);
+    vector<vector<Point> > target_contours;
 
-        if (ort_counter < 3) {
-            continue;
+    Mat drawing = Mat::zeros(frame.size(), CV_8UC3);
+    for( int i = 0; i< curves.size(); i++ ) {
+        if (cont_avgs[i] > 0 && contourArea(curves[i]) > 30) {
+            drawContours( frame, curves, i, Scalar(0, 0, 255), 2, 8);
+            target_contours.push_back(curves[i]);
         }
-
-       target_points.push_back(ellipseWithWhite[i].center);
-       std::cout << "Pushed" << std::endl;
     }
 
 
-    Point2f final_target (0, 0);
-    std::cout << "Size targ " << target_points.size() << std::endl;
-    if (target_points.size() > 0) {
-        for (int i = 0; i < target_points.size(); i++) {
-            final_target += target_points[i];
+
+    /// Get the moments
+    vector<Moments> mu(target_contours.size() );
+    for( int i = 0; i < target_contours.size(); i++ )
+       { mu[i] = moments( target_contours[i], false ); }
+
+    ///  Get the mass centers:
+    vector<Point2f> mc( target_contours.size() );
+    for( int i = 0; i < target_contours.size(); i++ )
+       { mc[i] = Point2f( mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00 ); }
+
+    Point2f target (0, 0);
+    /// Draw contours
+    drawing = Mat::zeros( frame.size(), CV_8UC3 );
+    if (target_contours.size() > 0) {
+        for( int i = 0; i < target_contours.size(); i++ )
+        {
+            target += mc[i];
+            Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+            circle( frame, mc[i], 4, color, 10, 8, 0 );
         }
-
-        final_target.x /= target_points.size();
-        final_target.y /= target_points.size();
-
-        std::cout << "Targ " << final_target.x << " " << final_target.y << std::endl;
-
-        circle(frame, final_target, 16, Scalar (255, 255, 0), 10);
+        target.x /=  target_contours.size();
+        target.y /=  target_contours.size();
+        circle( frame, target, 4, Scalar(0, 0, 255), 10, 8, 0);
     }
-    /// Show in a window
-
-    /*
-    namedWindow( "grayscale", CV_WINDOW_AUTOSIZE );
-    imshow( "grayscale", grayscale );
-
-    namedWindow( "treshholded", CV_WINDOW_AUTOSIZE );
-    imshow( "treshholded", treshholded );
-
-    namedWindow( "canny", CV_WINDOW_AUTOSIZE );
-    imshow("canny", canny_output);
-    */
 
     namedWindow( "frame", CV_WINDOW_AUTOSIZE );
     imshow("frame", frame);
