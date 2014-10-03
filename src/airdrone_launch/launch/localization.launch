@@ -8,6 +8,8 @@
   <arg name="input_sonar_topic"          default="/sensors/sonar_height"/>
   <arg name="input_imu_topic"            default="/sensors/apm/imu"/>
   <arg name="output_lm_topic"            default="/ransac_slam/lm"/>
+  <arg name="imu_used"                   default="false"/>
+  <arg name="odom_used"                  default="false"/>
   <arg name="output_type"                default="log"/>
 
   <node pkg="ransac_slam" name="ransac_slam" type="ransac_slam_nd" output="$(arg output_type)" respawn="true">
@@ -33,8 +35,8 @@
     <param name="freq"           value="30.0"/>
     <param name="sensor_timeout" value="1"/>
     <param name="publish_tf"     value="false" />
-    <param name="odom_used"      value="false"/>
-    <param name="imu_used"       value="false"/>
+    <param name="odom_used"      value="$(arg odom_used)"/>
+    <param name="imu_used"       value="$(arg imu_used)"/>
     <param name="vo_used"        value="true"/>
     <param name="debug"          value="false"/>
     <param name="self_diagnose"  value="false"/>

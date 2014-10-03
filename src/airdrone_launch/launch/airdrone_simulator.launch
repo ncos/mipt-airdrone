@@ -13,7 +13,8 @@
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen" >
     <param name="publish_frequency" type="double" value="50.0" />
   </node>
-  <node pkg="tf" type="static_transform_publisher" name="kinect_depth_optical_frame2vo" args="1 0 0 0 0 0 1 kinect_depth_optical_frame vo 50" />
+  <node pkg="tf" type="static_transform_publisher" name="kinect_depth_optical_frame2vo"  args="0 0 0 0 0 0 1 kinect_depth_optical_frame vo 20" />
+  <node pkg="tf" type="static_transform_publisher" name="kinect_depth_optical_frame2imu" args="0 0 0 0 0 0 1 $(arg base_link_frame) imu_link 20" />
 
   <!-- publish ideal fixed->base_link tf publish (the data is taken from gazebo) -->
   <group if="$(arg ideal_tf)">
@@ -50,6 +51,8 @@
     <arg name="input_sonar_topic"            value="/sensors/sonar_height"/>
     <arg name="input_imu_topic"              value="/sensors/apm/raw_imu"/>
     <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
+    <arg name="imu_used"                     value="false"/>
+    <arg name="odom_used"                    value="false"/>
     <arg name="output_type"                  value="screen"/>
   </include>
 

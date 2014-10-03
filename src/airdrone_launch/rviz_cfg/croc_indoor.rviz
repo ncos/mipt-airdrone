@@ -5,17 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /TF1/Frames1/kinect_depth_frame1
         - /TF1/Tree1
-        - /TF1/Tree1/odom1
-        - /TF1/Tree1/odom1/base_footprint_1
-        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1
-        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1
-        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/downward_camera_link1
-        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/kinect_link1
-        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/kinect_link1/kinect_depth_frame1
-        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/kinect_link1/kinect_depth_frame1/kinect_depth_optical_frame1
-        - /Image1
       Splitter Ratio: 0.67658
     Tree Height: 439
   - Class: rviz/Selection
@@ -61,18 +51,62 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: false
+      Enabled: true
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        downward_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        downward_camera_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinect_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinect_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinect_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        kinect_rgb_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinect_rgb_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        quadrotor_visual:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sonar_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: false
+      Value: true
       Visual Enabled: true
     - Class: rviz/TF
       Enabled: true
@@ -141,8 +175,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 4.45839
-        Min Value: 0.682887
+        Max Value: 4.40751
+        Min Value: 0.628096
         Value: true
       Axis: X
       Channel Name: intensity
@@ -163,7 +197,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.01
       Style: Flat Squares
-      Topic: /ransac_slam/shrinked_flat_cloud
+      Topic: /ransac_slam/flat_cloud
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -179,13 +213,14 @@ Visualization Manager:
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /ransac_slam/markers
       Name: Marker (ransac slam)
       Namespaces:
-        {}
+        line_ns: true
+        vec_ns: true
       Queue Size: 100
-      Value: false
+      Value: true
     - Angle Tolerance: 0.0001
       Class: rviz/Odometry
       Color: 255; 25; 0
@@ -266,5 +301,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1855
-  X: 15
+  X: 5
   Y: 14

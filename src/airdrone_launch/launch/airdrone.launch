@@ -51,6 +51,8 @@
     <arg name="input_sonar_topic"            value="/sensors/sonar_height"/>
     <arg name="input_imu_topic"              value="/sensors/apm/raw_imu"/>
     <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
+    <arg name="imu_used"                     value="false"/>
+    <arg name="odom_used"                    value="false"/>
     <arg name="output_type"                  value="log"/>
   </include>
   <!-- These nodes compose drone's logic and behaviour -->
