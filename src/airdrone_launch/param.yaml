@@ -29,10 +29,10 @@ angle_to_wall: 45.0
 # RANSAC SLAM configuration:
 ransac_slam/min_points_in_line: 50
 ransac_slam/min_points_in_cloud: 10
-ransac_slam/shrink_order: 30
-ransac_slam/apf_min_width: 1.0
+ransac_slam/shrink_order: 50
+ransac_slam/apf_min_width: 1.4
 ransac_slam/apf_min_dist:  0.6
-ransac_slam/apf_max_dist:  4.8
+ransac_slam/apf_max_dist:  2.8
 ransac_slam/apf_min_angl: -25
 ransac_slam/apf_max_angl:  25
 ransac_slam/apf_better_q:  true
