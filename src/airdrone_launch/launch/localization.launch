@@ -8,8 +8,9 @@
   <arg name="input_sonar_topic"          default="/sensors/sonar_height"/>
   <arg name="input_imu_topic"            default="/sensors/apm/imu"/>
   <arg name="output_lm_topic"            default="/ransac_slam/lm"/>
+  <arg name="output_type"                default="log"/>
 
-  <node pkg="ransac_slam" name="ransac_slam" type="ransac_slam_nd" output="screen" required="true">
+  <node pkg="ransac_slam" name="ransac_slam" type="ransac_slam_nd" output="$(arg output_type)" respawn="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
     <param name="input_cloud_topic"           value="$(arg input_depth_points_topic)"/>
     <param name="publish_clouds"              value="true"/>
@@ -27,7 +28,7 @@
     <param name="output_lm_topic"             value="$(arg output_lm_topic)"/>
   </node>
 
-  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="$(arg output_type)">
     <param name="output_frame"   value="$(arg fixed_frame)"/>
     <param name="freq"           value="30.0"/>
     <param name="sensor_timeout" value="1"/>

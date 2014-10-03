@@ -1,37 +1,65 @@
 <launch>
-  <!-- Start freenect kinect driver -->
+  <arg name="fixed_frame"           default="/odom"/>
+  <arg name="base_footprint_frame"  default="/base_footprint_"/>
+  <arg name="base_stabilized_frame" default="/base_stabilized"/>
+  <arg name="base_link_frame"       default="/base_link"/>
+  <param name="keyboard_control"    value="false"/>
+  <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
+
+  <!-- Start various sensor drivers -->
+  <include file="$(find airdrone_launch)/launch/tf_publisher.launch">
+    <arg name="fixed_frame"              value="$(arg fixed_frame)"/>
+    <arg name="base_footprint_frame"     value="$(arg base_footprint_frame)"/>
+    <arg name="base_stabilized_frame"    value="$(arg base_stabilized_frame)"/>
+    <arg name="base_link_frame"          value="$(arg base_link_frame)"/>
+  </include>
   <include file="$(find freenect_launch)/launch/freenect.launch">
     <arg name="camera" value="kinect" />
   </include>
+  <include file="$(find roscopter)/launch/roscopter.launch">
+    <arg name="device_name"              value="/dev/ttyAPM"/>
+    <arg name="input_rc_topic"           value="/apm/rc"/>
+    <arg name="output_imu_topic"         value="/sensors/apm/imu"/>
+    <arg name="output_type"              value="log"/>
+  </include>
+  <include file="$(find px4flow)/launch/px4flow.launch">
+    <arg name="device_name"              value="/dev/ttyPHX"/>
+    <arg name="output_flow_topic"        value="/odom"/>
+    <arg name="output_sonar_topic"       value="/sensors/sonar_height"/>
+    <arg name="output_type"              value="log"/>
+  </include>
 
-  <!-- Start mavlink communication -->
-  <!--
-  <node ns="apm" pkg="roscopter" type="driver.py" name="roscopter_driver" respawn="true" output="screen" args="--device=/dev/ttyACM0 --baudrate=115200 --enable-rc-control=true --mavlink-rate=25"></node>
-  <node ns="apm" pkg="roscopter" type="imu_transform_publish.py" name="roscopter_imu_transform" respawn="true" output="screen"></node>
-  -->
-  <node pkg="roscopter" name="roscopter" type="roscopter_node.py" respawn="true" required="true" output="screen"></node>
 
-  <node name="px4flow" pkg="px4flow" type="px4flow_node" output="screen" respawn="true" clear_params="true">
-    <param name="serial_port" value="/dev/ttyACM1"/>
-    <param name="baudrate" value="115200"/>
+
+  <!-- publish tfs basing on visual odometry -->
+  <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager">
+    <param name="input_pose_topic"           value="/robot_pose_ekf/odom"/>
+    <param name="fixed_frame"                value="$(arg fixed_frame)"/>
+    <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
+    <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
+    <param name="base_link_frame"            value="$(arg base_link_frame)"/>
+    <param name="publish_rate"               value="50"/>
   </node>
-
-  <!-- Load essential nodes for multicopter operation -->
-  <node pkg="rgbd_shrinker"  name="rgbd_shrinker"       type="rgbd_shrinker_nd"  output="log" required="true">
-    <remap from="/sensors/kinect/depth/points" to="/kinect/depth/points"/>
+  <!-- start visual odometry (the result is being published into '/robot_pose_ekf/odom' topic) -->
+  <include file="$(find airdrone_launch)/launch/localization.launch">
+    <arg name="input_depth_points_topic"     value="/sensors/kinect/depth/points"/>
+    <arg name="fixed_frame"                  value="$(arg fixed_frame)"/>
+    <arg name="base_footprint_frame"         value="$(arg base_footprint_frame)"/>
+    <arg name="base_stabilized_frame"        value="$(arg base_stabilized_frame)"/>
+    <arg name="base_link_frame"              value="$(arg base_link_frame)"/>
+    <arg name="kinect_depth_optical_frame"   value="/kinect_depth_optical_frame"/>
+    <arg name="input_sonar_topic"            value="/sensors/sonar_height"/>
+    <arg name="input_imu_topic"              value="/sensors/apm/raw_imu"/>
+    <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
+    <arg name="output_type"                  value="log"/>
+  </include>
+  <!-- These nodes compose drone's logic and behaviour -->
+  <node pkg="vel_cntrl"     name="velocity_controller" type="vel_cntrl_nd"     output="log" respawn="true"/>
+  <node pkg="action_server" name="action_server"       type="action_server_nd" output="log" respawn="true">
+    <param name="fixed_frame"                value="$(arg fixed_frame)"/>
+    <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
+    <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
+    <param name="input_lm_topic"             value="/ransac_slam/lm"/>
+    <param name="output_vel_topic"           value="/cmd_vel_2"/>
   </node>
-
-
-  <node pkg="vel_cntrl"      name="velocity_controller" type="vel_cntrl_nd"      output="log" required="true">
-    <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
-  </node>
-
-  <node pkg="action_server"  name="action_server"       type="action_server_nd"  output="log">
-    <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
-  </node>
-
-  <node pkg="action_client"  name="action_client"       type="main.py"  output="log"></node>
-</launch>
-
-
-
+  <node pkg="action_client" name="action_client"       type="main.py"          output="log" respawn="true"/>

@@ -644,8 +644,18 @@ void callback(const ransac_slam::LineMap::ConstPtr& lines_msg)
         msn_srv->clear_cmd();
     msn_srv->spin_once();
 
-    davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
 
+    
+    double vlen = VectorMath::len(pcl::PointXYZ(msn_srv->base_cmd.linear.x,
+                                                msn_srv->base_cmd.linear.y,
+                                                msn_srv->base_cmd.linear.z));
+    if (vlen > fabs(movement_speed)) {
+        msn_srv->base_cmd.linear.x = msn_srv->base_cmd.linear.x * fabs(movement_speed) / vlen;
+        msn_srv->base_cmd.linear.y = msn_srv->base_cmd.linear.y * fabs(movement_speed) / vlen;
+        msn_srv->base_cmd.linear.z = msn_srv->base_cmd.linear.z * fabs(movement_speed) / vlen;
+    }
+
+    davinci->draw_vec_cmd(msn_srv->base_cmd, 10, GOLD);
 
     pub_vel.publish(msn_srv->base_cmd);
     msn_srv->clear_cmd();

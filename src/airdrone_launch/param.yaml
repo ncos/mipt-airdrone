@@ -1,6 +1,6 @@
 
 # Velocity PID (related to keeping the distance to wall)
-PID_vel_P: 1.0 #1.5
+PID_vel_P: 1.5 #1.5
 PID_vel_I: 0.3 #0.5
 PID_vel_D: 0.3 #0.4
 
@@ -19,7 +19,7 @@ vel_to_pwr: 10.0
 angle_of_kinect: -45.0
 
 # The default movement speed, distance to reference wall and angle to this wall
-movement_speed: -0.5
+movement_speed: -1.0
 distance_to_wall: 1.0
 angle_to_wall: 45.0
 

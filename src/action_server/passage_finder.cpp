@@ -1,5 +1,35 @@
 #include "passage_finder.h"
 
+
+// *****************************************
+//              Vector Math
+// *****************************************
+pcl::PointXYZ VectorMath::cross(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+    pcl::PointXYZ result;
+    result.x = p1.y * p2.z - p1.z * p2.y;
+    result.y = p1.z * p2.x - p1.x * p2.z;
+    result.z = p1.x * p2.y - p1.y * p2.x;
+    return result;
+};
+
+double VectorMath::dot(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+    return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
+};
+
+double VectorMath::len(pcl::PointXYZ p1) {
+    return sqrt(dot(p1, p1));
+};
+
+pcl::PointXYZ VectorMath::to_e(pcl::PointXYZ p1) {
+    pcl::PointXYZ result;
+    result.x = p1.x / len(p1);
+    result.y = p1.y / len(p1);
+    result.z = p1.z / len(p1);
+    return result;
+};
+
+
+
 // *****************************************
 //              Advanced Passage Finder
 // *****************************************
