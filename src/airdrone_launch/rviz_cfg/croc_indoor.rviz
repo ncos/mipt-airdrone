@@ -5,7 +5,16 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /TF1/Frames1
+        - /TF1/Frames1/kinect_depth_frame1
+        - /TF1/Tree1
+        - /TF1/Tree1/odom1
+        - /TF1/Tree1/odom1/base_footprint_1
+        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1
+        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1
+        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/downward_camera_link1
+        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/kinect_link1
+        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/kinect_link1/kinect_depth_frame1
+        - /TF1/Tree1/odom1/base_footprint_1/base_stabilized1/base_link1/kinect_link1/kinect_depth_frame1/kinect_depth_optical_frame1
         - /Image1
       Splitter Ratio: 0.67658
     Tree Height: 439
@@ -52,82 +61,88 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        downward_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        downward_camera_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kinect_rgb_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_rgb_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        quadrotor_visual:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        sonar_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: false
+      Enabled: true
       Frame Timeout: 15
       Frames:
         All Enabled: false
-      Marker Scale: 1
+        base_footprint:
+          Value: true
+        base_footprint_:
+          Value: true
+        base_link:
+          Value: true
+        base_stabilized:
+          Value: true
+        downward_camera_link:
+          Value: true
+        downward_camera_optical_frame:
+          Value: true
+        kinect_depth_frame:
+          Value: true
+        kinect_depth_optical_frame:
+          Value: true
+        kinect_link:
+          Value: true
+        kinect_rgb_frame:
+          Value: true
+        kinect_rgb_optical_frame:
+          Value: true
+        odom:
+          Value: true
+        quadrotor_visual:
+          Value: true
+        sonar_link:
+          Value: true
+        vo:
+          Value: true
+      Marker Scale: 0.2
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        odom:
+          base_footprint:
+            {}
+          base_footprint_:
+            base_stabilized:
+              base_link:
+                downward_camera_link:
+                  downward_camera_optical_frame:
+                    {}
+                kinect_link:
+                  kinect_depth_frame:
+                    kinect_depth_optical_frame:
+                      vo:
+                        {}
+                  kinect_rgb_frame:
+                    kinect_rgb_optical_frame:
+                      {}
+                quadrotor_visual:
+                  {}
+                sonar_link:
+                  {}
       Update Interval: 0
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.91411
-        Min Value: 2.36002
+        Max Value: 4.45839
+        Min Value: 0.682887
         Value: true
       Axis: X
       Channel Name: intensity
@@ -157,7 +172,10 @@ Visualization Manager:
       Marker Topic: visualization_marker
       Name: Marker (action server)
       Namespaces:
-        {}
+        line_ns: true
+        point_ns: true
+        text_ns: true
+        vec_ns: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -168,24 +186,16 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: false
-    - Alpha: 0.7
-      Class: rviz/Map
-      Color Scheme: map
-      Draw Behind: false
-      Enabled: false
-      Name: Map
-      Topic: ""
-      Value: false
     - Angle Tolerance: 0.0001
       Class: rviz/Odometry
       Color: 255; 25; 0
-      Enabled: true
+      Enabled: false
       Keep: 1
       Length: 1
       Name: Odometry
       Position Tolerance: 0.0001
       Topic: /ransac_slam/odom_out
-      Value: true
+      Value: false
     - Class: rviz/Image
       Enabled: true
       Image Topic: /sensors/downward_camera/image
@@ -221,22 +231,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 12.9901
+      Distance: 6.21619
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.90394
-        Y: 0.603499
-        Z: -1.40412
+        X: 0.00916139
+        Y: 0.0269479
+        Z: -1.34274
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.5698
+      Pitch: 1.4798
       Target Frame: base_stabilized
       Value: Orbit (rviz)
-      Yaw: 4.75859
+      Yaw: 3.90359
     Saved: ~
 Window Geometry:
   Displays:
@@ -256,5 +266,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1855
-  X: 25
+  X: 15
   Y: 14

@@ -4,9 +4,12 @@
   <arg name="base_stabilized_frame"      default="/base_stabilized"/>
   <arg name="base_link_frame"            default="/base_link"/>
 
-  <node pkg="tf" type="static_transform_publisher" name="base_link2imu"          args="1 0 0 0 0 0 1 $(arg base_link_frame) imu_board_link       50" />
-  <node pkg="tf" type="static_transform_publisher" name="base_link2kinect"       args="1 0 0 0 0 0 1 $(arg base_link_frame) kinect_link          50" />
-  <node pkg="tf" type="static_transform_publisher" name="base_link2sonar"        args="1 0 0 0 0 0 1 $(arg base_link_frame) sonar_link           50" />
-  <node pkg="tf" type="static_transform_publisher" name="base_link2px4_flow"     args="1 0 0 0 0 0 1 $(arg base_link_frame) px4_flow_link        50" />
-  <node pkg="tf" type="static_transform_publisher" name="base_link2downward_cam" args="1 0 0 0 0 0 1 $(arg base_link_frame) downward_camera_link 50" />
+  <!-- static_transform_publisher x y z yaw pitch roll frame_id child_frame_id period_in_ms -->
+  <!-- static_transform_publisher x y z qx qy qz qw frame_id child_frame_id  period_in_ms   -->
+  <!-- (x, y, z)*sin(a/2), cos(a/2) -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link2imu"          args=" 0.3    0      0     0 0 0 1    $(arg base_link_frame) imu_board_link       20" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2kinect"       args=" 0.065  0.003 -0.018 0 0 0 1    $(arg base_link_frame) kinect_link          20" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2sonar"        args="-0.059 -0.013 -0.025 0 0 0 1    $(arg base_link_frame) sonar_link           20" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2px4_flow"     args="-0.059 -0.034 -0.031 0 0 0 1    $(arg base_link_frame) px4_flow_link        20" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link2downward_cam" args="-0.054  0.013 -0.017 0 0 0 1    $(arg base_link_frame) downward_camera_link 20" />
 </launch>

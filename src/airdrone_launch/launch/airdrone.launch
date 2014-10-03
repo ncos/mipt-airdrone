@@ -19,7 +19,7 @@
   <include file="$(find roscopter)/launch/roscopter.launch">
     <arg name="device_name"              value="/dev/ttyAPM"/>
     <arg name="input_rc_topic"           value="/apm/rc"/>
-    <arg name="output_imu_topic"         value="/sensors/apm/imu"/>
+    <arg name="output_imu_topic"         value="/sensors/apm/raw_imu"/>
     <arg name="output_type"              value="log"/>
   </include>
   <include file="$(find px4flow)/launch/px4flow.launch">
