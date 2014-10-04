@@ -63,6 +63,8 @@
     <param name="output_vel_topic"           value="/cmd_vel"/>
     <param name="output_rc_topic"            value="/apm/send_rc"/>
     <param name="visualization_topic"        value="/velocity_server/markers"/>
+    <param name="input_velocity_frame"       value="/kinect_link"/>
+    <param name="output_velocity_frame"      value="$(arg base_link_frame)"/>
   </node>
   <node pkg="action_server" name="action_server"       type="action_server_nd" output="log" respawn="true">
     <param name="fixed_frame"                value="$(arg fixed_frame)"/>

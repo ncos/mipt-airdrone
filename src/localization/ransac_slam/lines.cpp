@@ -178,7 +178,7 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
 {
     nav_msgs::Odometry result_pose;
     if (cloud->points.size() < min_points_in_cloud) {
-        ROS_WARN("The cloud is too small (%lu points). Location server is unable \
+        ROS_WARN("[ransac_slam]: The cloud is too small (%lu points). Location server is unable \
                                         to provide reliable pose estimation", cloud->points.size());
         return result_pose;
     }
@@ -216,7 +216,7 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
        tf_listener.transformPoint(fixed_frame, cloud_point_end,   fixed_point_end);
     }
     catch(tf::TransformException& ex) {
-        ROS_ERROR("Received an exception trying to transform a point from \"kinect\" to \"odom\": %s", ex.what());
+        ROS_ERROR("[ransac_slam]: Received an exception trying to transform a point from \"kinect\" to \"odom\": %s", ex.what());
     }
     shift.x = fixed_point_end.point.x - fixed_point_start.point.x;
     shift.y = fixed_point_end.point.y - fixed_point_start.point.y;
