@@ -680,7 +680,7 @@ int main( int argc, char** argv )
     if (!nh.getParam("angle_to_wall",    target_angl))     ROS_ERROR("Failed to get param 'angle_to_wall'");
     if (!nh.getParam("base_height",      target_height))   ROS_ERROR("Failed to get param 'base_height'");
     if (!nh.getParam("movement_speed",   movement_speed))  ROS_ERROR("Failed to get param 'movement_speed'");
-    if (!nh.getParam("angle_of_kinect",  angle_of_kinect)) ROS_ERROR("Failed to get param 'angle_of_kinect'");
+    if (!nh.getParam("action_server/angle_of_kinect",  angle_of_kinect)) angle_of_kinect = 0.0;
     if (!nh.getParam("move_epsilon",  move_epsilon))  ROS_ERROR("Failed to get param 'move_epsilon'");
     if (!nh.getParam("angle_to_pass", angle_to_pass)) ROS_ERROR("Failed to get param 'angle_to_pass'");
     if (!nh.getParam("rot_epsilon",   rot_epsilon))   ROS_ERROR("Failed to get param 'rot_epsilon'");

@@ -125,6 +125,8 @@ Visualization Manager:
           Value: true
         downward_camera_optical_frame:
           Value: true
+        imu_board_link:
+          Value: true
         kinect_depth_frame:
           Value: true
         kinect_depth_optical_frame:
@@ -137,11 +139,11 @@ Visualization Manager:
           Value: true
         odom:
           Value: true
+        px4_flow_link:
+          Value: true
         quadrotor_visual:
           Value: true
         sonar_link:
-          Value: true
-        vo:
           Value: true
       Marker Scale: 0.2
       Name: TF
@@ -158,14 +160,17 @@ Visualization Manager:
                 downward_camera_link:
                   downward_camera_optical_frame:
                     {}
+                imu_board_link:
+                  {}
                 kinect_link:
                   kinect_depth_frame:
                     kinect_depth_optical_frame:
-                      vo:
-                        {}
+                      {}
                   kinect_rgb_frame:
                     kinect_rgb_optical_frame:
                       {}
+                px4_flow_link:
+                  {}
                 quadrotor_visual:
                   {}
                 sonar_link:
@@ -175,8 +180,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 4.40751
-        Min Value: 0.628096
+        Max Value: 4.46922
+        Min Value: 0.610533
         Value: true
       Axis: X
       Channel Name: intensity
@@ -218,6 +223,17 @@ Visualization Manager:
       Name: Marker (ransac slam)
       Namespaces:
         line_ns: true
+        vec_ns: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /velocity_server/markers
+      Name: Marker (velocity server)
+      Namespaces:
+        line_ns: true
+        point_ns: true
+        text_ns: true
         vec_ns: true
       Queue Size: 100
       Value: true
@@ -301,5 +317,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1855
-  X: 5
+  X: -5
   Y: 14

@@ -56,12 +56,18 @@
     <arg name="output_type"                  value="log"/>
   </include>
   <!-- These nodes compose drone's logic and behaviour -->
-  <node pkg="vel_cntrl"     name="velocity_controller" type="vel_cntrl_nd"     output="log" respawn="true"/>
+  <node pkg="vel_cntrl"     name="velocity_server" type="vel_cntrl_nd"     output="log" respawn="true">
+    <param name="input_vel_cntrl_topic"      value="/cmd_vel_cntrl"/>
+    <param name="input_vel_kbrd_topic"       value="/cmd_vel_keyboard"/>
+    <param name="output_vel_topic"           value="/cmd_vel"/>
+    <param name="output_rc_topic"            value="/apm/send_rc"/>
+    <param name="visualization_topic"        value="/velocity_server/markers"/>
+  </node>
   <node pkg="action_server" name="action_server"       type="action_server_nd" output="log" respawn="true">
     <param name="fixed_frame"                value="$(arg fixed_frame)"/>
     <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
     <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
     <param name="input_lm_topic"             value="/ransac_slam/lm"/>
-    <param name="output_vel_topic"           value="/cmd_vel_2"/>
+    <param name="output_vel_topic"           value="/cmd_vel_cntrl"/>
   </node>
   <node pkg="action_client" name="action_client"       type="main.py"          output="log" respawn="true"/>

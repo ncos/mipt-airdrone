@@ -11,19 +11,12 @@ PID_ang_D: 0.000 #0.000
 
 # Height of hovering
 base_height: 1.0
-
-# How to convert velocity to engine power
-vel_to_pwr: 10.0
-
-# The angle of kinect rotation relative to the red arm (negative means clockwise)
-angle_of_kinect: -45.0
+action_server/angle_of_kinect: -45.0
 
 # The default movement speed, distance to reference wall and angle to this wall
 movement_speed: -1.0
 distance_to_wall: 1.0
 angle_to_wall: 45.0
-
-
 
 
 # RANSAC SLAM configuration:
@@ -36,6 +29,12 @@ ransac_slam/apf_max_dist:  2.8
 ransac_slam/apf_min_angl: -25
 ransac_slam/apf_max_angl:  25
 ransac_slam/apf_better_q:  true
+
+
+# VELOCITY SERVER configuration:
+velocity_server/vel_to_pwr: 10.0
+velocity_server/angle_of_kinect: -45.0
+
 
 
 # Move function euristic constants
