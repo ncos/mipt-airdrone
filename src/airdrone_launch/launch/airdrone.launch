@@ -3,7 +3,8 @@
   <arg name="base_footprint_frame"  default="/base_footprint_"/>
   <arg name="base_stabilized_frame" default="/base_stabilized"/>
   <arg name="base_link_frame"       default="/base_link"/>
-  <param name="keyboard_control"    value="false"/>
+  <param name="/keyboard_control"   value="false"/>
+  <param name="/in_simulator"       value="false"/>
   <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
 
   <!-- Start various sensor drivers -->

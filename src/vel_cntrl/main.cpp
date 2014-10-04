@@ -23,6 +23,7 @@ std::string output_rc_topic;
 std::string visualization_topic;
 double vel_to_pwr;
 double angle_of_kinect;
+bool in_simulator;
 bool keyboard_control;
 
 
@@ -47,10 +48,7 @@ geometry_msgs::Vector3 rotate_z(const geometry_msgs::Vector3 linear_vel, double 
     rotated.y = linear_vel.x * sin(angle * M_PI/180.0) + linear_vel.y * cos(angle * M_PI/180.0);
 
     return rotated;
-}
-
-
-
+};
 
 void callback_cntrl(const geometry_msgs::Twist vel)
 {
@@ -115,7 +113,7 @@ void state_to_rviz(bool inf = false)
         height_text.text = text;
     }
     pub_mrk.publish(height_text);
-}
+};
 
 
 
@@ -143,7 +141,17 @@ int main( int argc, char** argv )
     pub_mrk     = nh.advertise<visualization_msgs::Marker>      (visualization_topic, 5 );
 
     state_to_rviz(true);
-    //ros::service::waitForService("/arm");
+
+    if (!nh.getParam("/in_simulator", in_simulator)) {
+        ROS_ERROR("[velocity_server]: the 'in_simulator' boolean parameter must be specified!");
+        ros::shutdown();
+    }
+
+    if (!in_simulator) {
+        ROS_INFO("[velocity_server]: Waiting for apm to be ready...");
+        ros::service::waitForService("/arm");
+        ROS_INFO("[velocity_server]: ...Success!");
+    }
 
     while (ros::ok())
     {
