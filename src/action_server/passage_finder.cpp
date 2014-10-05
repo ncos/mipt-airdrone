@@ -110,7 +110,7 @@ pcl::PointXYZ Advanced_Passage_finder::get_closest_left(const pcl::PointCloud<pc
 {
     // Return the geometrically closest point on the left from the given point. A given point is specified by its id in the cloud
     if (point_id < 1 || cloud->points.size() < point_id + 1) { // There should be at least one point on the left
-        ROS_ERROR("Advanced_Passage_finder::get_closest_left: invalid arguments");
+        ROS_ERROR("[action_server]: Advanced_Passage_finder::get_closest_left: invalid arguments");
         return pcl::PointXYZ(NAN, NAN, NAN);
     }
 
@@ -132,7 +132,7 @@ pcl::PointXYZ Advanced_Passage_finder::get_closest_rght(const pcl::PointCloud<pc
 {
     // Return the geometrically closest point on the right from the given point. A given point is specified by its id in the cloud
     if (point_id < 0 || cloud->points.size() < point_id + 2) { // There should be at least one point on the right
-        ROS_ERROR("Advanced_Passage_finder::get_closest_rght: invalid arguments");
+        ROS_ERROR("[action_server]: Advanced_Passage_finder::get_closest_rght: invalid arguments");
         return pcl::PointXYZ(NAN, NAN, NAN);
     }
 
@@ -153,7 +153,7 @@ pcl::PointXYZ Advanced_Passage_finder::get_closest_rght(const pcl::PointCloud<pc
 double Advanced_Passage_finder::sqrange(pcl::PointXYZ p1, pcl::PointXYZ p2)
 {
     if (isnan(p1.x) || isnan(p1.y) || isnan(p1.z) || isnan(p2.x) || isnan(p2.y) || isnan(p2.z)) {
-        ROS_ERROR("Advanced_Passage_finder::sqrange: getting distance from NAN!");
+        ROS_ERROR("[action_server]: Advanced_Passage_finder::sqrange: getting distance from NAN!");
     }
 
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
@@ -188,7 +188,7 @@ Line_param* Advanced_Passage_finder::get_best_opposite_line(pcl::PointXYZ pass_p
 void LocationServer::track_wall(Line_param *wall)
 {
 	if (wall == NULL) {
-		ROS_ERROR("LocationServer::track_wall argument is NULL");
+		ROS_ERROR("[action_server]: LocationServer::track_wall argument is NULL");
 		return;
 	}
 
@@ -210,7 +210,7 @@ void LocationServer::track_wall(Line_param *wall)
 void LocationServer::spin_once(const ransac_slam::LineMap::ConstPtr& lines)
 {
     if(lines->number == 0) {
-        ROS_WARN("The cloud is empty. Location server is unable to provide pose estimation. Skipping...");
+        ROS_WARN("[action_server]: The cloud is empty. Location server is unable to provide pose estimation. Skipping...");
         if (this->ref_wall != NULL) {
             this->ref_wall->found = false;
         }
@@ -218,7 +218,7 @@ void LocationServer::spin_once(const ransac_slam::LineMap::ConstPtr& lines)
     };
 
     if (this->ref_wall == NULL) {
-        ROS_WARN("No ref_wall. Using random!");
+        ROS_WARN("[action_server]: No ref_wall. Using random!");
     };
 
     this->lm.renew(lines);
@@ -277,7 +277,7 @@ void MotionServer::clear_cmd ()
 void MotionServer::set_ref_wall (Line_param *wall)
 {
 	if (wall == NULL) {
-		ROS_ERROR("MotionServer::set_ref_wall argument is NULL");
+		ROS_ERROR("[action_server]: MotionServer::set_ref_wall argument is NULL");
 		return;
 	}
 
@@ -303,7 +303,7 @@ void MotionServer::untrack()
 void MotionServer::set_angles_current ()
 {
 	if (this->tracking_on && this->ref_wall == NULL) {
-		ROS_ERROR("MotionServer::set_angles_current ref_wall == NULL");
+		ROS_ERROR("[action_server]: MotionServer::set_angles_current ref_wall == NULL");
 		return;
 	}
 
@@ -315,7 +315,7 @@ void MotionServer::set_angles_current ()
 bool MotionServer::rotate(double angle)
 {
 	if (this->tracking_on && this->ref_wall == NULL) {
-		ROS_ERROR("MotionServer::rotate ref_wall == NULL");
+		ROS_ERROR("[action_server]: MotionServer::rotate ref_wall == NULL");
 		return false;
 	}
 
@@ -327,7 +327,7 @@ bool MotionServer::rotate(double angle)
 bool MotionServer::move_parallel(double vel)
 {
 	if (this->tracking_on && this->ref_wall == NULL) {
-		ROS_ERROR("MotionServer::move_parallel ref_wall == NULL");
+		ROS_ERROR("[action_server]: MotionServer::move_parallel ref_wall == NULL");
 		return false;
 	}
 
@@ -341,7 +341,7 @@ bool MotionServer::move_parallel(double vel)
 bool MotionServer::move_perpendicular(double shift)
 {
     if (this->tracking_on && this->ref_wall == NULL) {
-        ROS_ERROR("MotionServer::move_perpendicular ref_wall == NULL");
+        ROS_ERROR("[action_server]: MotionServer::move_perpendicular ref_wall == NULL");
         return false;
     }
 
@@ -353,12 +353,12 @@ bool MotionServer::move_perpendicular(double shift)
 void MotionServer::spin_once()
 {
     if (this->tracking_on && this->ref_wall == NULL) {
-		ROS_ERROR("MotionServer::spin_once ref_wall == NULL");
+		ROS_ERROR("[action_server]: MotionServer::spin_once ref_wall == NULL");
 		return;
 	}
 
 	if (this->tracking_on && this->ref_dist < 0.6) {
-    	ROS_WARN("Invalid ref_dist (%f)", this->ref_dist);
+    	ROS_WARN("[action_server]: Invalid ref_dist (%f)", this->ref_dist);
 		this->ref_dist = 0.6;
 	}
 
@@ -419,19 +419,11 @@ void MotionServer::set_height(double height) {
 
 void MotionServer::move_step() {
     this->untrack();
+    double current_angl = this->map_srv->get_global_angle();
+    double delta_angl   = this->map_srv->diff(current_angl, prev_angl);
+    this->prev_angl     = current_angl;
 
-    double current_angl       = this->map_srv->get_global_angle();
-    pcl::PointXYZ current_pos = this->map_srv->get_global_positon();
-    double delta_angl  = this->map_srv->diff(current_angl, prev_angl);
-    pcl::PointXYZ shift = this->map_srv->diff(current_pos, prev_pos);
-    this->prev_angl = current_angl;
-    this->prev_pos  = current_pos;
-
-    // "-" delta_angl here cuz we need to rotate target destination backwards, to compensate the positive drone rotation
-    this->move_target.x = this->move_target.x - shift.x;
-    this->move_target.y = this->move_target.y - shift.y;
-    this->move_target = this->map_srv->rotate(this->move_target, -delta_angl);
-
+    this->move_target = this->map_srv->do_transform(this->move_target);
 
     double len = sqrt (this->move_target.x * this->move_target.x +
                        this->move_target.y * this->move_target.y);
@@ -460,7 +452,7 @@ void MotionServer::altitude_step() {
 
     tf::StampedTransform transform;
     try { this->tf_listener.lookupTransform(base_footprint_frame, base_stabilized_frame, ros::Time(0), transform); }
-    catch (tf::TransformException &ex) { ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what()); }
+    catch (tf::TransformException &ex) { ROS_ERROR("[action_server]: (lookup) Unable to transform: %s", ex.what()); }
 
     double tmp_vel = pid_vel.get_output(this->target_height, transform.getOrigin().z());
 
@@ -496,28 +488,15 @@ void MotionServer::altitude_step() {
 MappingServer::MappingServer()
 {
     init_flag =   false; // Look into class defenition
-    offset_cmd.x    = 0;
-    offset_cmd.y    = 0;
-    distance.x      = 0;
-    distance.y      = 0;
-    position_prev.x = 0;
-    position_prev.y = 0;
-    delta_phi       = 0;
     rotation_cnt    = 0;
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
 
-    try { this->tf_listener.waitForTransform(fixed_frame, base_footprint_frame, ros::Time(0), ros::Duration(10.0) ); }
-    catch (tf::TransformException &ex) { ROS_ERROR("Action Server Node: (wait) Unable to transform: %s", ex.what()); }
-};
-
-
-double MappingServer::get_angl_from_quaternion (const tf::Quaternion q)
-{
-    double angle = 2.0 * atan2(float(q.getZ()), float(q.getW())) * 180 / M_PI;
-
-    if (angle < 0)
-        angle += 360;
-    return angle;
+    try {
+        this->tf_listener.waitForTransform(fixed_frame, pointcloud_frame, ros::Time(0), ros::Duration(10.0) );
+        this->tf_listener.waitForTransform(fixed_frame, base_stabilized_frame, ros::Time(0), ros::Duration(10.0) );
+        this->tf_listener.waitForTransform(pointcloud_frame, fixed_frame, ros::Time(0), ros::Duration(10.0) );
+    }
+    catch (tf::TransformException &ex) { ROS_ERROR("[action_server]: (wait) Unable to transform: %s", ex.what()); }
 };
 
 
@@ -526,63 +505,23 @@ void MappingServer::spin_once()
     this->lock();
 
     tf::StampedTransform transform;
-    try { this->tf_listener.lookupTransform(fixed_frame, base_footprint_frame, ros::Time(0), transform); }
-    catch (tf::TransformException &ex) { ROS_ERROR("Action Server Node: (lookup) Unable to transform: %s", ex.what()); }
+    try { this->tf_listener.lookupTransform(fixed_frame, pointcloud_frame, ros::Time(0), transform); }
+    catch (tf::TransformException &ex) { ROS_ERROR("[action_server]: (lookup) Unable to transform: %s", ex.what()); }
 
     if (this->init_flag == false) {
         this->prev_transform = transform;
-        this->position_prev.x = transform.getOrigin().x();
-        this->position_prev.y = transform.getOrigin().y();
-        this->position_prev.z = transform.getOrigin().z();
-        this->prev_phi  = this->get_angl_from_quaternion (transform.getRotation());
         this->init_flag = true;
         this->unlock();
         return;
     }
 
-
-
-    this->delta_phi = this->get_angl_from_quaternion (transform.getRotation()) - this->prev_phi;
-    if (this->delta_phi > 300) {
-        this->delta_phi -= 360;
-        this->rotation_cnt --;
-    }
-
-    if (this->delta_phi < -300) {
-        this->delta_phi += 360;
-        this->rotation_cnt ++;
-    }
-    this->prev_phi = this->get_angl_from_quaternion (transform.getRotation());
-
-
-    pcl::PointXYZ position (transform.getOrigin().x(), transform.getOrigin().y(), transform.getOrigin().z());
-    pcl::PointXYZ offset (position.x - this->position_prev.x, position.y - this->position_prev.y, position.z - this->position_prev.z);
-
-    this->offset_cmd = this->rotate(offset, -(this->get_angl_from_quaternion (transform.getRotation()) + angle_of_kinect));
-
-    this->distance.x += this->offset_cmd.x;
-    this->distance.y += this->offset_cmd.y;
-    this->distance.z += this->offset_cmd.z;
-    this->position_prev.x = position.x;
-    this->position_prev.y = position.y;
-    this->position_prev.z = position.z;
-    this->prev_transform = transform;
-
-
     for (int i = 0; i < this->tracked_points.size(); ++i) {
-        this->tracked_points.at(i)   = this->rotate(this->tracked_points.at(i), -this->delta_phi);
-        this->tracked_points.at(i).x = this->tracked_points.at(i).x - this->offset_cmd.x;
-        this->tracked_points.at(i).y = this->tracked_points.at(i).y - this->offset_cmd.y;
-        this->tracked_points.at(i).z = this->tracked_points.at(i).z - this->offset_cmd.z;
+        this->tracked_points.at(i) = do_transform(this->tracked_points.at(i));
     }
 
     for (int i = 0; i < this->visited_points.size(); ++i) {
-        this->visited_points.at(i)   = this->rotate(this->visited_points.at(i), -this->delta_phi);
-        this->visited_points.at(i).x = this->visited_points.at(i).x - this->offset_cmd.x;
-        this->visited_points.at(i).y = this->visited_points.at(i).y - this->offset_cmd.y;
-        this->visited_points.at(i).z = this->visited_points.at(i).z - this->offset_cmd.z;
+        this->visited_points.at(i) = do_transform(this->visited_points.at(i));
     }
-
 
     for (int i = 0; i < this->visited_points.size(); ++i) {
         davinci->draw_point_cmd(this->visited_points.at(i).x, this->visited_points.at(i).y, 0.04, 494 + i, GOLD);
@@ -592,9 +531,22 @@ void MappingServer::spin_once()
         davinci->draw_point_cmd(this->tracked_points.at(i).x, this->tracked_points.at(i).y, 994 + i, CYAN);
     }
 
+    this->prev_transform = transform;
     this->add_visited();
     this->unlock();
 };
+
+
+pcl::PointXYZ MappingServer::do_transform(const pcl::PointXYZ point) {
+    tf::StampedTransform transform;
+    try { this->tf_listener.lookupTransform(fixed_frame, pointcloud_frame, ros::Time(0), transform); }
+    catch (tf::TransformException &ex) { ROS_ERROR("[action_server]: (lookup) Unable to transform: %s", ex.what()); }
+    tf::Transform past_to_current = transform.inverseTimes(this->prev_transform);
+    tf::Vector3 point_(point.x, point.y, point.z);
+    point_ = past_to_current * point_;
+    return pcl::PointXYZ(point_.getX(), point_.getY(), point_.getZ());
+};
+
 
 
 int MappingServer::track (pcl::PointXYZ p)
@@ -630,7 +582,10 @@ void MappingServer::add_visited ()
 pcl::PointXYZ MappingServer::get_global_positon()
 {
     this->lock();
-    pcl::PointXYZ ret = this->distance;
+    tf::StampedTransform transform;
+    try { this->tf_listener.lookupTransform(fixed_frame, base_stabilized_frame, ros::Time(0), transform); }
+    catch (tf::TransformException &ex) { ROS_ERROR("[action_server]: (lookup) Unable to transform: %s", ex.what()); }
+    pcl::PointXYZ ret (transform.getOrigin().x(), transform.getOrigin().y(), transform.getOrigin().z());
     this->unlock();
     return ret;
 };
@@ -639,9 +594,13 @@ pcl::PointXYZ MappingServer::get_global_positon()
 double MappingServer::get_global_angle()
 {
     this->lock();
-    double ret = this->prev_phi;
+    tf::StampedTransform transform;
+    try { this->tf_listener.lookupTransform(fixed_frame, base_stabilized_frame, ros::Time(0), transform); }
+    catch (tf::TransformException &ex) { ROS_ERROR("[action_server]: (lookup) Unable to transform: %s", ex.what()); }
+    double roll, pitch, yaw;
+    tf::Matrix3x3(transform.getRotation()).getRPY(roll, pitch, yaw);
     this->unlock();
-    return ret;
+    return yaw;
 };
 
 
@@ -659,18 +618,6 @@ pcl::PointXYZ MappingServer::diff(pcl::PointXYZ a, pcl::PointXYZ b)
     c.z = a.z - b.z;
     return c;
 };
-
-
-pcl::PointXYZ MappingServer::rotate(const pcl::PointXYZ vec, double angle)
-{
-    pcl::PointXYZ rotated;
-    rotated.x = vec.x * cos(angle * M_PI / 180.0) - vec.y * sin(angle * M_PI / 180.0);
-    rotated.y = vec.x * sin(angle * M_PI / 180.0) + vec.y * cos(angle * M_PI / 180.0);
-    rotated.z = vec.z;
-
-    return rotated;
-};
-
 
 
 // *****************************************

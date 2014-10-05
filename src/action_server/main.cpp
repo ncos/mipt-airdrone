@@ -53,7 +53,6 @@ double target_dist     = 0.0;
 double target_angl     = 0.0;
 double target_height   = 0.0;
 double movement_speed  = 0.0;
-double angle_of_kinect = 0.0;
 double move_epsilon    = 0.0;
 double rot_epsilon     = 0.0;
 double wall_ang_eps    = 0.0;
@@ -63,6 +62,7 @@ std::string base_footprint_frame;
 std::string base_stabilized_frame;
 std::string input_lm_topic;
 std::string output_vel_topic;
+std::string pointcloud_frame;
 
 
 class ActionServer
@@ -680,7 +680,6 @@ int main( int argc, char** argv )
     if (!nh.getParam("angle_to_wall",    target_angl))     ROS_ERROR("Failed to get param 'angle_to_wall'");
     if (!nh.getParam("base_height",      target_height))   ROS_ERROR("Failed to get param 'base_height'");
     if (!nh.getParam("movement_speed",   movement_speed))  ROS_ERROR("Failed to get param 'movement_speed'");
-    if (!nh.getParam("action_server/angle_of_kinect",  angle_of_kinect)) angle_of_kinect = 0.0;
     if (!nh.getParam("move_epsilon",  move_epsilon))  ROS_ERROR("Failed to get param 'move_epsilon'");
     if (!nh.getParam("angle_to_pass", angle_to_pass)) ROS_ERROR("Failed to get param 'angle_to_pass'");
     if (!nh.getParam("rot_epsilon",   rot_epsilon))   ROS_ERROR("Failed to get param 'rot_epsilon'");
@@ -688,14 +687,9 @@ int main( int argc, char** argv )
     if (!nh.getParam("action_server/fixed_frame",            fixed_frame))           fixed_frame  = "/odom";
     if (!nh.getParam("action_server/base_footprint_frame",   base_footprint_frame))  base_footprint_frame  = "/base_footprint_";
     if (!nh.getParam("action_server/base_stabilized_frame",  base_stabilized_frame)) base_stabilized_frame = "/base_stabilized";
+    if (!nh.getParam("action_server/pointcloud_frame",  pointcloud_frame)) pointcloud_frame = "/pointcloud_frame";
     if (!nh.getParam("action_server/input_lm_topic",   input_lm_topic)) input_lm_topic = "/ransac_slam/lm";
     if (!nh.getParam("action_server/output_vel_topic", output_vel_topic)) output_vel_topic = "/cmd_vel_2";
-
-
-
-    sub     = nh.subscribe<ransac_slam::LineMap>  (input_lm_topic,   1, callback);
-    pub_vel = nh.advertise<geometry_msgs::Twist > (output_vel_topic, 1);
-
 
     davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
     mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);
@@ -708,10 +702,12 @@ int main( int argc, char** argv )
     msn_srv->set_pid_ang(ang_P, ang_I, ang_D);
     msn_srv->set_pid_vel(vel_P, vel_I, vel_D);
 
+    sub     = nh.subscribe<ransac_slam::LineMap>  (input_lm_topic,   1, callback);
+    pub_vel = nh.advertise<geometry_msgs::Twist > (output_vel_topic, 1);
+
     ActionServer action_server(nh);
 
 
     ros::spin ();
-
     return 0;
 };

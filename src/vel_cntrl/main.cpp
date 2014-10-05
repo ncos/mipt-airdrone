@@ -169,9 +169,9 @@ int main( int argc, char** argv )
     if (!nh.getParam("velocity_server/output_rc_topic", output_rc_topic)) output_rc_topic = "/apm/send_rc";
     if (!nh.getParam("velocity_server/visualization_topic", visualization_topic)) visualization_topic = "/velocity_server/markers";
     if (!nh.getParam("velocity_server/vel_to_pwr", vel_to_pwr)) vel_to_pwr = 0.0;
-    if (!nh.getParam("velocity_server/keyboard_control", keyboard_control)) keyboard_control = false;
     if (!nh.getParam("velocity_server/input_velocity_frame",  input_velocity_frame)) input_velocity_frame = "/kinect_link";
     if (!nh.getParam("velocity_server/output_velocity_frame", output_velocity_frame)) output_velocity_frame  = "/base_link";
+    if (!nh.getParam("/keyboard_control", keyboard_control)) keyboard_control = false;
 
 
     transform_manager = boost::shared_ptr<TransformManager> (new TransformManager(nh));

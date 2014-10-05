@@ -18,12 +18,11 @@
 #include "pid_regulator.h"
 #include "da_vinci.h"  // Draw stuff in Rviz
 
-// The angle of kinect sensor regarding to the red (front) arm
 // Set in main.cpp:
-extern double angle_of_kinect;
 extern std::string fixed_frame;
 extern std::string base_footprint_frame;
 extern std::string base_stabilized_frame;
+extern std::string pointcloud_frame;
 
 
 enum PassageType {
@@ -129,12 +128,8 @@ private:
     tf::StampedTransform prev_transform;
     boost::shared_ptr<boost::mutex> mutex;
     tf::TransformListener tf_listener;
-    pcl::PointXYZ position_prev; // In gazebo
-    pcl::PointXYZ offset_cmd, distance; // Real copter
-    double delta_phi, prev_phi;
     bool init_flag; // Need to fix bug with start position in gazebo
     int rotation_cnt;
-
     std::vector<pcl::PointXYZ> visited_points;
 
 public:
@@ -147,7 +142,7 @@ public:
     double diff(double a, double b);
     pcl::PointXYZ diff(pcl::PointXYZ a, pcl::PointXYZ b);
     int track (pcl::PointXYZ p);
-    pcl::PointXYZ rotate(const pcl::PointXYZ vec, double angle);
+    pcl::PointXYZ do_transform(const pcl::PointXYZ point);
     void spin_once ();
 
 
@@ -155,7 +150,6 @@ private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
     void add_visited ();
-    double get_angl_from_quaternion (const tf::Quaternion q);
 };
 
 
