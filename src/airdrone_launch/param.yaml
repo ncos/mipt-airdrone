@@ -31,6 +31,14 @@ ransac_slam/apf_better_q:  true
 
 
 # VELOCITY SERVER configuration:
+velocity_server/roll_min: 1000.0
+velocity_server/roll_max: 2000.0
+velocity_server/pitch_min: 1000.0
+velocity_server/pitch_max: 2000.0
+velocity_server/yaw_min: 1000.0
+velocity_server/yaw_max: 2000.0
+velocity_server/throttle_min: 1000.0
+velocity_server/throttle_max: 2000.0
 velocity_server/vel_to_pwr: 10.0
 
 

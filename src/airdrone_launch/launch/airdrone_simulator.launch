@@ -6,7 +6,7 @@
   <arg name="base_link_frame"       default="/base_link"/>
   <arg name="ideal_tf"              default="false" />
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
-  <param name="/keyboard_control"   value="false"/>
+  <param name="/keyboard_control"   value="true"/>
   <param name="/in_simulator"       value="true"/>
   <rosparam command="load" ns = "/" file="$(find airdrone_launch)/param.yaml"/>
 
@@ -62,6 +62,7 @@
     <param name="input_vel_kbrd_topic"       value="/cmd_vel_keyboard"/>
     <param name="output_vel_topic"           value="/cmd_vel"/>
     <param name="output_rc_topic"            value="/apm/send_rc"/>
+    <param name="fixed_frame"                value="$(arg fixed_frame)"/>
     <param name="visualization_topic"        value="/velocity_server/markers"/>
     <param name="input_velocity_frame"       value="/kinect_link"/>
     <param name="output_velocity_frame"      value="$(arg base_link_frame)"/>
