@@ -17,18 +17,18 @@
   </include>
   <include file="$(find freenect_launch)/launch/freenect.launch">
     <arg name="camera" value="kinect" />
-  </include>
+  </include> <!--
   <include file="$(find roscopter)/launch/roscopter.launch">
     <arg name="device_name"              value="/dev/APM"/>
     <arg name="input_rc_topic"           value="/apm/rc"/>
     <arg name="output_imu_topic"         value="/sensors/apm/raw_imu"/>
-    <arg name="output_type"              value="log"/>
-  </include>
+    <arg name="output_type"              value="screen"/>
+  </include> -->
   <include file="$(find px4flow)/launch/px4flow.launch">
     <arg name="device_name"              value="/dev/PHX"/>
     <arg name="output_flow_topic"        value="/odom"/>
     <arg name="output_sonar_topic"       value="/sensors/sonar_height"/>
-    <arg name="output_type"              value="log"/>
+    <arg name="output_type"              value="screen"/>
   </include>
 
 
@@ -44,7 +44,7 @@
   </node>
   <!-- start visual odometry (the result is being published into '/robot_pose_ekf/odom' topic) -->
   <include file="$(find airdrone_launch)/launch/localization.launch">
-    <arg name="input_depth_points_topic"     value="/sensors/kinect/depth/points"/>
+    <arg name="input_depth_points_topic"     value="/kinect/depth/points"/>
     <arg name="fixed_frame"                  value="$(arg fixed_frame)"/>
     <arg name="base_footprint_frame"         value="$(arg base_footprint_frame)"/>
     <arg name="base_stabilized_frame"        value="$(arg base_stabilized_frame)"/>
@@ -57,7 +57,7 @@
     <arg name="odom_used"                    value="false"/>
     <arg name="output_type"                  value="log"/>
   </include>
-  <!-- These nodes compose drone's logic and behaviour -->
+  <!-- These nodes compose drone's logic and behaviour 
   <node pkg="vel_cntrl"     name="velocity_server" type="vel_cntrl_nd"     output="log" respawn="true">
     <param name="input_vel_cntrl_topic"      value="/cmd_vel_cntrl"/>
     <param name="input_vel_kbrd_topic"       value="/cmd_vel_keyboard"/>
@@ -76,4 +76,5 @@
     <param name="input_lm_topic"             value="/ransac_slam/lm"/>
     <param name="output_vel_topic"           value="/cmd_vel_cntrl"/>
   </node>
-  <node pkg="action_client" name="action_client"       type="main.py"          output="log" respawn="true"/>
+  <node pkg="action_client" name="action_client"       type="main.py"          output="log" respawn="true"/>-->
+</launch>
