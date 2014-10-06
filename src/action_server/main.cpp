@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Point32.h>
 
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
@@ -43,6 +44,7 @@ boost::shared_ptr<Advanced_Passage_finder> apf;
 boost::shared_ptr<Passage_type> pt;
 
 ros::Subscriber sub;
+ros::Subscriber landing_sub;
 ros::Publisher  pub_vel;
 
 // These parameters are configured in 'airdrone_launch/param.yaml':
@@ -63,6 +65,7 @@ std::string base_stabilized_frame;
 std::string input_lm_topic;
 std::string output_vel_topic;
 std::string pointcloud_frame;
+std::string landing_marker_topic;
 
 
 class ActionServer
@@ -607,7 +610,17 @@ private:
 
 
 
-
+void landing_callback(const geometry_msgs::Point32 target) {
+    //ROS_INFO("/: %f | %f | %f", target.x, target.y, target.z);
+    //davinci->draw_vec(target.z, target.x, 66613, GREEN);
+    //davinci->draw_vec(-target.x, -target.z, 66614, BLUE);
+    if (isnan(target.x) || isnan(target.y) || isnan(target.z)) {
+        ROS_ERROR("Action Server Node: landing_callback get NAN input");
+        return;
+    }
+    pcl::PointXYZ land_pad (-target.x, -target.z, target.y);
+    map_srv->add_land_pad(land_pad);
+}
 
 void callback(const ransac_slam::LineMap::ConstPtr& lines_msg)
 {
@@ -690,6 +703,11 @@ int main( int argc, char** argv )
     if (!nh.getParam("action_server/pointcloud_frame",  pointcloud_frame)) pointcloud_frame = "/pointcloud_frame";
     if (!nh.getParam("action_server/input_lm_topic",   input_lm_topic)) input_lm_topic = "/ransac_slam/lm";
     if (!nh.getParam("action_server/output_vel_topic", output_vel_topic)) output_vel_topic = "/cmd_vel_2";
+    if (!nh.getParam("action_server/landing_marker_topic", landing_marker_topic)) landing_marker_topic = "landing_marker";
+
+    sub     = nh.subscribe<ransac_slam::LineMap>   (input_lm_topic,   1, callback);
+    landing_sub = nh.subscribe<geometry_msgs::Point32>  (landing_marker_topic,   1, landing_callback);
+    pub_vel = nh.advertise<geometry_msgs::Twist >  (output_vel_topic, 1);
 
     davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
     mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);

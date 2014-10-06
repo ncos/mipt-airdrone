@@ -16,32 +16,46 @@ string window_name_t2 = "Capture - Marker detection -t2";
 
 RNG rng(12345);
 
+extern ros::Publisher pub_mrk;
+extern ros::Subscriber camera_info_sub;
+extern int target_seq_num;
+extern std::string base_footprint_frame;
+extern std::string downward_camera_frame;
+extern std::string kinect_depth_optical_frame;
+extern boost::shared_ptr<PointEstimator> point_est;
+extern boost::shared_ptr<DownwardCamera> dnw_cam;
+
+PointEstimator::PointEstimator (){
+    try {this->tf_listener.waitForTransform(base_footprint_frame, downward_camera_frame, ros::Time(0), ros::Duration(10.0) ); }
+    catch (tf::TransformException &ex) {ROS_ERROR("Marker Detector Node: (wait) Unable to transform: %s", ex.what()); }
+}
+
+void DownwardCamera::init(double _height, double _width, double _fx, double _fy, double _cx, double _cy) {
+    this->height = _height;
+    this->width = _width;
+    this->fx = _fx;
+    this->fy = _fy;
+    this->cx = _cx;
+    this->cy = _cy;
+}
+
 void callback(const sensor_msgs::ImageConstPtr& msg) {
     cv_bridge::CvImagePtr cv_ptr;
-    try
-    {
+    try {
       cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
     }
-    catch (cv_bridge::Exception& e)
-    {
-      ROS_ERROR("cv_bridge exception: %s", e.what());
-      return;
+    catch (cv_bridge::Exception& e) {
+        ROS_ERROR("cv_bridge exception: %s", e.what());
+        return;
     }
 
-    detect(cv_ptr->image);
-    cv::imshow("view", cv_ptr->image);
+    estimatePose(detect(cv_ptr->image));
     cv::waitKey(3);
-    /*
-    sensor_msgs::CvBridge bridge;
-    try
-    {
-        imshow("view", bridge.imgMsgToCv(msg, "bgr8"));
-    }
-    catch (sensor_msgs::CvBridgeException& e)
-    {
-        ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
-    }
-    */
+}
+
+void camera_info_callback(const sensor_msgs::CameraInfo::ConstPtr& msg) {
+    dnw_cam->init(msg->height, msg->width, msg->K[0], msg->K[4], msg->K[2], msg->K[5]);
+    camera_info_sub.shutdown();
 }
 
 // Determines if white pixels count within given shape on given binarized
@@ -103,7 +117,7 @@ void capture_image () {
     }
 }
 
-int detect( Mat orig_frame )
+Point2f detect( Mat orig_frame )
 {
     Mat frame;
     frame = orig_frame.clone();
@@ -229,11 +243,86 @@ int detect( Mat orig_frame )
         target.x /=  target_contours.size();
         target.y /=  target_contours.size();
         circle( frame, target, 4, Scalar(0, 0, 255), 10, 8, 0);
+        target_seq_num++;
+    }
+    else {
+        target = Point2f (NAN, NAN);
+        if(target_seq_num > 0)
+            target_seq_num--;
     }
 
     namedWindow( "frame", CV_WINDOW_AUTOSIZE );
     imshow("frame", frame);
 
-    // the camera will be deinitialized automatically in VideoCapture destructor
-    return 0;
+    /*
+    if(target_seq_num > 10) {
+        geometry_msgs::Point32 ret;
+        ret.x = 320 / 2 - target.x;
+        ret.y = 240 / 2 - target.y;
+        ret.z = 0;
+
+        pub_mrk.publish(ret);
+    }
+    */
+    return target;
+}
+
+geometry_msgs::PointStamped transformPoint(std::string frame, std::string frame_id, double x, double y, double z) {
+    geometry_msgs::PointStamped input;
+    input.header.frame_id = frame_id;
+    input.header.stamp = ros::Time();
+    input.point.x = x;
+    input.point.y = y;
+    input.point.z = z;
+
+    geometry_msgs::PointStamped output;
+    try {
+        point_est->tf_listener.transformPoint(frame, input, output);
+        return output;
+    }
+    catch (tf::TransformException &ex) {
+        ROS_ERROR("Marker Detector Node: (lookup) Unable to transform: %s", ex.what());
+    }
+}
+
+geometry_msgs::Point32 estimatePose(Point2f frame_target) {
+    geometry_msgs::Point32 vec;
+
+    geometry_msgs::PointStamped central_point = transformPoint(base_footprint_frame, downward_camera_frame,
+                                                               0.0, dnw_cam->cx, dnw_cam->cy);
+
+    geometry_msgs::PointStamped target_point = transformPoint(base_footprint_frame, downward_camera_frame,
+                                                             (dnw_cam->fx + dnw_cam->fy) / 2, frame_target.x, frame_target.y);
+
+    vec.x = target_point.point.x - central_point.point.x;
+    vec.y = target_point.point.y - central_point.point.y;
+    vec.z = target_point.point.z - central_point.point.z;
+
+    double vec_len = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    vec.x /= vec_len;
+    vec.y /= vec_len;
+    vec.z /= vec_len;
+
+    geometry_msgs::PointStamped point_on_line = transformPoint(base_footprint_frame, downward_camera_frame,
+                                                               0.0, 0.0, 0.0);
+
+    geometry_msgs::Point32 ret;
+    ret.x = point_on_line.point.x - point_on_line.point.z * vec.x / vec.z;
+    ret.y = point_on_line.point.y - point_on_line.point.z * vec.y / vec.z;
+    ret.z = 0;
+
+    ROS_INFO("cp: %f | %f | %f", central_point.point.x, central_point.point.y, central_point.point.z);
+    ROS_INFO("tp: %f | %f | %f", target_point.point.x, target_point.point.y, target_point.point.z);
+    ROS_INFO("ret: %f | %f | %f", ret.x, ret.y, ret.z);
+
+    geometry_msgs::PointStamped kin_point = transformPoint(kinect_depth_optical_frame, base_footprint_frame,
+                                                              ret.x, ret.y, ret.z);
+    ret.x = kin_point.point.x;
+    ret.y = kin_point.point.y;
+    ret.z = kin_point.point.z;
+
+    if(target_seq_num > 10) {
+        pub_mrk.publish(ret);
+    }
+    return ret;
 }

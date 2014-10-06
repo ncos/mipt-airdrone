@@ -134,6 +134,7 @@ private:
 
 public:
     std::vector<pcl::PointXYZ> tracked_points;
+    std::vector<pcl::PointXYZ> landing_points;
 
 public:
     MappingServer ();
@@ -143,6 +144,8 @@ public:
     pcl::PointXYZ diff(pcl::PointXYZ a, pcl::PointXYZ b);
     int track (pcl::PointXYZ p);
     pcl::PointXYZ do_transform(const pcl::PointXYZ point);
+    int add_land_pad (pcl::PointXYZ p);
+    pcl::PointXYZ rotate(const pcl::PointXYZ vec, double angle);
     void spin_once ();
 
 

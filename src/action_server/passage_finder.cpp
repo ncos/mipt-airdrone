@@ -523,6 +523,13 @@ void MappingServer::spin_once()
         this->visited_points.at(i) = do_transform(this->visited_points.at(i));
     }
 
+    for (int i = 0; i < this->landing_points.size(); ++i) {
+        this->landing_points.at(i)   = this->rotate(this->landing_points.at(i), -this->delta_phi);
+        this->landing_points.at(i).x = this->landing_points.at(i).x - this->offset_cmd.x;
+        this->landing_points.at(i).y = this->landing_points.at(i).y - this->offset_cmd.y;
+        this->landing_points.at(i).z = this->landing_points.at(i).z - this->offset_cmd.z;
+    }
+
     for (int i = 0; i < this->visited_points.size(); ++i) {
         davinci->draw_point_cmd(this->visited_points.at(i).x, this->visited_points.at(i).y, 0.04, 494 + i, GOLD);
     }
@@ -532,6 +539,11 @@ void MappingServer::spin_once()
     }
 
     this->prev_transform = transform;
+
+    for (int i = 0; i < this->landing_points.size(); ++i) {
+        davinci->draw_point_cmd(this->landing_points.at(i).x, this->landing_points.at(i).y, 1294 + i, CYAN);
+    }
+
     this->add_visited();
     this->unlock();
 };
@@ -557,6 +569,13 @@ int MappingServer::track (pcl::PointXYZ p)
     return this->tracked_points.size();
 };
 
+int MappingServer::add_land_pad (pcl::PointXYZ p)
+{
+    this->lock();
+    this->landing_points.push_back(p);
+    this->unlock();
+    return this->landing_points.size();
+};
 
 void MappingServer::add_visited ()
 {

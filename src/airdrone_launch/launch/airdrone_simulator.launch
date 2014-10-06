@@ -4,7 +4,7 @@
   <arg name="base_footprint_frame"  default="/base_footprint_"/>
   <arg name="base_stabilized_frame" default="/base_stabilized"/>
   <arg name="base_link_frame"       default="/base_link"/>
-  <arg name="ideal_tf"              default="false" />
+  <arg name="ideal_tf"              default="true" />
   <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
   <param name="/keyboard_control"   value="true"/>
   <param name="/in_simulator"       value="true"/>
@@ -76,4 +76,13 @@
     <param name="output_vel_topic"           value="/cmd_vel_cntrl"/>
   </node>
   <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"/>
+
+  <node pkg="marker_detector"  name="marker_detector"       type="marker_detector_nd"  output="screen">
+    <param name="input_image_topic"          value="/sensors/downward_camera/image"/>
+    <param name="input_camera_info_topic"    value="/sensors/downward_camera/camera_info"/>
+    <param name="landing_marker_topic"       value="landing_marker"/>
+    <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
+    <param name="downward_camera_frame"      value="downward_camera_link"/>
+    <param name="kinect_depth_optical_frame" value="/kinect_depth_optical_frame"/>
+  </node>
 </launch>            
