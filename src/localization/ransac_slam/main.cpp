@@ -117,7 +117,7 @@ private:
             ROS_ERROR("[ransac_slam]: rgbdCallback: The input cloud size is %lu points! \
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
-
+ROS_INFO("points: %lu", cloud->points.size());
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
@@ -136,9 +136,9 @@ private:
         }
         this->update_shrinked_cloud(shrink_order);
 
-        if ("/" + this->laser_cloud->header.frame_id != kinect_depth_optical_frame) {
+        if ("/" + this->laser_cloud->header.frame_id != kinect_depth_optical_frame && this->laser_cloud->header.frame_id != kinect_depth_optical_frame) {
             ROS_ERROR("[ransac_slam]: rgbdCallback: this->laser_cloud->header.frame_id != kinect_depth_optical_frame! \
-                      (%s != %s)", ("/" + this->laser_cloud->header.frame_id).c_str(), kinect_depth_optical_frame.c_str());
+                      (%s != %s)", (this->laser_cloud->header.frame_id).c_str(), kinect_depth_optical_frame.c_str());
         }
 
         tf::StampedTransform fixed_to_base, base_to_cloud, fixed_to_cloud;

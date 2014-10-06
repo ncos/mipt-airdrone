@@ -16,6 +16,12 @@
     <arg name="base_link_frame"          value="$(arg base_link_frame)"/>
   </include>
   <include file="$(find freenect_launch)/launch/freenect.launch">
+    <arg name="rgb_processing"                  value="false" />
+    <arg name="ir_processing"                   value="false" />
+    <arg name="depth_processing"                value="true" />
+    <arg name="depth_registered_processing"     value="false" />
+    <arg name="disparity_processing"            value="false" />
+    <arg name="disparity_registered_processing" value="false" />
     <arg name="camera" value="kinect" />
   </include> <!--
   <include file="$(find roscopter)/launch/roscopter.launch">
@@ -34,7 +40,7 @@
 
 
   <!-- publish tfs basing on visual odometry -->
-  <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager">
+  <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager" output="screen">
     <param name="input_pose_topic"           value="/robot_pose_ekf/odom"/>
     <param name="fixed_frame"                value="$(arg fixed_frame)"/>
     <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
@@ -55,7 +61,7 @@
     <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
     <arg name="imu_used"                     value="false"/>
     <arg name="odom_used"                    value="false"/>
-    <arg name="output_type"                  value="log"/>
+    <arg name="output_type"                  value="screen"/>
   </include>
   <!-- These nodes compose drone's logic and behaviour 
   <node pkg="vel_cntrl"     name="velocity_server" type="vel_cntrl_nd"     output="log" respawn="true">

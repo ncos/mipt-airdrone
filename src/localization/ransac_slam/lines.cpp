@@ -177,6 +177,18 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
                                                                                                     tf::TransformListener& tf_listener)
 {
     nav_msgs::Odometry result_pose;
+    result_pose.pose.covariance =   boost::assign::list_of(1e6)   (0) (0)  (0)  (0)  (0)
+                                                          (0)  (1e6)  (0)  (0)  (0)  (0)
+                                                          (0)   (0)  (1e6) (0)  (0)  (0)
+                                                          (0)   (0)   (0) (1e6) (0)  (0)
+                                                          (0)   (0)   (0)  (0) (1e6) (0)
+                                                          (0)   (0)   (0)  (0)  (0)  (1e6);
+    result_pose.twist.covariance =  boost::assign::list_of(1e6)   (0) (0)  (0)  (0)  (0)
+                                                          (0)  (1e6)  (0)  (0)  (0)  (0)
+                                                          (0)   (0)  (1e6) (0)  (0)  (0)
+                                                          (0)   (0)   (0) (1e6) (0)  (0)
+                                                          (0)   (0)   (0)  (0) (1e6) (0)
+                                                          (0)   (0)   (0)  (0)  (0)  (1e6);
     if (cloud->points.size() < min_points_in_cloud) {
         ROS_WARN("[ransac_slam]: The cloud is too small (%lu points). Location server is unable \
                                         to provide reliable pose estimation", cloud->points.size());
@@ -226,17 +238,20 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
     result_pose.pose.pose.position.y = fixed_to_base.getOrigin().y() + shift.y;
     result_pose.pose.pose.position.z = this->range_from_sonar;
 
-
-
+    double rotation_err = 1e-4;
+    double transl_err   = 1e-2;
     tf::Quaternion res = fixed_to_base.getRotation() * tf::createQuaternionFromRPY(0, 0, delta_yaw * M_PI / 180.0);
     tf::quaternionTFToMsg(res, result_pose.pose.pose.orientation);
 
-    result_pose.pose.covariance =   boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
-                                                          (0) (1e-3)  (0)  (0)  (0)  (0)
-                                                          (0)   (0)  (1e6) (0)  (0)  (0)
-                                                          (0)   (0)   (0) (1e6) (0)  (0)
-                                                          (0)   (0)   (0)  (0) (1e6) (0)
-                                                          (0)   (0)   (0)  (0)  (0)  (1e3);
+    if (matched.size() == 0) rotation_err = 9000;
+    if (matched.size() == 0) transl_err   = 9000;
+
+    result_pose.pose.covariance =   boost::assign::list_of(transl_err)  (0) (0)  (0)  (0)  (0)
+                                                          (0) (transl_err)  (0)  (0)  (0)  (0)
+                                                          (0)   (0)  (1e-4) (0)  (0)  (0)
+                                                          (0)   (0)   (0) (9000) (0)  (0)
+                                                          (0)   (0)   (0)  (0) (9000) (0)
+                                                          (0)   (0)   (0)  (0)  (0)  (rotation_err);
     result_pose.twist.twist.angular.x = 0;
     result_pose.twist.twist.angular.y = 0;
     result_pose.twist.twist.angular.z = 0;
@@ -268,7 +283,8 @@ void LocationServer::estimate_rotation(std::vector<BruteForceMatcher::Pair> &mat
         divider ++;
         delta_yaw += asin(delta_yaw_sin) * 180 / M_PI;
     }
-    delta_yaw /= divider;
+
+    if (divider != 0) delta_yaw /= divider;
 };
 
 void LocationServer::estimate_shift(std::vector<BruteForceMatcher::Pair> &matched, pcl::PointXYZ &shift)
@@ -307,10 +323,21 @@ void LocationServer::estimate_shift(std::vector<BruteForceMatcher::Pair> &matche
         shift1.y /= cnt1;
         shift1.z /= cnt1;
     }
+    else {
+        shift1.x = 0;
+        shift1.y = 0;
+        shift1.z = 0;
+    }
+
     if (cnt2 != 0) {
         shift2.x /= cnt2;
         shift2.y /= cnt2;
         shift2.z /= cnt2;
+    }
+    else {
+        shift2.x = 0;
+        shift2.y = 0;
+        shift2.z = 0;
     }
 
     shift.x = shift1.x + shift2.x;

@@ -28,7 +28,25 @@ private:
     {
         double roll, pitch, yaw;
         tf::Quaternion orient(msg_in->pose.pose.orientation.x, msg_in->pose.pose.orientation.y, msg_in->pose.pose.orientation.z, msg_in->pose.pose.orientation.w);
+        orient.normalize();
         tf::Matrix3x3(orient).getRPY(roll, pitch, yaw);
+        if (isnan(msg_in->pose.pose.orientation.x) || isnan(msg_in->pose.pose.orientation.y) || isnan(msg_in->pose.pose.orientation.z) ||isnan(msg_in->pose.pose.orientation.w)) {
+		ROS_WARN("%f, %f, %f, %f", (msg_in->pose.pose.orientation.x), (msg_in->pose.pose.orientation.y), (msg_in->pose.pose.orientation.z), (msg_in->pose.pose.orientation.w));
+	}
+
+	if (isnan(roll) || isnan(pitch) || isnan(yaw)) {
+		ROS_WARN("RPY failure!!! (%f, %f, %f)", roll, pitch, yaw);
+	}
+	if (isnan(roll)) {
+	    roll = 0;;
+	}
+	if (isnan(pitch)) {
+            pitch = 0;
+	}
+	if (isnan(yaw)) {
+            yaw = 0;
+	}
+
 
         // broadcast
         // Examine Hector slam tutorial/How to set up hector_slam for your robot
