@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <optical_flow/OpticalFlow.h>
+#include <sensor_msgs/Range.h>
 #include <nav_msgs/Odometry.h>
 
 #include <boost/assign/list_of.hpp> // for 'list_of()'
@@ -9,6 +10,7 @@
 // Check the http://wiki.ros.org/navigation/Tutorials/RobotSetup/Odom
 
 ros::Publisher  odom_pub;
+ros::Publisher  sonar_pub;
 ros::Subscriber flow_sub;
 boost::shared_ptr<tf::TransformBroadcaster> odom_broadcaster;
 ros::Time current_time, last_time;
@@ -45,8 +47,8 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
     double delta_th = vth * dt;
 
     // FIXME:
-    delta_x = flow->offset_x / 50.0;
-    delta_y = flow->offset_y / 50.0;
+    //delta_x = flow->offset_x / 50.0;
+    //delta_y = flow->offset_y / 50.0;
 
     x += delta_x;
     y += delta_y;
@@ -101,6 +103,10 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
                                                   (0)   (0)   (0)  (0) (1e6) (0)
                                                   (0)   (0)   (0)  (0)  (0)  (1e3);
     //publish the message
+    sensor_msgs::Range range_msg;
+    range_msg.range = flow->ground_distance;
+
+    sonar_pub.publish(range_msg);
     odom_pub.publish(odom);
     last_time = current_time;
 
@@ -115,6 +121,7 @@ int main(int argc, char **argv)
 
 
     odom_pub = n.advertise<nav_msgs::Odometry>("/odom", 50);
+    sonar_pub = n.advertise<sensor_msgs::Range>("/sonar", 50);
     flow_sub = n.subscribe("/px4flow/opt_flow", 50, opticalflowCallback);
     odom_broadcaster = boost::shared_ptr<tf::TransformBroadcaster> (new tf::TransformBroadcaster);
 

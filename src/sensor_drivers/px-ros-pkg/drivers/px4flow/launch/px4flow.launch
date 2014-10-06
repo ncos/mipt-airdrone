@@ -1,8 +1,8 @@
 <launch>
   <arg name="output_flow_topic"          default="/odom"/>
   <arg name="output_sonar_topic"         default="/sensors/sonar_height"/>
-  <arg name="device_name"                default="/dev/ttyACM1"/>
-  <arg name="output_type"                default="log"/>
+  <arg name="device_name"                default="/dev/PHX"/>
+  <arg name="output_type"                default="screen"/>
   
   <node name="px4flow" pkg="px4flow" type="px4flow_node" clear_params="true" respawn="true" output="$(arg output_type)">
     <param name="serial_port" value="$(arg device_name)"/>
@@ -13,5 +13,6 @@
   <node name="flow_to_odom" pkg="flow_to_odom" type="flow_to_odom_nd" clear_params="true" respawn="true" output="$(arg output_type)">
     <remap from="/px4flow/opt_flow"     to="/px4flow/internal/opt_flow"/>
     <remap from="/odom" to="$(arg output_flow_topic)"/>
+    <remap from="/sonar" to="$(arg output_sonar_topic)"/>
   </node>
 </launch>
