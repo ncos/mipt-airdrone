@@ -118,6 +118,13 @@ public:
             //
             // Stop cases:
             //
+            if (map_srv->landing_points.size() > 0) {
+                result_.land_pad = true;
+                msn_srv->move_parallel(0); // Stop movement
+                loc_srv->unlock();         // Releasing mutex
+                as_move_along.setSucceeded(result_); // Instantly leave the function
+                return;
+            }
             if (vel == 0) {
                 // No velocity no movement. This is actually a misuse case
                 result_.error = true;
@@ -575,6 +582,43 @@ public:
         action_server::LandingResult result_;
         ros::Rate r(60);
 
+        bool move_done = false;
+        bool landing_done = false;
+
+        pcl::PointXYZ cmd_target;
+        double vec_len;
+        while(true) {
+            msn_srv->lock();
+
+            cmd_target.x =  map_srv->aver_land_pad.y;
+            cmd_target.y = -map_srv->aver_land_pad.x;
+            cmd_target.z =  map_srv->aver_land_pad.z;
+            vec_len = sqrt (cmd_target.x * cmd_target.x + cmd_target.y * cmd_target.y);
+            if (vec_len > 0.1) {
+                msn_srv->unlock();
+                msn_srv->move(cmd_target, 0.1, 0, 0);
+                msn_srv->lock();
+            }
+            else {
+                move_done = true;
+            }
+            if(move_done) {
+                msn_srv->unlock();
+                msn_srv->set_height(msn_srv->height / 1.3);
+                msn_srv->lock();
+            }
+            landing_done = msn_srv->on_floor;
+
+            msn_srv->unlock();
+
+            if (landing_done) {
+                break;
+            }
+
+            r.sleep();
+        }
+
+        /*
         msn_srv->set_height(0.0);
 
         bool all_done = false;
@@ -584,7 +628,9 @@ public:
             msn_srv->unlock();
             r.sleep();
         }
+         */
 
+        map_srv->clear_land_pad();
         result_.success = true;
         as_landing.setSucceeded(result_);
         return;

@@ -135,6 +135,7 @@ private:
 public:
     std::vector<pcl::PointXYZ> tracked_points;
     std::vector<pcl::PointXYZ> landing_points;
+    pcl::PointXYZ aver_land_pad;
 
 public:
     MappingServer ();
@@ -145,14 +146,15 @@ public:
     int track (pcl::PointXYZ p);
     pcl::PointXYZ do_transform(const pcl::PointXYZ point);
     int add_land_pad (pcl::PointXYZ p);
-    pcl::PointXYZ rotate(const pcl::PointXYZ vec, double angle);
     void spin_once ();
+    void clear_land_pad();
 
 
 private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
     void add_visited ();
+    void resize_land_pads ();
 };
 
 

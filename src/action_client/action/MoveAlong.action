@@ -5,6 +5,7 @@ float32 vel
 bool left
 bool rght
 bool found
+bool land_pad
 bool error
 ---
 #feedback

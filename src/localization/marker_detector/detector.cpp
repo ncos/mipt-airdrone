@@ -148,7 +148,7 @@ Point2f detect( Mat orig_frame )
     vector<vector<Point> > minContours;
 
     for( int i = 0; i < contours.size(); i++ ) {
-        if( contours[i].size() > 50)
+        if( contours[i].size() > 70)
             minContours.push_back(contours[i]);
     }
 
@@ -253,17 +253,6 @@ Point2f detect( Mat orig_frame )
 
     namedWindow( "frame", CV_WINDOW_AUTOSIZE );
     imshow("frame", frame);
-
-    /*
-    if(target_seq_num > 10) {
-        geometry_msgs::Point32 ret;
-        ret.x = 320 / 2 - target.x;
-        ret.y = 240 / 2 - target.y;
-        ret.z = 0;
-
-        pub_mrk.publish(ret);
-    }
-    */
     return target;
 }
 
@@ -310,10 +299,6 @@ geometry_msgs::Point32 estimatePose(Point2f frame_target) {
     ret.x = point_on_line.point.x - point_on_line.point.z * vec.x / vec.z;
     ret.y = point_on_line.point.y - point_on_line.point.z * vec.y / vec.z;
     ret.z = 0;
-
-    ROS_INFO("cp: %f | %f | %f", central_point.point.x, central_point.point.y, central_point.point.z);
-    ROS_INFO("tp: %f | %f | %f", target_point.point.x, target_point.point.y, target_point.point.z);
-    ROS_INFO("ret: %f | %f | %f", ret.x, ret.y, ret.z);
 
     geometry_msgs::PointStamped kin_point = transformPoint(kinect_depth_optical_frame, base_footprint_frame,
                                                               ret.x, ret.y, ret.z);
