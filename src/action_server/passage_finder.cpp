@@ -462,7 +462,8 @@ void MotionServer::altitude_step() {
         this->height_done = true;
     }
 
-    if (fabs(this->prev_height - this->height) < this->height_epsilon / 10) {
+    if (fabs(this->prev_height - this->height) < this->height_epsilon / 10 &&
+        fabs(this->vert_vel) > this->height_epsilon / 10) {
         this->on_floor = true;
     }
     else {

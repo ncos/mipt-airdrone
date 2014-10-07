@@ -117,7 +117,7 @@ private:
             ROS_ERROR("[ransac_slam]: rgbdCallback: The input cloud size is %lu points! \
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
-ROS_INFO("points: %lu", cloud->points.size());
+
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!

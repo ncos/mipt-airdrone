@@ -605,6 +605,7 @@ public:
             if(move_done) {
                 msn_srv->unlock();
                 msn_srv->set_height(msn_srv->height / 1.3);
+                ROS_INFO("%f", msn_srv->height);
                 msn_srv->lock();
             }
             landing_done = msn_srv->on_floor;
