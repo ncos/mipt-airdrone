@@ -45,6 +45,10 @@ def move_along_result_cb(userdata, status, result):
         if result.found == True:
             rospy.loginfo("move_along_result_cb -> result.found == True")
             return 'wall_found'
+        
+        if result.land_pad == True:
+            rospy.loginfo("move_along_result_cb -> result.land_pad == True")
+            return 'land_pad'
                 
         return 'succeeded'
             
@@ -114,10 +118,11 @@ def main():
                                                            MoveAlongAction,
                                                            goal =  MoveAlongGoal(vel=movement_speed),
                                                            result_cb = move_along_result_cb,
-                                                           outcomes=['aborted', 'succeeded', 'wall_found']),
+                                                           outcomes=['aborted', 'succeeded', 'wall_found', 'land_pad']),
                                transitions={'aborted'   :'aborted',
                                             'succeeded' :'Switch wall',
-                                            'wall_found':'Approach door'} )
+                                            'wall_found':'Approach door',
+                                            'land_pad'  :'Landing'} )
 
 
         smach.StateMachine.add('Switch wall',

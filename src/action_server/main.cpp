@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Point32.h>
 
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
@@ -43,6 +44,7 @@ boost::shared_ptr<Advanced_Passage_finder> apf;
 boost::shared_ptr<Passage_type> pt;
 
 ros::Subscriber sub;
+ros::Subscriber landing_sub;
 ros::Publisher  pub_vel;
 
 // These parameters are configured in 'airdrone_launch/param.yaml':
@@ -63,6 +65,7 @@ std::string base_stabilized_frame;
 std::string input_lm_topic;
 std::string output_vel_topic;
 std::string pointcloud_frame;
+std::string landing_marker_topic;
 
 
 class ActionServer
@@ -115,6 +118,13 @@ public:
             //
             // Stop cases:
             //
+            if (map_srv->landing_points.size() > 0) {
+                result_.land_pad = true;
+                msn_srv->move_parallel(0); // Stop movement
+                loc_srv->unlock();         // Releasing mutex
+                as_move_along.setSucceeded(result_); // Instantly leave the function
+                return;
+            }
             if (vel == 0) {
                 // No velocity no movement. This is actually a misuse case
                 result_.error = true;
@@ -572,6 +582,44 @@ public:
         action_server::LandingResult result_;
         ros::Rate r(60);
 
+        bool move_done = false;
+        bool landing_done = false;
+
+        pcl::PointXYZ cmd_target;
+        double vec_len;
+        while(true) {
+            msn_srv->lock();
+
+            cmd_target.x =  map_srv->aver_land_pad.y;
+            cmd_target.y = -map_srv->aver_land_pad.x;
+            cmd_target.z =  map_srv->aver_land_pad.z;
+            vec_len = sqrt (cmd_target.x * cmd_target.x + cmd_target.y * cmd_target.y);
+            if (vec_len > 0.1) {
+                msn_srv->unlock();
+                msn_srv->move(cmd_target, 0.1, 0, 0);
+                msn_srv->lock();
+            }
+            else {
+                move_done = true;
+            }
+            if(move_done) {
+                msn_srv->unlock();
+                msn_srv->set_height(msn_srv->height / 1.3);
+                ROS_INFO("%f", msn_srv->height);
+                msn_srv->lock();
+            }
+            landing_done = msn_srv->on_floor;
+
+            msn_srv->unlock();
+
+            if (landing_done) {
+                break;
+            }
+
+            r.sleep();
+        }
+
+        /*
         msn_srv->set_height(0.0);
 
         bool all_done = false;
@@ -581,7 +629,9 @@ public:
             msn_srv->unlock();
             r.sleep();
         }
+         */
 
+        map_srv->clear_land_pad();
         result_.success = true;
         as_landing.setSucceeded(result_);
         return;
@@ -607,7 +657,17 @@ private:
 
 
 
-
+void landing_callback(const geometry_msgs::Point32 target) {
+    //ROS_INFO("/: %f | %f | %f", target.x, target.y, target.z);
+    //davinci->draw_vec(target.z, target.x, 66613, GREEN);
+    //davinci->draw_vec(-target.x, -target.z, 66614, BLUE);
+    if (isnan(target.x) || isnan(target.y) || isnan(target.z)) {
+        ROS_ERROR("Action Server Node: landing_callback get NAN input");
+        return;
+    }
+    pcl::PointXYZ land_pad (-target.x, -target.z, target.y);
+    map_srv->add_land_pad(land_pad);
+}
 
 void callback(const ransac_slam::LineMap::ConstPtr& lines_msg)
 {
@@ -690,6 +750,11 @@ int main( int argc, char** argv )
     if (!nh.getParam("action_server/pointcloud_frame",  pointcloud_frame)) pointcloud_frame = "/pointcloud_frame";
     if (!nh.getParam("action_server/input_lm_topic",   input_lm_topic)) input_lm_topic = "/ransac_slam/lm";
     if (!nh.getParam("action_server/output_vel_topic", output_vel_topic)) output_vel_topic = "/cmd_vel_2";
+    if (!nh.getParam("action_server/landing_marker_topic", landing_marker_topic)) landing_marker_topic = "landing_marker";
+
+    sub     = nh.subscribe<ransac_slam::LineMap>   (input_lm_topic,   1, callback);
+    landing_sub = nh.subscribe<geometry_msgs::Point32>  (landing_marker_topic,   1, landing_callback);
+    pub_vel = nh.advertise<geometry_msgs::Twist >  (output_vel_topic, 1);
 
     davinci   = boost::shared_ptr<DaVinci>        (new DaVinci (nh));
     mutex_ptr = boost::shared_ptr<boost::mutex>   (new boost::mutex);

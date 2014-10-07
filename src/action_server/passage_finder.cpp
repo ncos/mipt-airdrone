@@ -463,7 +463,7 @@ void MotionServer::altitude_step() {
     }
 
     if (fabs(this->prev_height - this->height) < this->height_epsilon / 10 &&
-        fabs(this->vert_vel) > this->height_epsilon) {
+        fabs(this->vert_vel) > this->height_epsilon / 10) {
         this->on_floor = true;
     }
     else {
@@ -490,6 +490,7 @@ MappingServer::MappingServer()
     init_flag =   false; // Look into class defenition
     rotation_cnt    = 0;
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
+    aver_land_pad   = pcl::PointXYZ (0, 0, 0);
 
     try {
         this->tf_listener.waitForTransform(fixed_frame, pointcloud_frame, ros::Time(0), ros::Duration(10.0) );
@@ -523,6 +524,10 @@ void MappingServer::spin_once()
         this->visited_points.at(i) = do_transform(this->visited_points.at(i));
     }
 
+    for (int i = 0; i < this->landing_points.size(); ++i) {
+	this->landing_points.at(i) = do_transform(this->landing_points.at(i));
+    }
+
     for (int i = 0; i < this->visited_points.size(); ++i) {
         davinci->draw_point_cmd(this->visited_points.at(i).x, this->visited_points.at(i).y, 0.04, 494 + i, GOLD);
     }
@@ -532,7 +537,24 @@ void MappingServer::spin_once()
     }
 
     this->prev_transform = transform;
+
+    aver_land_pad = pcl::PointXYZ(0, 0, 0);
+
+    for (int i = 0; i < this->landing_points.size(); ++i) {
+        aver_land_pad.x += this->landing_points.at(i).x;
+        aver_land_pad.y += this->landing_points.at(i).y;
+        aver_land_pad.z += this->landing_points.at(i).z;
+        davinci->draw_point_cmd(this->landing_points.at(i).x, this->landing_points.at(i).y, 1294 + i, BLUE);
+    }
+    if (this->landing_points.size() != 0) {
+        aver_land_pad.x /= this->landing_points.size();
+        aver_land_pad.y /= this->landing_points.size();
+        aver_land_pad.z /= this->landing_points.size();
+    }
+    davinci->draw_point_cmd(this->aver_land_pad.x, this->aver_land_pad.y, 5577, RED);
+
     this->add_visited();
+    this->resize_land_pads();
     this->unlock();
 };
 
@@ -557,6 +579,13 @@ int MappingServer::track (pcl::PointXYZ p)
     return this->tracked_points.size();
 };
 
+int MappingServer::add_land_pad (pcl::PointXYZ p)
+{
+    this->lock();
+    this->landing_points.push_back(p);
+    this->unlock();
+    return this->landing_points.size();
+};
 
 void MappingServer::add_visited ()
 {
@@ -578,6 +607,13 @@ void MappingServer::add_visited ()
     }
 };
 
+void MappingServer::resize_land_pads ()
+{
+    const unsigned int max_size_ = 10;
+    if (this->landing_points.size() > max_size_) {
+        this->landing_points.erase (this->landing_points.begin());
+    }
+};
 
 pcl::PointXYZ MappingServer::get_global_positon()
 {
@@ -618,6 +654,15 @@ pcl::PointXYZ MappingServer::diff(pcl::PointXYZ a, pcl::PointXYZ b)
     c.z = a.z - b.z;
     return c;
 };
+
+void MappingServer::clear_land_pad() {
+    for (int i = 0; i < this->landing_points.size(); i++) {
+        this->landing_points.erase (this->landing_points.begin());
+    }
+    aver_land_pad.x = 0;
+    aver_land_pad.y = 0;
+    aver_land_pad.z = 0;
+}
 
 
 // *****************************************
