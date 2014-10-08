@@ -398,6 +398,7 @@ void MotionServer::move(pcl::PointXYZ target, double vel, double phi, double rot
     this->rot_done = false;
     this->prev_angl = this->map_srv->get_global_angle();
     this->prev_pos = this->map_srv->get_global_positon();
+    this->map_srv->move_target = target;
     this->untrack();
 
     this->unlock();
@@ -423,7 +424,7 @@ void MotionServer::move_step() {
     double delta_angl   = this->map_srv->diff(current_angl, prev_angl);
     this->prev_angl     = current_angl;
 
-    this->move_target = this->map_srv->do_transform(this->move_target);
+    this->move_target = this->map_srv->move_target;
 
     double len = sqrt (this->move_target.x * this->move_target.x +
                        this->move_target.y * this->move_target.y);
@@ -489,6 +490,7 @@ MappingServer::MappingServer()
 {
     init_flag =   false; // Look into class defenition
     rotation_cnt    = 0;
+    move_target = pcl::PointXYZ (0, 0, 0);
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     aver_land_pad   = pcl::PointXYZ (0, 0, 0);
 
@@ -515,6 +517,8 @@ void MappingServer::spin_once()
         this->unlock();
         return;
     }
+
+    this->move_target = do_transform(this->move_target);
 
     for (int i = 0; i < this->tracked_points.size(); ++i) {
         this->tracked_points.at(i) = do_transform(this->tracked_points.at(i));
@@ -585,6 +589,13 @@ int MappingServer::add_land_pad (pcl::PointXYZ p)
     this->landing_points.push_back(p);
     this->unlock();
     return this->landing_points.size();
+};
+
+void MappingServer::add_move_target_track (pcl::PointXYZ p)
+{
+    this->lock();
+    this->move_target = p;
+    this->unlock();
 };
 
 void MappingServer::add_visited ()

@@ -301,6 +301,7 @@ public:
                                                             apf->passages.at(0).cmd_rght;
         if (isnan(pass_point_cmd.x) || isnan(pass_point_cmd.y)){
             ROS_ERROR("Wrong pass dist");
+            msn_srv->unlock();
             as_approach_door.setAborted(result_);
             return;
         }
@@ -323,8 +324,10 @@ public:
         while (1) {
             msn_srv->lock();
             msn_srv->track();
-            if (apf->passages.empty())
-				break;
+            if (apf->passages.empty()) {
+                msn_srv->unlock();
+                break;
+            }
             pass_point_cmd = this->on_left_side ? apf->passages.at(0).cmd_left :
                                                   apf->passages.at(0).cmd_rght;
             pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
@@ -333,14 +336,15 @@ public:
                                                   apf->passages.at(0).rght_ang;
             pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                      apf->passages.at(0).kin_left;
-            Line_param *pass_line_op = apf->get_best_line(pass_point_kin_op, loc_srv->lm);
+            Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
             double vel = this->on_left_side ? -0.4 : 0.4;
 			pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
                 if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
-                    if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
+                    if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal &&
+                        pass_line_op->distance < 1) {
                         msn_srv->unlock();
                         break;
                     }
@@ -376,6 +380,29 @@ public:
 			r.sleep();
 		}
         msn_srv->lock();
+
+        if (apf->passages.size() == 0) {
+            double side_sign = (this->on_left_side) ? 1 : -1;
+            pcl::PointXYZ vec (0, 0, 0);
+            vec.x = -pass_line->fdir_vec.cmd.x * target_dist + pass_point_cmd.x + pass_line->fdir_vec.cmd.x * side_sign * 0.2 * target_dist;
+            vec.y = -pass_line->fdir_vec.cmd.y * target_dist + pass_point_cmd.y + pass_line->fdir_vec.cmd.y * side_sign * 0.2 * target_dist;;
+            int track_num = map_srv->track(vec) - 1;
+
+            msn_srv->unlock();
+            msn_srv->move (vec, 1.0, 0, 0);
+            bool all_done = false;
+            while (!all_done) {
+                msn_srv->lock();
+                all_done = msn_srv->move_done;
+                msn_srv->unlock();
+                r.sleep();
+            }
+
+            result_.part_failed = true;
+            as_approach_door.setSucceeded(result_);
+            return;
+        }
+
         pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                  apf->passages.at(0).kin_left;
         pass_point_kin = this->on_left_side ? apf->passages.at(0).kin_left :
@@ -556,7 +583,6 @@ public:
         return;
     }
 
-
     void takeoffCB(const action_server::TakeoffGoalConstPtr  &goal) {
         action_server::TakeoffResult result_;
         ros::Rate r(60);
@@ -605,7 +631,6 @@ public:
             if(move_done) {
                 msn_srv->unlock();
                 msn_srv->set_height(msn_srv->height / 1.3);
-                ROS_INFO("%f", msn_srv->height);
                 msn_srv->lock();
             }
             landing_done = msn_srv->on_floor;
@@ -705,7 +730,6 @@ void callback(const ransac_slam::LineMap::ConstPtr& lines_msg)
     msn_srv->spin_once();
 
 
-    
     double vlen = VectorMath::len(pcl::PointXYZ(msn_srv->base_cmd.linear.x,
                                                 msn_srv->base_cmd.linear.y,
                                                 msn_srv->base_cmd.linear.z));
