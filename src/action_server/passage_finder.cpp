@@ -420,7 +420,7 @@ void MotionServer::set_height(double height) {
 
 void MotionServer::move_step() {
     this->untrack();
-    double current_angl = this->map_srv->get_global_angle();
+    double current_angl = this->map_srv->current_angl_global;
     double delta_angl   = this->map_srv->diff(current_angl, prev_angl);
     this->prev_angl     = current_angl;
 
@@ -491,6 +491,7 @@ MappingServer::MappingServer()
     init_flag =   false; // Look into class defenition
     rotation_cnt    = 0;
     move_target = pcl::PointXYZ (0, 0, 0);
+    current_angl_global = 0;
     mutex = boost::shared_ptr<boost::mutex>   (new boost::mutex);
     aver_land_pad   = pcl::PointXYZ (0, 0, 0);
 
@@ -519,6 +520,7 @@ void MappingServer::spin_once()
     }
 
     this->move_target = do_transform(this->move_target);
+    this->current_angl_global = this->get_global_angle();
 
     for (int i = 0; i < this->tracked_points.size(); ++i) {
         this->tracked_points.at(i) = do_transform(this->tracked_points.at(i));
@@ -640,14 +642,13 @@ pcl::PointXYZ MappingServer::get_global_positon()
 
 double MappingServer::get_global_angle()
 {
-    this->lock();
+
     tf::StampedTransform transform;
     try { this->tf_listener.lookupTransform(fixed_frame, base_stabilized_frame, ros::Time(0), transform); }
     catch (tf::TransformException &ex) { ROS_ERROR("[action_server]: (lookup) Unable to transform: %s", ex.what()); }
     double roll, pitch, yaw;
     tf::Matrix3x3(transform.getRotation()).getRPY(roll, pitch, yaw);
-    this->unlock();
-    return yaw;
+    return yaw * 180 / M_PI;
 };
 
 

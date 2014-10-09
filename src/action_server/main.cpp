@@ -71,7 +71,7 @@ std::string landing_marker_topic;
 class ActionServer
 {
 public:
-    ActionServer(ros::NodeHandle nh_) :
+    ActionServer(ros::NodeHandle nh_, bool _on_left_side) :
         as_move_along   (nh_, "MoveAlongAS",    boost::bind(&ActionServer::moveAlongCB,    this, _1), false),
         as_switch_wall  (nh_, "SwitchWallAS",   boost::bind(&ActionServer::switchWallCB,   this, _1), false),
         as_approach_door(nh_, "ApproachDoorAS", boost::bind(&ActionServer::approachDoorCB, this, _1), false),
@@ -81,7 +81,7 @@ public:
         as_middle_pass  (nh_, "MiddlePassAS",   boost::bind(&ActionServer::middlePassCB,   this, _1), false),
         as_takeoff      (nh_, "TakeoffAS",      boost::bind(&ActionServer::takeoffCB,      this, _1), false),
         as_landing      (nh_, "LandingAS",      boost::bind(&ActionServer::landingCB,      this, _1), false),
-		on_left_side (true)
+		on_left_side    (_on_left_side)
     {
         as_move_along   .start();
         as_switch_wall  .start();
@@ -319,12 +319,15 @@ public:
 
 
         double pass_point_ang = 0;
+        Line_param *pass_line_op = NULL;
+        Line_param *base_line = NULL;
 
         msn_srv->unlock();
         while (1) {
             msn_srv->lock();
             msn_srv->track();
             if (apf->passages.empty()) {
+                ROS_ERROR("Action Server Node: passage was lost in approachAS");
                 msn_srv->unlock();
                 break;
             }
@@ -336,18 +339,30 @@ public:
                                                   apf->passages.at(0).rght_ang;
             pass_point_kin_op = this->on_left_side ? apf->passages.at(0).kin_rght :
                                                      apf->passages.at(0).kin_left;
-            Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
+            pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
+            pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
+            base_line = this->on_left_side ? loc_srv->get_crn_wall_left() :
+                                             loc_srv->get_crn_wall_rght();
             double vel = this->on_left_side ? -0.4 : 0.4;
-			pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
             msn_srv->ref_ang  = target_angl;
             msn_srv->ref_dist = target_dist;
 			if (pass_line != NULL && !isnan(pass_point_cmd.x) && !isnan(pass_point_cmd.y)) {
-                if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
-                    if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal &&
-                        pass_line_op->distance < 1) {
+	            if(base_line != NULL) {
+	                double len = base_line->distance + fabs((pass_point_cmd.x * pass_line->ldir_vec.cmd.x) +
+	                             (pass_point_cmd.y * pass_line->ldir_vec.cmd.y));
+	                if (len < 1.5 * target_dist) {
                         msn_srv->unlock();
-                        break;
-                    }
+                        result_.success = true;
+                        as_approach_door.setSucceeded(result_);
+                        return;
+	                }
+	            }
+                if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal &&
+                    pass_line_op->distance < 1) {
+                    msn_srv->unlock();
+                    break;
+                }
+                if (fabs(loc_srv->get_ref_wall()->angle - target_angl) < rot_epsilon) {
 			        if (( this->on_left_side && pass_point_ang < 0) ||
 			            (!this->on_left_side && pass_point_ang > 0)) {
 			            double wall_to_pass_angle = fabs(loc_srv->get_ref_wall()->angle) -
@@ -409,7 +424,7 @@ public:
                                               apf->passages.at(0).kin_rght;
 
         pass_line = apf->get_best_line(pass_point_kin, loc_srv->lm);
-        Line_param *pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
+        pass_line_op = apf->get_best_opposite_line(pass_point_kin, pass_point_kin_op, loc_srv->lm);
         if (pt->recognize(apf, loc_srv->lm, this->on_left_side) == ortogonal) {
                 loc_srv->track_wall(pass_line_op);
                 msn_srv->unlock();
@@ -473,7 +488,7 @@ public:
 		}
 
 		double vel[3] = {0.75, 0.75, 0.75};
-		double angle[3] = {60, 60, 40};
+		double angle[3] = {30, 30, 30};
 		std::vector<int> stage_num;
 
 		int start_pos_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
@@ -483,8 +498,8 @@ public:
 		stage_num.push_back(map_srv->track(vec) - 1);
 
 
-		vec.x = pass_line->fdir_vec.cmd.x * 1.75 * target_dist;
-		vec.y = pass_line->fdir_vec.cmd.y * 1.75 * target_dist;
+		vec.x = pass_line->fdir_vec.cmd.x * (pass_line->distance + target_dist);
+		vec.y = pass_line->fdir_vec.cmd.y * (pass_line->distance + target_dist);
 		stage_num.push_back(map_srv->track(vec) - 1);
 
 		vec.x = -pass_line->ldir_vec.cmd.x * side_sign * 1.5 * target_dist;
@@ -492,7 +507,7 @@ public:
         stage_num.push_back(map_srv->track(vec) - 1);
 
         msn_srv->unlock();
-        for (int i = 0; i < stage_num.size(); i++) {
+        for (int i = 0; i < 3; i++) {
             msn_srv->lock();
             vec = pcl::PointXYZ(map_srv->tracked_points.at(stage_num.at(i)).x - map_srv->tracked_points.at(start_pos_num).x,
                                 map_srv->tracked_points.at(stage_num.at(i)).y - map_srv->tracked_points.at(start_pos_num).y, 0);
@@ -587,7 +602,42 @@ public:
         action_server::TakeoffResult result_;
         ros::Rate r(60);
 
+        bool move_done = false;
+        int tafeoff_pad_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
 
+        pcl::PointXYZ vec (0, 0, 0);
+        double vec_len;
+        while(true) {
+            msn_srv->set_height(msn_srv->height + 0.1);
+
+            msn_srv->lock();
+
+            vec = pcl::PointXYZ(map_srv->tracked_points.at(tafeoff_pad_num).x,
+                                map_srv->tracked_points.at(tafeoff_pad_num).y, 0);
+
+            vec_len = sqrt (vec.x * vec.x + vec.y * vec.y);
+            if (vec_len > 0.1) {
+                msn_srv->unlock();
+                msn_srv->move(vec, 0.1, 0, 0);
+                msn_srv->lock();
+            }
+            else {
+                move_done = true;
+            }
+
+            if (msn_srv->height > target_height) {
+                msn_srv->unlock();
+                msn_srv->set_height(target_height);
+                break;
+            }
+            msn_srv->unlock();
+
+            r.sleep();
+        }
+
+        map_srv->clear_land_pad();
+
+        /*
         msn_srv->set_height(target_height);
 
         bool all_done = false;
@@ -597,6 +647,7 @@ public:
             msn_srv->unlock();
             r.sleep();
         }
+        */
 
         result_.success = true;
         as_takeoff.setSucceeded(result_);
@@ -775,6 +826,8 @@ int main( int argc, char** argv )
     if (!nh.getParam("action_server/input_lm_topic",   input_lm_topic)) input_lm_topic = "/ransac_slam/lm";
     if (!nh.getParam("action_server/output_vel_topic", output_vel_topic)) output_vel_topic = "/cmd_vel_2";
     if (!nh.getParam("action_server/landing_marker_topic", landing_marker_topic)) landing_marker_topic = "landing_marker";
+    bool on_left_side;
+    if (!nh.getParam("action_server/on_left_side", on_left_side)) on_left_side = true;
 
     sub     = nh.subscribe<ransac_slam::LineMap>   (input_lm_topic,   1, callback);
     landing_sub = nh.subscribe<geometry_msgs::Point32>  (landing_marker_topic,   1, landing_callback);
@@ -794,7 +847,7 @@ int main( int argc, char** argv )
     sub     = nh.subscribe<ransac_slam::LineMap>  (input_lm_topic,   1, callback);
     pub_vel = nh.advertise<geometry_msgs::Twist > (output_vel_topic, 1);
 
-    ActionServer action_server(nh);
+    ActionServer action_server(nh, on_left_side);
 
 
     ros::spin ();

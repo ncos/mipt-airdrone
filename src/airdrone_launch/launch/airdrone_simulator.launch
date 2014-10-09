@@ -74,6 +74,8 @@
     <param name="pointcloud_frame"           value="/kinect_link"/>
     <param name="input_lm_topic"             value="/ransac_slam/lm"/>
     <param name="output_vel_topic"           value="/cmd_vel_cntrl"/>
+    <param name="landing_marker_topic"       value="landing_marker"/>
+    <param name="on_left_side"               value="true"/>
   </node>
   <node pkg="action_client"  name="action_client"       type="main.py"           output="screen"/>
 

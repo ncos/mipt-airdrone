@@ -137,6 +137,7 @@ public:
     std::vector<pcl::PointXYZ> landing_points;
     pcl::PointXYZ aver_land_pad;
     pcl::PointXYZ move_target;
+    double current_angl_global;
 
 public:
     MappingServer ();
@@ -151,11 +152,10 @@ public:
     void clear_land_pad();
     void add_move_target_track (pcl::PointXYZ p);
     pcl::PointXYZ rotate(const pcl::PointXYZ vec, double angle);
-
-
-private:
     void lock() {this->mutex->lock(); }
     void unlock() {this->mutex->unlock(); }
+
+private:
     void add_visited ();
     void resize_land_pads ();
 };
