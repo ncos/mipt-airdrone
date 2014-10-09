@@ -29,14 +29,14 @@
     <arg name="input_rc_topic"           value="/apm/rc"/>
     <arg name="output_imu_topic"         value="/sensors/apm/raw_imu"/>
     <arg name="output_type"              value="screen"/>
-  </include> -->
+  </include> 
   <include file="$(find px4flow)/launch/px4flow.launch">
     <arg name="device_name"              value="/dev/PHX"/>
     <arg name="output_flow_topic"        value="/odom"/>
     <arg name="output_sonar_topic"       value="/sensors/sonar_height"/>
     <arg name="output_type"              value="screen"/>
   </include>
-
+-->
 
 
   <!-- publish tfs basing on visual odometry -->
@@ -59,6 +59,8 @@
     <arg name="input_sonar_topic"            value="/sensors/sonar_height"/>
     <arg name="input_imu_topic"              value="/sensors/apm/raw_imu"/>
     <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
+    <arg name="flat_cloud_min"               value="-0.9"/>
+    <arg name="flat_cloud_max"               value="0.9"/>
     <arg name="imu_used"                     value="false"/>
     <arg name="odom_used"                    value="false"/>
     <arg name="output_type"                  value="screen"/>
@@ -83,6 +85,7 @@
     <param name="output_vel_topic"           value="/cmd_vel_cntrl"/>
   </node>
   <node pkg="action_client" name="action_client"       type="main.py"          output="log" respawn="true"/>-->
-  <!-- Logging node (.bag) -->
+  <!-- Logging node (.bag) 
   <node pkg="rosbag" type="record" name="rosbag" output="log" args="-a -q -O rosbag_record_out.bag" />
+-->
 </launch>

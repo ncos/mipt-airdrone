@@ -3,7 +3,8 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 346
   - Class: rviz/Selection
@@ -49,8 +50,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.492
-        Min Value: 1.177
+        Max Value: 2.37644
+        Min Value: -2.63337
         Value: true
       Axis: X
       Channel Name: intensity
@@ -71,7 +72,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.01
       Style: Flat Squares
-      Topic: /shrinker/depth/laser_points
+      Topic: /ransac_slam/flat_cloud
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -105,6 +106,8 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        base_footprint:
+          Value: true
         base_footprint_:
           Value: true
         base_link:
@@ -129,8 +132,6 @@ Visualization Manager:
           Value: true
         px4_flow_link:
           Value: true
-        px4_flow_link_from_sensor:
-          Value: true
         sonar_link:
           Value: true
       Marker Scale: 1
@@ -140,6 +141,8 @@ Visualization Manager:
       Show Names: true
       Tree:
         odom:
+          base_footprint:
+            {}
           base_footprint_:
             base_stabilized:
               base_link:
@@ -158,8 +161,6 @@ Visualization Manager:
                   {}
                 sonar_link:
                   {}
-          px4_flow_link_from_sensor:
-            {}
       Update Interval: 0
       Value: true
     - Angle Tolerance: 1e-05
@@ -196,22 +197,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.90641
+      Distance: 12.4863
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 1.6785
+        Y: -0.55955
+        Z: 0.00167063
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.5698
+      Pitch: 1.4598
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.15539
+      Yaw: 3.97539
     Saved: ~
 Window Geometry:
   Camera:

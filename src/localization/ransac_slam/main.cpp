@@ -42,6 +42,8 @@ std::string output_lm_topic;
 bool publish_tf;
 bool use_sonar_data;
 std::string input_sonar_topic;
+double flat_cloud_min;
+double flat_cloud_max;
 double apf_min_width;
 double apf_min_dist;
 double apf_max_dist;
@@ -121,13 +123,14 @@ private:
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
-        pass.setFilterLimits (-0.3, -0.2);  // (-0.3, -0.2)
+        //pass.setFilterLimits (flat_cloud_min, flat_cloud_max);
+        pass.setFilterLimits (-100, 100);
         pass.filter (*this->laser_cloud);
         this->laser_cloud->header = cloud->header;
-
+/*
         for (int i = 0; i < this->laser_cloud->points.size(); i++) {
             this->laser_cloud->points[i].y = 0;
-        }
+        }*/
 
         std::sort (this->laser_cloud->points.begin(), this->laser_cloud->points.end(), this->cloud_cmp_class); // Sorting by angle
         if(this->laser_cloud->points.size() < min_points_in_cloud) {
@@ -277,8 +280,9 @@ int main(int argc, char** argv)
     if (!nh.getParam("ransac_slam/apf_min_angl",  apf_min_angl))  apf_min_angl  = -25;
     if (!nh.getParam("ransac_slam/apf_max_angl",  apf_max_angl))  apf_max_angl  =  25;
     if (!nh.getParam("ransac_slam/apf_better_q",  apf_better_q))  apf_better_q  = true;
-
-
+    // flat cloud params
+    if (!nh.getParam("ransac_slam/flat_cloud_min",  flat_cloud_min))  flat_cloud_min = -0.3;
+    if (!nh.getParam("ransac_slam/flat_cloud_max",  flat_cloud_max))  flat_cloud_max = -0.2;
 
     CloudProcessor cp(nh);
 

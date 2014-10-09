@@ -8,6 +8,8 @@
   <arg name="input_sonar_topic"          default="/sensors/sonar_height"/>
   <arg name="input_imu_topic"            default="/sensors/apm/imu"/>
   <arg name="output_lm_topic"            default="/ransac_slam/lm"/>
+  <arg name="flat_cloud_min"             default="-0.3"/>
+  <arg name="flat_cloud_max"             default="-0.2"/>
   <arg name="imu_used"                   default="false"/>
   <arg name="odom_used"                  default="false"/>
   <arg name="output_type"                default="log"/>
@@ -28,6 +30,8 @@
     <param name="output_odom_topic"           value="/ransac_slam/odom_out"/>
     <param name="kinect_depth_optical_frame"  value="$(arg kinect_depth_optical_frame)"/>
     <param name="output_lm_topic"             value="$(arg output_lm_topic)"/>
+    <param name="flat_cloud_min"              value="$(arg flat_cloud_min)"/>
+    <param name="flat_cloud_max"              value="$(arg flat_cloud_max)"/>
   </node>
 
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="$(arg output_type)">
