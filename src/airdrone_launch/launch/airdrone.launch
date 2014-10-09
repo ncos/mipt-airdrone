@@ -83,4 +83,6 @@
     <param name="output_vel_topic"           value="/cmd_vel_cntrl"/>
   </node>
   <node pkg="action_client" name="action_client"       type="main.py"          output="log" respawn="true"/>-->
+  <!-- Logging node (.bag) -->
+  <node pkg="rosbag" type="record" name="rosbag" output="log" args="-a -q -O rosbag_record_out.bag" />
 </launch>
