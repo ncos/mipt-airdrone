@@ -943,7 +943,7 @@ def mainloop():
 
     # SEND IF YOU DESIRE A LIST OF ALL PARAMS (TODO: Publish params to a topic)
     #master.mav.param_request_list_send(master.target_system, master.target_component)
-
+    master.arducopter_arm()
     r = rospy.Rate(opts.rate)
     while not rospy.is_shutdown():    
         r.sleep()
