@@ -27,6 +27,21 @@ class PauseState(smach.State):
             return 'continue'
         return 'abort'
 
+class PauseStateDebug(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['continue', 'abort'])
+
+    def execute(self, userdata):
+        rospy.loginfo("PauseStateDebug: press 'y' to continue or 'n' to abort...")
+
+        char = raw_input()
+        while char.lower() not in ("y", "n"):
+            rospy.loginfo("Please, choose 'y' or 'n'")
+            char = raw_input()
+        
+        if char == 'y':
+            return 'continue'
+        return 'abort'
 
 def move_along_result_cb(userdata, status, result):
     if status == GoalStatus.PREEMPTED:
@@ -75,6 +90,10 @@ def approach_door_result_cb(userdata, status, result):
         if result.middle_pass == True:
             rospy.loginfo("approach_door_result_cb -> result.middle_pass == True")
             return 'middle_pass'
+        if result.part_failed == True:
+            rospy.loginfo("approach_door_result_cb -> result.part_failed == True")
+            return 'part_failed'
+
         return 'aborted'
             
     rospy.loginfo("(approach_door_result_cb): This line should never be reached")
@@ -110,7 +129,9 @@ def main():
                                transitions={'continue':'Takeoff',
                                             'abort'   :'aborted'})
         
-
+        smach.StateMachine.add('PauseStateDebug', PauseStateDebug (),
+                               transitions={'continue':'Move along',
+                                            'abort'   :'aborted'})
 
         
         smach.StateMachine.add('Move along',
@@ -137,10 +158,11 @@ def main():
                                                            ApproachDoorAction,
                                                            goal =  ApproachDoorGoal(),
                                                            result_cb = approach_door_result_cb,
-                                                           outcomes=['aborted', 'succeeded', 'middle_pass', 'ortog_pass']),
+                                                           outcomes=['aborted', 'succeeded', 'middle_pass', 'ortog_pass', 'part_failed']),                               
                                transitions={'aborted'     :'Pause',
                                             'ortog_pass'  :'Switch side',
                                             'middle_pass' :'Middle pass',
+                                            'part_failed' :'Move along',
                                             'succeeded'   :'Pass door'} )
         
         smach.StateMachine.add('Pass door',
