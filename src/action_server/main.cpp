@@ -26,6 +26,7 @@
 #include <action_server/MiddlePassAction.h>
 #include <action_server/TakeoffAction.h>
 #include <action_server/LandingAction.h>
+#include <action_server/DebugStateAction.h>
 
 // Message files
 #include <ransac_slam/LineMap.h>
@@ -72,6 +73,7 @@ class ActionServer
 {
 public:
     ActionServer(ros::NodeHandle nh_, bool _on_left_side) :
+        as_debug_state  (nh_, "DebugStateAS",   boost::bind(&ActionServer::debugStateCB,   this, _1), false),
         as_move_along   (nh_, "MoveAlongAS",    boost::bind(&ActionServer::moveAlongCB,    this, _1), false),
         as_switch_wall  (nh_, "SwitchWallAS",   boost::bind(&ActionServer::switchWallCB,   this, _1), false),
         as_approach_door(nh_, "ApproachDoorAS", boost::bind(&ActionServer::approachDoorCB, this, _1), false),
@@ -83,6 +85,7 @@ public:
         as_landing      (nh_, "LandingAS",      boost::bind(&ActionServer::landingCB,      this, _1), false),
 		on_left_side    (_on_left_side)
     {
+        as_debug_state  .start();
         as_move_along   .start();
         as_switch_wall  .start();
         as_approach_door.start();
@@ -96,6 +99,49 @@ public:
 
     ~ActionServer(void) {}
 
+    void debugStateCB(const action_server::DebugStateGoalConstPtr  &goal) {
+        action_server::DebugStateResult result_;
+        ros::Rate r(60);
+
+        bool move_done = false;
+        int landing_pad_num = map_srv->track(pcl::PointXYZ (0, 0, 0)) - 1;
+
+        pcl::PointXYZ vec (0, 0, 0);
+        double vec_len;
+        bool landing_done = false;
+        while(true) {
+            msn_srv->set_height(msn_srv->height / 1.3);
+
+            msn_srv->lock();
+
+            vec = pcl::PointXYZ(map_srv->tracked_points.at(landing_pad_num).x,
+                                map_srv->tracked_points.at(landing_pad_num).y, 0);
+
+            vec_len = sqrt (vec.x * vec.x + vec.y * vec.y);
+            if (vec_len > 0.1) {
+                msn_srv->unlock();
+                msn_srv->move(vec, 0.1, 0, 0);
+                msn_srv->lock();
+            }
+            else {
+                move_done = true;
+            }
+
+            landing_done = msn_srv->on_floor;
+
+            msn_srv->unlock();
+
+            if (landing_done) {
+                break;
+            }
+
+            r.sleep();
+        }
+
+        result_.success = true;
+        as_debug_state.setSucceeded(result_);
+        return;
+    }
 
     void moveAlongCB (const action_server::MoveAlongGoalConstPtr   &goal)
     {
@@ -635,8 +681,6 @@ public:
             r.sleep();
         }
 
-        map_srv->clear_land_pad();
-
         /*
         msn_srv->set_height(target_height);
 
@@ -715,6 +759,7 @@ public:
 
 private:
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.
+    actionlib::SimpleActionServer<action_server::DebugStateAction>   as_debug_state;
     actionlib::SimpleActionServer<action_server::MoveAlongAction>    as_move_along;
     actionlib::SimpleActionServer<action_server::SwitchWallAction>   as_switch_wall;
     actionlib::SimpleActionServer<action_server::ApproachDoorAction> as_approach_door;

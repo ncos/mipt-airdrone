@@ -124,7 +124,6 @@ def main():
         """
         
         
-        
         smach.StateMachine.add('Pause', PauseState (),
                                transitions={'continue':'Takeoff',
                                             'abort'   :'aborted'})
@@ -133,7 +132,14 @@ def main():
                                transitions={'continue':'Move along',
                                             'abort'   :'aborted'})
 
-        
+        smach.StateMachine.add('DebugState',
+                               smach_ros.SimpleActionState('DebugStateAS', 
+                                                           DebugStateAction,
+                                                           goal =  DebugStateGoal(),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'  :'aborted',
+                                            'succeeded':'Takeoff'} )
+                
         smach.StateMachine.add('Move along',
                                smach_ros.SimpleActionState('MoveAlongAS',
                                                            MoveAlongAction,
@@ -203,7 +209,7 @@ def main():
                                                            goal =  TakeoffGoal(),
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
-                                            'succeeded' :'Move along'} )
+                                            'succeeded' :'DebugState'} )
         
         smach.StateMachine.add('Landing',
                                smach_ros.SimpleActionState('LandingAS',
