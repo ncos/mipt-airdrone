@@ -1,10 +1,10 @@
 <launch>
-  <arg name="device_name"      default="/dev/ttyACM0"/>
+  <arg name="device_name"      default="/dev/APM"/>
   <arg name="input_rc_topic"   default="/apm/rc"/>
   <arg name="output_imu_topic" default="/sensors/apm/imu"/>
-  <arg name="output_type"      default="log"/>
+  <arg name="output_type"      default="screen"/>
 
-  <node pkg="roscopter" name="roscopter" type="roscopter_node.py" args="--device=$(arg device_name)" respawn="true" output="$(arg output_type)">
+  <node pkg="roscopter" type="driver.py" name="roscopter_driver" respawn="true" output="$(arg output_type)" args="--device=$(arg device_name) --baudrate=115200 --enable-rc-control=true --mavlink-rate=25">
     <remap from="/gps"      to="/apm/internal/gps_topic" />
     <remap from="/state"    to="/apm/internal/state_topic" />
     <remap from="/vfr_hud"  to="/apm/internal/vfr_hud_topic" />
@@ -12,7 +12,6 @@
     <remap from="/raw_imu"  to="/apm/internal/imu_topic" />
     <remap from="/rc"       to="$(arg input_rc_topic)" />
   </node>
-
   <node pkg="roscopter" type="imu_transform_publish.py" name="roscopter_imu_transform" respawn="true" output="$(arg output_type)">
     <remap from="/raw_imu"  to="/apm/internal/imu_topic" />
     <remap from="/attitude" to="/apm/internal/attitude_topic" />

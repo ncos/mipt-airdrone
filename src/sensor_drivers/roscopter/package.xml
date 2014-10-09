@@ -1,19 +1,35 @@
 <?xml version="1.0"?>
 <package>
   <name>roscopter</name>
-  <version>0.1.0</version>
-  <description>ROS package to communicate with ArduCopter. Fork of https://code.google.com/p/roscopter/</description>
+  <version>0.0.0</version>
+  <description>The roscopter package</description>
 
-  <maintainer email="cberzan@gmail.com">cberzan</maintainer>
-  <maintainer email="git@ss21k.co.uk">ssk2</maintainer>
-  <maintainer email="nahush.nnb@gmail.com">nbhanage</maintainer>
+  <maintainer email="epsilonorion@gmail.com">Joshua Weaver</maintainer>
 
-  <license>BSD</license>
+  <license>TODO</license>
+
+  <!-- <url type="website">http://ros.org/wiki/roscopter</url> -->
+
+  <author email="epsilonorion@gmail.com">Joshua Weaver</author>
+  <author email="pechkas@gmail.com">Yogesh Alok Girdhar</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>message_generation</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>geometry_msgs</build_depend> 
 
+  <build_depend>message_generation</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>mavlink</build_depend>
+
+  <run_depend>message_runtime</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>mavlink</run_depend>
+
+  <export>
+
+  </export>
 </package>
