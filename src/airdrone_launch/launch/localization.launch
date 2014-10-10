@@ -11,9 +11,9 @@
   <arg name="flat_cloud_min"             default="-0.3"/>
   <arg name="flat_cloud_max"             default="-0.2"/>
   <arg name="imu_used"                   default="false"/>
-  <arg name="odom_used"                  default="false"/>
-  <arg name="output_type"                default="log"/>
-
+  <arg name="odom_used"                  default="true"/>
+  <arg name="output_type"                default="screen"/>
+<!--
   <node pkg="ransac_slam" name="ransac_slam" type="ransac_slam_nd" output="$(arg output_type)" respawn="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />
     <param name="input_cloud_topic"           value="$(arg input_depth_points_topic)"/>
@@ -33,7 +33,7 @@
     <param name="flat_cloud_min"              value="$(arg flat_cloud_min)"/>
     <param name="flat_cloud_max"              value="$(arg flat_cloud_max)"/>
   </node>
-
+-->
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="$(arg output_type)">
     <param name="output_frame"   value="$(arg fixed_frame)"/>
     <param name="freq"           value="30.0"/>
@@ -41,9 +41,9 @@
     <param name="publish_tf"     value="false" />
     <param name="odom_used"      value="$(arg odom_used)"/>
     <param name="imu_used"       value="$(arg imu_used)"/>
-    <param name="vo_used"        value="true"/>
-    <param name="debug"          value="false"/>
-    <param name="self_diagnose"  value="false"/>
+    <param name="vo_used"        value="false"/>
+    <param name="debug"          value="true"/>
+    <param name="self_diagnose"  value="true"/>
     <remap from="/vo"            to="/ransac_slam/odom_out" />
     <remap from="/imu_data"      to="$(arg input_imu_topic)" />
   </node>

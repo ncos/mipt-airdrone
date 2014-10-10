@@ -55,7 +55,7 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
     th += delta_th;
 
     //since all odometry is 6DOF we'll need a quaternion created from yaw
-    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
+    geometry_msgs::Quaternion odom_quat_tf = tf::createQuaternionMsgFromYaw(th);
 
     //first, we'll publish the transform over tf
     geometry_msgs::TransformStamped odom_trans;
@@ -66,7 +66,7 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
     odom_trans.transform.translation.x = x;
     odom_trans.transform.translation.y = y;
     odom_trans.transform.translation.z = z;
-    odom_trans.transform.rotation = odom_quat;
+    odom_trans.transform.rotation = odom_quat_tf;
 
     //send the transform
     odom_broadcaster->sendTransform(odom_trans);
@@ -77,6 +77,9 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
     odom.header.stamp = ros::Time::now();
     odom.header.frame_id = "odom";
 
+
+    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
+    
     //set the position
     odom.pose.pose.position.x = x;
     odom.pose.pose.position.y = y;
@@ -89,23 +92,22 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
     odom.twist.twist.linear.y = vy;
     odom.twist.twist.angular.z = vth;
 
-    odom.pose.covariance =  boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
-                                                  (0) (1e-3)  (0)  (0)  (0)  (0)
+    odom.pose.covariance =  boost::assign::list_of(1e-1)  (0) (0)  (0)  (0)  (0)
+                                                  (0) (1e-1)  (0)  (0)  (0)  (0)
                                                   (0)   (0)  (1e6) (0)  (0)  (0)
                                                   (0)   (0)   (0) (1e6) (0)  (0)
                                                   (0)   (0)   (0)  (0) (1e6) (0)
-                                                  (0)   (0)   (0)  (0)  (0)  (1e3);
+                                                  (0)   (0)   (0)  (0)  (0)  (1e6);
 
-    odom.twist.covariance = boost::assign::list_of(1e-3)  (0) (0)  (0)  (0)  (0)
-                                                  (0) (1e-3)  (0)  (0)  (0)  (0)
+    odom.twist.covariance = boost::assign::list_of(1e-1)  (0) (0)  (0)  (0)  (0)
+                                                  (0) (1e-1)  (0)  (0)  (0)  (0)
                                                   (0)   (0)  (1e6) (0)  (0)  (0)
                                                   (0)   (0)   (0) (1e6) (0)  (0)
                                                   (0)   (0)   (0)  (0) (1e6) (0)
-                                                  (0)   (0)   (0)  (0)  (0)  (1e3);
+                                                  (0)   (0)   (0)  (0)  (0)  (1e6);
     //publish the message
     sensor_msgs::Range range_msg;
     range_msg.range = flow->ground_distance;
-
     sonar_pub.publish(range_msg);
     odom_pub.publish(odom);
     last_time = current_time;

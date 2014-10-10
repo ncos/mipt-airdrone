@@ -120,6 +120,7 @@ private:
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
 
+        ROS_INFO("cloud size = %lu", cloud->points.size());
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
@@ -127,10 +128,12 @@ private:
         pass.setFilterLimits (-100, 100);
         pass.filter (*this->laser_cloud);
         this->laser_cloud->header = cloud->header;
-/*
+        ROS_INFO("laser_cloud size = %lu", laser_cloud->points.size());
+        ROS_INFO("cloud: (%f, %f, %f)", cloud->points.at(0).x, cloud->points.at(0).y, cloud->points.at(0).z);
+
         for (int i = 0; i < this->laser_cloud->points.size(); i++) {
             this->laser_cloud->points[i].y = 0;
-        }*/
+        }
 
         std::sort (this->laser_cloud->points.begin(), this->laser_cloud->points.end(), this->cloud_cmp_class); // Sorting by angle
         if(this->laser_cloud->points.size() < min_points_in_cloud) {
