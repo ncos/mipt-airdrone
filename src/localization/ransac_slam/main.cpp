@@ -124,7 +124,6 @@ private:
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
         }
 
-        ROS_INFO("cloud size = %lu", cloud->points.size());
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
