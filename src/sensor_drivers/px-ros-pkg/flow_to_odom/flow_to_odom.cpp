@@ -50,7 +50,7 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
     //delta_x = flow->offset_x / 50.0;
     //delta_y = flow->offset_y / 50.0;
 
-    x += delta_x;
+    x -= delta_x;
     y += delta_y;
     th += delta_th;
 
