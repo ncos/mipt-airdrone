@@ -1,6 +1,6 @@
 <launch>
   <arg name="fixed_frame"           default="/odom"/>
-  <arg name="base_footprint_frame"  default="/base_footprint_"/>
+  <arg name="base_footprint_frame"  default="/base_footprint"/>
   <arg name="base_stabilized_frame" default="/base_stabilized"/>
   <arg name="base_link_frame"       default="/base_link"/>
   <arg name="ideal_tf"              default="false" />
@@ -23,7 +23,8 @@
     <arg name="disparity_processing"            value="false" />
     <arg name="disparity_registered_processing" value="false" />
     <arg name="camera" value="kinect" />
-  </include> <!--
+  </include>
+<!--
   <include file="$(find roscopter)/launch/roscopter.launch">
     <arg name="device_name"              value="/dev/APM"/>
     <arg name="input_rc_topic"           value="/apm/rc"/>
@@ -37,8 +38,6 @@
     <arg name="output_type"              value="screen"/>
   </include>
 -->
-
-
   <!-- publish tfs basing on visual odometry -->
   <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager" output="screen">
     <param name="input_pose_topic"           value="/robot_pose_ekf/odom"/>
@@ -59,8 +58,8 @@
     <arg name="input_sonar_topic"            value="/sensors/sonar_height"/>
     <arg name="input_imu_topic"              value="/sensors/apm/raw_imu"/>
     <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
-    <arg name="flat_cloud_min"               value="-0.9"/>
-    <arg name="flat_cloud_max"               value="0.9"/>
+    <arg name="flat_cloud_min"               value="-0.30"/>
+    <arg name="flat_cloud_max"               value="-0.28"/>
     <arg name="imu_used"                     value="false"/>
     <arg name="odom_used"                    value="false"/>
     <arg name="output_type"                  value="screen"/>

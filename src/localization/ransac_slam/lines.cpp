@@ -195,9 +195,15 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
         return result_pose;
     }
     this->pf.renew(cloud);
-
     std::vector<Line_param> lines_old = this->lm.lines;
     this->lm.renew(cloud);
+
+    if (this->lm.lines.size() > 10) {
+        ROS_WARN("[ransac_slam]: The number of walls detected is too large to compute the transform (%lu lines). \
+                  Maybe your input flat cloud is faulty - try reducing flat_cloud_min/max difference", this->lm.lines.size());
+        return result_pose;
+    }
+
     std::vector<BruteForceMatcher::Pair> matched;
     std::vector<Line_param> unmatched;
     BruteForceMatcher::match(lines_old, this->lm.lines, matched, unmatched);
@@ -243,14 +249,14 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
     tf::Quaternion res = fixed_to_base.getRotation() * tf::createQuaternionFromRPY(0, 0, delta_yaw * M_PI / 180.0);
     tf::quaternionTFToMsg(res, result_pose.pose.pose.orientation);
 
-    if (matched.size() == 0) rotation_err = 9000;
-    if (matched.size() == 0) transl_err   = 9000;
+    if (matched.size() == 0) rotation_err = 1e6;
+    if (matched.size() == 0) transl_err   = 1e6;
 
     result_pose.pose.covariance =   boost::assign::list_of(transl_err)  (0) (0)  (0)  (0)  (0)
                                                           (0) (transl_err)  (0)  (0)  (0)  (0)
                                                           (0)   (0)  (1e-4) (0)  (0)  (0)
-                                                          (0)   (0)   (0) (9000) (0)  (0)
-                                                          (0)   (0)   (0)  (0) (9000) (0)
+                                                          (0)   (0)   (0) (1e6) (0)  (0)
+                                                          (0)   (0)   (0)  (0) (1e6) (0)
                                                           (0)   (0)   (0)  (0)  (0)  (rotation_err);
     result_pose.twist.twist.angular.x = 0;
     result_pose.twist.twist.angular.y = 0;
@@ -258,12 +264,12 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
     result_pose.twist.twist.linear.x  = 0;
     result_pose.twist.twist.linear.y  = 0;
     result_pose.twist.twist.linear.z  = 0;
-    result_pose.twist.covariance =  boost::assign::list_of(9000)  (0) (0)  (0)  (0)  (0)
-                                                          (0) (9000)  (0)  (0)  (0)  (0)
-                                                          (0)   (0)  (9000) (0)  (0)  (0)
-                                                          (0)   (0)   (0) (9000) (0)  (0)
-                                                          (0)   (0)   (0)  (0) (9000) (0)
-                                                          (0)   (0)   (0)  (0)  (0)  (9000);
+    result_pose.twist.covariance =  boost::assign::list_of(1e6)  (0) (0)  (0)  (0)  (0)
+                                                          (0) (1e6)  (0)  (0)  (0)  (0)
+                                                          (0)   (0)  (1e6) (0)  (0)  (0)
+                                                          (0)   (0)   (0) (1e6) (0)  (0)
+                                                          (0)   (0)   (0)  (0) (1e6) (0)
+                                                          (0)   (0)   (0)  (0)  (0)  (1e6);
 
     result_pose.child_frame_id  = base_frame;
     result_pose.header.frame_id = fixed_frame;
