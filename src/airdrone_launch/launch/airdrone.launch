@@ -24,7 +24,7 @@
     <arg name="disparity_registered_processing" value="false" />
     <arg name="camera" value="kinect" />
   </include>
-<!--
+
   <include file="$(find roscopter)/launch/roscopter.launch">
     <arg name="device_name"              value="/dev/APM"/>
     <arg name="input_rc_topic"           value="/apm/rc"/>
@@ -37,10 +37,10 @@
     <arg name="output_sonar_topic"       value="/sensors/sonar_height"/>
     <arg name="output_type"              value="screen"/>
   </include>
--->
+
   <!-- publish tfs basing on visual odometry -->
   <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager" output="screen">
-    <param name="input_pose_topic"           value="/robot_pose_ekf/odom"/>
+    <param name="input_pose_topic"           value="/robot_pose_ekf/odom_combined"/>
     <param name="fixed_frame"                value="$(arg fixed_frame)"/>
     <param name="base_footprint_frame"       value="$(arg base_footprint_frame)"/>
     <param name="base_stabilized_frame"      value="$(arg base_stabilized_frame)"/>
@@ -60,8 +60,8 @@
     <arg name="output_lm_topic"              value="/ransac_slam/lm"/>
     <arg name="flat_cloud_min"               value="-0.30"/>
     <arg name="flat_cloud_max"               value="-0.28"/>
-    <arg name="imu_used"                     value="false"/>
-    <arg name="odom_used"                    value="false"/>
+    <arg name="imu_used"                     value="true"/>
+    <arg name="odom_used"                    value="true"/>
     <arg name="output_type"                  value="screen"/>
   </include>
   <!-- These nodes compose drone's logic and behaviour 
