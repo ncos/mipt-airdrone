@@ -115,6 +115,10 @@ private:
     }
 
     void rgbdCallback (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud) {
+        //remove NAN points from the cloud
+        std::vector<int> indices;
+        //pcl::removeNaNFromPointCloud(*cloud, indices);
+
         if(cloud->points.size() < min_points_in_cloud) {
             ROS_ERROR("[ransac_slam]: rgbdCallback: The input cloud size is %lu points! \
                       (this is too little to provide an adequate position estimation)", cloud->points.size());
@@ -123,14 +127,13 @@ private:
         pcl::PassThrough<pcl::PointXYZ> pass;
         pass.setInputCloud (cloud);
         pass.setFilterFieldName ("y");      // z is to front, y is DOWN!
-        //pass.setFilterLimits (flat_cloud_min, flat_cloud_max);
-        pass.setFilterLimits (-100, 100);
+        pass.setFilterLimits (flat_cloud_min, flat_cloud_max);
         pass.filter (*this->laser_cloud);
         this->laser_cloud->header = cloud->header;
-/*
+
         for (int i = 0; i < this->laser_cloud->points.size(); i++) {
             this->laser_cloud->points[i].y = 0;
-        }*/
+        }
 
         std::sort (this->laser_cloud->points.begin(), this->laser_cloud->points.end(), this->cloud_cmp_class); // Sorting by angle
         if(this->laser_cloud->points.size() < min_points_in_cloud) {

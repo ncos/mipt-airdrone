@@ -26,7 +26,12 @@ extern boost::shared_ptr<PointEstimator> point_est;
 extern boost::shared_ptr<DownwardCamera> dnw_cam;
 
 PointEstimator::PointEstimator (){
-    try {this->tf_listener.waitForTransform(base_footprint_frame, downward_camera_frame, ros::Time(0), ros::Duration(10.0) ); }
+    try {
+        this->tf_listener.waitForTransform(downward_camera_frame, base_footprint_frame, ros::Time(0), ros::Duration(10.0) );
+        this->tf_listener.waitForTransform(base_footprint_frame, downward_camera_frame, ros::Time(0), ros::Duration(10.0) );
+        this->tf_listener.waitForTransform(base_footprint_frame, kinect_depth_optical_frame, ros::Time(0), ros::Duration(10.0) );
+        this->tf_listener.waitForTransform(kinect_depth_optical_frame, base_footprint_frame, ros::Time(0), ros::Duration(10.0) );
+    }
     catch (tf::TransformException &ex) {ROS_ERROR("Marker Detector Node: (wait) Unable to transform: %s", ex.what()); }
 }
 
