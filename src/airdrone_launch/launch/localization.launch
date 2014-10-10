@@ -12,7 +12,7 @@
   <arg name="flat_cloud_max"             default="-0.2"/>
   <arg name="imu_used"                   default="false"/>
   <arg name="odom_used"                  default="false"/>
-  <arg name="output_type"                default="log"/>
+  <arg name="output_type"                default="screen"/>
 
   <node pkg="ransac_slam" name="ransac_slam" type="ransac_slam_nd" output="$(arg output_type)" respawn="true">
     <rosparam file="$(find airdrone_launch)/param.yaml" command="load" ns = "/" />

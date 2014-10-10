@@ -23,7 +23,7 @@
     <arg name="disparity_processing"            value="false" />
     <arg name="disparity_registered_processing" value="false" />
     <arg name="camera" value="kinect" />
-  </include> <!--
+  </include>
   <include file="$(find roscopter)/launch/roscopter.launch">
     <arg name="device_name"              value="/dev/APM"/>
     <arg name="input_rc_topic"           value="/apm/rc"/>
@@ -36,8 +36,6 @@
     <arg name="output_sonar_topic"       value="/sensors/sonar_height"/>
     <arg name="output_type"              value="screen"/>
   </include>
--->
-
 
   <!-- publish tfs basing on visual odometry -->
   <node pkg="tf_manager" type="tf_manager_nd" name="tf_manager" output="screen">
