@@ -14,7 +14,7 @@ Line_map::Line_map ()
     this->seg.setOptimizeCoefficients (true);
     this->seg.setModelType (pcl::SACMODEL_LINE);
     this->seg.setMethodType (pcl::SAC_RANSAC);
-    this->seg.setDistanceThreshold (0.003);
+    this->seg.setDistanceThreshold (0.3);
 
     this->cloud_f = pcl::PointCloud<pcl::PointXYZ>::Ptr (new pcl::PointCloud<pcl::PointXYZ>);
 };

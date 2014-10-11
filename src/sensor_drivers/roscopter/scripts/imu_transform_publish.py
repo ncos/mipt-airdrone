@@ -35,7 +35,7 @@ import tf
 imuMsg = Imu()
 imuMsg.orientation_covariance = [0.01, 0,   0,
                                  0,   0.01, 0,
-                                 0,   0,   0.01]
+                                 0,   0,   1000000]
 imuMsg.angular_velocity_covariance = [0.01, 0,   0,
                                       0,   0.01, 0,
                                       0,   0,   0.02]
