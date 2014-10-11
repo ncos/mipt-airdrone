@@ -10,7 +10,7 @@
   <arg name="output_lm_topic"            default="/ransac_slam/lm"/>
   <arg name="flat_cloud_min"             default="-0.3"/>
   <arg name="flat_cloud_max"             default="-0.2"/>
-  <arg name="imu_used"                   default="false"/>
+  <arg name="imu_used"                   default="true"/>
   <arg name="odom_used"                  default="true"/>
   <arg name="output_type"                default="screen"/>
 
@@ -40,7 +40,7 @@
     <param name="publish_tf"     value="false" />
     <param name="odom_used"      value="$(arg odom_used)"/>
     <param name="imu_used"       value="$(arg imu_used)"/>
-    <param name="vo_used"        value="true"/>
+    <param name="vo_used"        value="false"/>
     <param name="debug"          value="false"/>
     <param name="self_diagnose"  value="false"/>
     <remap from="/vo"            to="/ransac_slam/odom_out" />

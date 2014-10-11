@@ -75,7 +75,7 @@ namespace estimation
 
     // paramters
     nh_private.param("output_frame", output_frame_, std::string("odom_combined"));
-    nh_private.param("base_footprint_frame", base_footprint_frame_, std::string("base_footprint"));
+    nh_private.param("base_footprint_frame", base_footprint_frame_, std::string("base_link"));
     nh_private.param("sensor_timeout", timeout_, 1.0);
     nh_private.param("odom_used", odom_used_, true);
     nh_private.param("imu_used",  imu_used_, true);
@@ -431,7 +431,7 @@ namespace estimation
           my_filter_.getEstimate(ros::Time(), tmp);
           if(!vo_active_ && !gps_active_)
             tmp.getOrigin().setZ(0.0);
-          odom_broadcaster_.sendTransform(StampedTransform(tmp, tmp.stamp_, output_frame_, "base_footprint_frame_WTF"));
+          odom_broadcaster_.sendTransform(StampedTransform(tmp, tmp.stamp_, output_frame_, "base_footprint_frame_fake"));
           
           if (debug_){
             // write to file
