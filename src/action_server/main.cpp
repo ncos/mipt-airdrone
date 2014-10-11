@@ -655,9 +655,9 @@ public:
         double vec_len;
         while(true) {
             msn_srv->set_height(msn_srv->height + 0.1);
-
+            ROS_INFO("DEBUG: takeoff before lock");
             msn_srv->lock();
-
+            ROS_INFO("%f | %f", msn_srv->height, msn_srv->target_height);
             vec = pcl::PointXYZ(map_srv->tracked_points.at(tafeoff_pad_num).x,
                                 map_srv->tracked_points.at(tafeoff_pad_num).y, 0);
 

@@ -94,7 +94,7 @@ void opticalflowCallback(const optical_flow::OpticalFlow::ConstPtr& flow)
 
     odom.pose.covariance =  boost::assign::list_of(1e-1)  (0) (0)  (0)  (0)  (0)
                                                   (0) (1e-1)  (0)  (0)  (0)  (0)
-                                                  (0)   (0)  (1e6) (0)  (0)  (0)
+                                                  (0)   (0)  (1e-4) (0)  (0)  (0)
                                                   (0)   (0)   (0) (1e6) (0)  (0)
                                                   (0)   (0)   (0)  (0) (1e6) (0)
                                                   (0)   (0)   (0)  (0)  (0)  (1e6);

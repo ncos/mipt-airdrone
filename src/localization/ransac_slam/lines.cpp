@@ -254,7 +254,7 @@ nav_msgs::Odometry LocationServer::spin_once(const pcl::PointCloud<pcl::PointXYZ
 
     result_pose.pose.covariance =   boost::assign::list_of(transl_err)  (0) (0)  (0)  (0)  (0)
                                                           (0) (transl_err)  (0)  (0)  (0)  (0)
-                                                          (0)   (0)  (1e-4) (0)  (0)  (0)
+                                                          (0)   (0)  (1e-2) (0)  (0)  (0)
                                                           (0)   (0)   (0) (1e6) (0)  (0)
                                                           (0)   (0)   (0)  (0) (1e6) (0)
                                                           (0)   (0)   (0)  (0)  (0)  (rotation_err);

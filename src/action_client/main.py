@@ -32,6 +32,9 @@ class PauseStateDebug(smach.State):
         smach.State.__init__(self, outcomes=['continue', 'abort'])
 
     def execute(self, userdata):
+        print "HELLO!!!!"
+        return 'continue'
+        '''
         rospy.loginfo("PauseStateDebug: press 'y' to continue or 'n' to abort...")
 
         char = raw_input()
@@ -42,6 +45,7 @@ class PauseStateDebug(smach.State):
         if char == 'y':
             return 'continue'
         return 'abort'
+        '''
 
 def move_along_result_cb(userdata, status, result):
     if status == GoalStatus.PREEMPTED:
@@ -122,7 +126,13 @@ def main():
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Pause'} )
         """
-        
+        smach.StateMachine.add('Takeoff',
+                               smach_ros.SimpleActionState('TakeoffAS',
+                                                           TakeoffAction,
+                                                           goal =  TakeoffGoal(),
+                                                           outcomes=['aborted', 'succeeded']),
+                               transitions={'aborted'   :'Pause',
+                                            'succeeded' :'DebugState'} )
         
         smach.StateMachine.add('Pause', PauseState (),
                                transitions={'continue':'Takeoff',
@@ -202,14 +212,6 @@ def main():
                                                            outcomes=['aborted', 'succeeded']),
                                transitions={'aborted'   :'Pause',
                                             'succeeded' :'Move along'} )
-        
-        smach.StateMachine.add('Takeoff',
-                               smach_ros.SimpleActionState('TakeoffAS',
-                                                           TakeoffAction,
-                                                           goal =  TakeoffGoal(),
-                                                           outcomes=['aborted', 'succeeded']),
-                               transitions={'aborted'   :'Pause',
-                                            'succeeded' :'DebugState'} )
         
         smach.StateMachine.add('Landing',
                                smach_ros.SimpleActionState('LandingAS',
